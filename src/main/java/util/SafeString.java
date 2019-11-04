@@ -48,6 +48,22 @@ public class SafeString {
         return this;
     }
     
+    public SafeString removeFromStart(int numChars){
+        if(numChars > nextIdx){
+            throw new IllegalArgumentException("Cannot remove characters past current size");
+        }
+        char[] temp = new char[capacity];
+        System.arraycopy(val, numChars, temp, 0, nextIdx - numChars);
+        clearValue();
+        nextIdx -= numChars;
+        val = temp;
+        return this;
+    }
+    
+    public boolean isEmpty(){
+        return nextIdx == 0;
+    }
+    
     public void print(){
         for(int i = 0; i < nextIdx; i++){
             System.out.print(val[i]);
@@ -73,6 +89,10 @@ public class SafeString {
             3
         );
         s.append(new char[]{'g','h','i'});
+        s.print();
+        System.out.println("After removing");
+        s.removeFromStart(4);
+        s.removeFromStart(1);
         s.print();
     }
 }
