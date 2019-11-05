@@ -2,6 +2,7 @@ package pages;
 
 import io.QueryFileReader;
 import java.io.IOException;
+import util.SafeString;
 
 /**
  *
@@ -13,13 +14,13 @@ public class TestPage extends AbstractPageTemplate{
         super("https://www.arc.losrios.edu/", "https://ps.losrios.edu/psp/student/?cmd=login&languageCd=ENG&");
     }
     @Override
-    public void inputQuery(char[] query) {
+    public void inputQuery(SafeString query) {
         
     }
 
     @Override
-    public char[] readQueryResult() {
-        return new char[]{'d', 'o', ' ', 'n', 'o', 't', 'h', 'i', 'n', 'g', '\n'};
+    public SafeString readQueryResult() {
+        return new SafeString(new char[]{'d', 'o', ' ', 'n', 'o', 't', 'h', 'i', 'n', 'g', '\n'});
     }
     
     public static void main(String[] args) throws IOException{

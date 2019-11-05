@@ -27,6 +27,9 @@ public class SafeString {
         
         System.arraycopy(vals, 0, val, 0, nextIdx);
     }
+    public SafeString(char[] vals){
+        this(vals, vals.length);
+    }
     public SafeString(){
         this(new char[0], DEFAULT_CAPACITY);
     }
@@ -46,6 +49,9 @@ public class SafeString {
         nextIdx += other.length;
         
         return this;
+    }
+    public SafeString append(SafeString s){
+        return append(s.toCharArray());
     }
     
     /**
@@ -67,8 +73,8 @@ public class SafeString {
     
     public int indexOf(char searchFor, int startIdx){
         int idx = -1;
-        print();
-        System.out.println("Searching for " + searchFor);
+        //print();
+        //System.out.println("Searching for " + searchFor);
         for(int i = startIdx; i < nextIdx && idx == -1; i++){
             if(val[i] == searchFor){
                 idx = i;
@@ -110,6 +116,7 @@ public class SafeString {
         for(int i = 0; i < capacity; i++){
             val[i] = ' ';
         }
+        nextIdx = 0;
     }
     
     public final char[] toCharArray(){

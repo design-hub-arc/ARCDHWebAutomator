@@ -27,7 +27,7 @@ public class QueryFileReader {
                 System.arraycopy(temp, 0, newTemp, 0, numCharsRead);
                 temp = newTemp;
             }
-            System.out.println(Arrays.toString(temp));
+            //System.out.println(Arrays.toString(temp));
             
             ret.append(temp);
         }
