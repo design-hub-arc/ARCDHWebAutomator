@@ -48,6 +48,11 @@ public class SafeString {
         return this;
     }
     
+    /**
+     * 
+     * @param numChars
+     * @return this, for chaining purposes
+     */
     public SafeString removeFromStart(int numChars){
         if(numChars > nextIdx){
             throw new IllegalArgumentException("Cannot remove characters past current size");
@@ -58,6 +63,36 @@ public class SafeString {
         nextIdx -= numChars;
         val = temp;
         return this;
+    }
+    
+    public int indexOf(char searchFor, int startIdx){
+        int idx = -1;
+        print();
+        System.out.println("Searching for " + searchFor);
+        for(int i = startIdx; i < nextIdx && idx == -1; i++){
+            if(val[i] == searchFor){
+                idx = i;
+            }
+        }
+        return idx;
+    }
+    public int indexOf(char searchFor){
+        return indexOf(searchFor, 0);
+    }
+    
+    public SafeString substring(int startIdx, int numChars){
+        if(startIdx < 0 && numChars < 0){
+            throw new IllegalArgumentException("Both parameters mustn't be negative");
+        }
+        if(startIdx + numChars > nextIdx){
+            throw new IllegalArgumentException("Substring out of bounds of this SafeString");
+        }
+        char[] cs = new char[numChars];
+        for(int i = 0; i < numChars; i++){
+            cs[i] = val[i + startIdx];
+        }
+        SafeString ret = new SafeString(cs, numChars);
+        return ret;
     }
     
     public boolean isEmpty(){
@@ -77,6 +112,12 @@ public class SafeString {
         }
     }
     
+    public final char[] toCharArray(){
+        char[] ret = new char[nextIdx];
+        System.arraycopy(val, 0, ret, 0, nextIdx);
+        return ret;
+    }
+    
     @Override
     public void finalize() throws Throwable{
         clearValue();
@@ -94,5 +135,8 @@ public class SafeString {
         s.removeFromStart(4);
         s.removeFromStart(1);
         s.print();
+        
+        SafeString s2 = s.substring(0, s.nextIdx);
+        s2.print();
     }
 }

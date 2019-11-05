@@ -14,13 +14,19 @@ public abstract class AbstractPageTemplate {
     private final SafeString result;
     private boolean done;
     
+    /**
+     * 
+     * @param inputUrl the URL of the webpage where this should input queries
+     * @param resultUrl the URL of the webpage where this should read the result of its query
+     */
     public AbstractPageTemplate(String inputUrl, String resultUrl){
+        /*
         if(!inputUrl.startsWith("/")){
             inputUrl = "/" + inputUrl;
         }
         if(!resultUrl.startsWith("/")){
             resultUrl = "/" + resultUrl;
-        }
+        }*/
         inputURL = inputUrl;
         resultURL = resultUrl;
         queryFile = new SafeString();
@@ -34,31 +40,52 @@ public abstract class AbstractPageTemplate {
         result.clearValue();
     }
     
-    public char[] extractNextQuery(){
+    public char[] extractNextQuery() throws Exception{
+        int endOfQuery = queryFile.indexOf('\n');
+        if(endOfQuery == -1){
+            throw new Exception("No more queries to process");
+        }
+        SafeString ss = queryFile.substring(0, endOfQuery);
+        System.out.println("Substring");
+        ss.print();
+        System.out.println("Before removing");
+        queryFile.print();
+        System.out.println("After");
+        queryFile.removeFromStart(endOfQuery + 1);
+        queryFile.print();
         
-        return null;
+        return ss.toCharArray();
     }
     
-    public void run(char[] queryFile){
+    public void run(char[] a){
+        queryFile.append(a);
         done = false;
         
         //change this
-        System.setProperty("webdriver.chrome.driver", "/Users/matt/Desktop/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "C:/Users/Matt/Desktop/chromedriver.exe");
         
         WebDriver driver = new ChromeDriver();
+        driver.get(inputURL);
         while(!done){
             String url = driver.getCurrentUrl();
-            //how to get pathname?
+            System.out.println(url);
             
-            //how to ignore case?
-            if(url.contains(inputURL)){
-                //input next query
-            } else if(url.contains(resultURL)){
+            if(url.equalsIgnoreCase(inputURL)){
+                try {
+                    //input next query
+                    inputQuery(extractNextQuery());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    done = true;
+                }
+            } else if(url.equalsIgnoreCase(resultURL)){
                 result.append(readQueryResult());
             } else {
                 //
             }
+            done = true;
         }
+        driver.quit();
     }
     
     public abstract void inputQuery(char[] query);
