@@ -1,5 +1,8 @@
 package pages;
 
+import io.QueryFileReader;
+import java.io.IOException;
+
 /**
  *
  * @author Matt
@@ -19,12 +22,9 @@ public class TestPage extends AbstractPageTemplate{
         return new char[]{'d', 'o', ' ', 'n', 'o', 't', 'h', 'i', 'n', 'g', '\n'};
     }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         TestPage p = new TestPage();
-        char[] file = new char[]{
-            'a', 'b', 'c', '\n',
-            'd', 'e', 'f', '\n'
-        };
+        char[] file = new QueryFileReader().readStream(TestPage.class.getResourceAsStream("/testFile.csv")).toCharArray();
         p.run(file);
     }
 }
