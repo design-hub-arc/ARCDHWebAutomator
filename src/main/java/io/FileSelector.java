@@ -3,6 +3,7 @@ package io;
 import java.io.File;
 import java.util.function.Consumer;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,6 +25,24 @@ public class FileSelector{
     public void chooseFile(){
         if(chooser.showOpenDialog(chooser) == JFileChooser.APPROVE_OPTION){ 
             action.accept(chooser.getSelectedFile());
+        }
+    }
+    
+    public static void chooseCsvFile(Consumer<File> action){
+        JFileChooser jfc = new JFileChooser();
+        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        if(jfc.showOpenDialog(jfc) == JFileChooser.APPROVE_OPTION){ 
+            action.accept(jfc.getSelectedFile());
+        }
+    }
+    
+    public static void createNewFile(Consumer<File> action){
+        JFileChooser jfc = new JFileChooser();
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if(jfc.showOpenDialog(jfc) == JFileChooser.APPROVE_OPTION){ 
+            String name = JOptionPane.showInputDialog(null, "What do you want to name this new file?");
+            File newFile = new File(jfc.getSelectedFile().getAbsolutePath() + File.separator + name);
+            action.accept(newFile);
         }
     }
 }

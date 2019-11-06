@@ -1,7 +1,12 @@
 package pages;
 
+import io.FileSelector;
 import io.ResultFileWriter;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import util.SafeString;
@@ -50,21 +55,37 @@ public abstract class AbstractPageTemplate {
     
     
     
-    public SafeString extractNextQuery() throws Exception{
+    public SafeString extractNextQuery(){
         int endOfQuery = queryFile.indexOf('\n');
         if(endOfQuery == -1){
             endOfQuery = queryFile.length(); //go to the end of the file
         }
         SafeString ss = queryFile.substring(0, endOfQuery);
-        System.out.println("Substring");
-        ss.print();
-        System.out.println("Before removing");
-        queryFile.print();
-        System.out.println("After");
+        //System.out.println("Substring");
+        //ss.print();
+        //System.out.println("Before removing");
+        //queryFile.print();
+        //System.out.println("After");
         queryFile.removeFromStart(endOfQuery + 1);
-        queryFile.print();
+        //queryFile.print();
         
         return ss;
+    }
+    
+    private void doInputQuery(){
+        SafeString nextQuery = extractNextQuery();
+        System.out.println("Inputting query:");
+        nextQuery.print();
+        inputQuery(nextQuery);
+        nextQuery.clearValue();
+    } 
+    private void doReadResult(){
+        SafeString queryResult = readQueryResult();
+        System.out.println("Reading query result:");
+        queryResult.print();
+        result.append(queryResult);
+        afterReadingQuery();
+        queryResult.clearValue();
     }
     
     public void run(char[] a){
@@ -84,8 +105,6 @@ public abstract class AbstractPageTemplate {
         
         driver.get(inputURL);
         String url;
-        SafeString nextQuery = null;
-        SafeString queryResult = null;
         while(!done){
             url = driver.getCurrentUrl();
             int idx = url.indexOf('?');
@@ -96,40 +115,26 @@ public abstract class AbstractPageTemplate {
             out.println("Current URL is " + url);
             
             if(url.equalsIgnoreCase(inputURL)){
-                try {
-                    //input next query
-                    nextQuery = extractNextQuery();
-                    out.println("Inputting query:");
-                    nextQuery.print();
-                    inputQuery(nextQuery);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                doInputQuery();
+            } else if(url.equalsIgnoreCase(resultURL)){
+                doReadResult();
+                if(queryFile.isEmpty()){
                     done = true;
                 }
-            } else if(url.equalsIgnoreCase(resultURL)){
-                queryResult = readQueryResult();
-                out.println("Reading query result:");
-                queryResult.print();
-                result.append(queryResult);
-                afterReadingQuery();
             } else {
                 System.err.println("Ahhh bad URL " + url);
                 done = true;
             }
-            
-            if(queryFile.isEmpty()){
-                done = true;
-            }
-            
-            if(nextQuery != null){
-                nextQuery.clearValue();
-            }
-            if(queryResult != null){
-                queryResult.clearValue();
-            }
         }
         
-        result.print();
+        FileSelector.createNewFile((File f)->{
+            try {
+                new ResultFileWriter().writeToFile(f, result);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        
         clean();
         driver.quit();
     }

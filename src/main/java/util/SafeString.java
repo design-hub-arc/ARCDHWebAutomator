@@ -36,6 +36,36 @@ public class SafeString implements CharSequence{
         this(new char[0], DEFAULT_CAPACITY);
     }
     
+    public boolean isEmpty(){
+        return nextIdx == 0;
+    }
+    
+    public final char[] toCharArray(){
+        char[] ret = new char[nextIdx];
+        System.arraycopy(val, 0, ret, 0, nextIdx);
+        return ret;
+    }
+    
+    @Override
+    public int length() {
+        return nextIdx;
+    }
+
+    @Override
+    public char charAt(int index) {
+        if(index >= nextIdx){
+            throw new IndexOutOfBoundsException();
+        }
+        return val[index];
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        char[] a = new char[end - start];
+        System.arraycopy(val, start, a, 0, end - start);
+        return new SafeString(a, end - start);
+    }
+    
     public SafeString append(char[] other){
         if(other.length + nextIdx > capacity){
             char[] temp = new char[capacity * 2];
@@ -51,6 +81,9 @@ public class SafeString implements CharSequence{
         nextIdx += other.length;
         
         return this;
+    }
+    public SafeString append(char other){
+        return append(new char[]{other});
     }
     public SafeString append(SafeString s){
         return append(s.toCharArray());
@@ -104,10 +137,6 @@ public class SafeString implements CharSequence{
         return ret;
     }
     
-    public boolean isEmpty(){
-        return nextIdx == 0;
-    }
-    
     public void print(){
         for(int i = 0; i < nextIdx; i++){
             System.out.print(val[i]);
@@ -120,12 +149,6 @@ public class SafeString implements CharSequence{
             val[i] = ' ';
         }
         nextIdx = 0;
-    }
-    
-    public final char[] toCharArray(){
-        char[] ret = new char[nextIdx];
-        System.arraycopy(val, 0, ret, 0, nextIdx);
-        return ret;
     }
     
     @Override
@@ -148,26 +171,5 @@ public class SafeString implements CharSequence{
         
         SafeString s2 = s.substring(0, s.nextIdx);
         s2.print();
-    }
-
-    @Override
-    public int length() {
-        return nextIdx;
-    }
-
-    @Override
-    public char charAt(int index) {
-        if(index >= nextIdx){
-            throw new IndexOutOfBoundsException();
-        }
-        return val[index];
-    }
-
-    @Override
-    public CharSequence subSequence(int start, int end) {
-        SafeString ret = new SafeString();
-        char[] a = new char[end - start];
-        System.arraycopy(val, start, a, 0, end - start);
-        return ret;
     }
 }

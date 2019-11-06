@@ -34,7 +34,9 @@ public class TestPage extends AbstractPageTemplate{
     public SafeString readQueryResult() {
         WebElement numResultBox = getDriver().findElement(By.id("resultStats"));
         System.out.println("num results is [" + numResultBox.getText() + "]");
-        return new SafeString(new char[]{'d', 'o', ' ', 'n', 'o', 't', 'h', 'i', 'n', 'g', '\n'});
+        SafeString ret = new SafeString(numResultBox.getText().toCharArray());
+        ret.append('\n');
+        return ret;
     }
     
     public static void main(String[] args) throws IOException{
