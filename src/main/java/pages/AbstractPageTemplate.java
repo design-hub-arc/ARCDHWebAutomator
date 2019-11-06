@@ -1,5 +1,6 @@
 package pages;
 
+import io.ResultFileWriter;
 import java.io.PrintStream;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -59,9 +60,9 @@ public abstract class AbstractPageTemplate {
         //ss.print();
         //System.out.println("Before removing");
         //queryFile.print();
-        //System.out.println("After");
+        System.out.println("After");
         queryFile.removeFromStart(endOfQuery + 1);
-        //queryFile.print();
+        queryFile.print();
         
         return ss;
     }
@@ -87,6 +88,11 @@ public abstract class AbstractPageTemplate {
         SafeString queryResult = null;
         while(!done){
             url = driver.getCurrentUrl();
+            int idx = url.indexOf('?');
+            //out.println("idx is " + idx);
+            if(idx != -1){
+                url = url.substring(0, idx);
+            }
             out.println("Current URL is " + url);
             
             if(url.equalsIgnoreCase(inputURL)){
@@ -105,10 +111,16 @@ public abstract class AbstractPageTemplate {
                 out.println("Reading query result:");
                 queryResult.print();
                 result.append(queryResult);
+                afterReadingQuery();
             } else {
-                //
+                System.err.println("Ahhh bad URL " + url);
+                done = true;
             }
-            done = true;
+            
+            if(queryFile.isEmpty()){
+                done = true;
+            }
+            
             if(nextQuery != null){
                 nextQuery.clearValue();
             }
@@ -116,6 +128,8 @@ public abstract class AbstractPageTemplate {
                 queryResult.clearValue();
             }
         }
+        
+        result.print();
         clean();
         driver.quit();
     }
@@ -127,4 +141,5 @@ public abstract class AbstractPageTemplate {
     
     public abstract void inputQuery(SafeString query);
     public abstract SafeString readQueryResult();
+    public abstract void afterReadingQuery();
 }

@@ -10,7 +10,7 @@ package util;
  * 
  * @author Matt Crow
  */
-public class SafeString {
+public class SafeString implements CharSequence{
     private char[] val;
     private int capacity;
     private int nextIdx;
@@ -145,5 +145,26 @@ public class SafeString {
         
         SafeString s2 = s.substring(0, s.nextIdx);
         s2.print();
+    }
+
+    @Override
+    public int length() {
+        return nextIdx;
+    }
+
+    @Override
+    public char charAt(int index) {
+        if(index >= nextIdx){
+            throw new IndexOutOfBoundsException();
+        }
+        return val[index];
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        SafeString ret = new SafeString();
+        char[] a = new char[end - start];
+        System.arraycopy(val, start, a, 0, end - start);
+        return ret;
     }
 }
