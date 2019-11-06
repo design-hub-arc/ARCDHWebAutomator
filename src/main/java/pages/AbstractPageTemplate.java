@@ -53,13 +53,13 @@ public abstract class AbstractPageTemplate {
     public SafeString extractNextQuery() throws Exception{
         int endOfQuery = queryFile.indexOf('\n');
         if(endOfQuery == -1){
-            throw new Exception("No more queries to process");
+            endOfQuery = queryFile.length(); //go to the end of the file
         }
         SafeString ss = queryFile.substring(0, endOfQuery);
-        //System.out.println("Substring");
-        //ss.print();
-        //System.out.println("Before removing");
-        //queryFile.print();
+        System.out.println("Substring");
+        ss.print();
+        System.out.println("Before removing");
+        queryFile.print();
         System.out.println("After");
         queryFile.removeFromStart(endOfQuery + 1);
         queryFile.print();

@@ -1,5 +1,7 @@
 package util;
 
+import java.util.Arrays;
+
 /**
  * In case security is a concern, this class stores
  * the information it gathers as a character array 
@@ -61,12 +63,13 @@ public class SafeString implements CharSequence{
      */
     public SafeString removeFromStart(int numChars){
         if(numChars > nextIdx){
-            throw new IllegalArgumentException("Cannot remove characters past current size");
+            numChars = nextIdx;
         }
         char[] temp = new char[capacity];
-        System.arraycopy(val, numChars, temp, 0, nextIdx - numChars);
+        int newNextIdx = nextIdx - numChars;
+        System.arraycopy(val, numChars, temp, 0, newNextIdx);
         clearValue();
-        nextIdx -= numChars;
+        nextIdx = newNextIdx;
         val = temp;
         return this;
     }
