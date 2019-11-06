@@ -4,9 +4,10 @@ import io.FileSelector;
 import io.ResultFileWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.IntStream;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import util.SafeString;
@@ -21,6 +22,9 @@ public abstract class AbstractPageTemplate {
     private final SafeString result;
     private WebDriver driver;
     private boolean done;
+    private boolean showOutput;
+    //private OutputStream out;
+    private OutputStreamWriter out;
     
     /**
      * 
@@ -41,6 +45,8 @@ public abstract class AbstractPageTemplate {
         result = new SafeString();
         done = true;
         driver = null;
+        showOutput = true;
+        out = new OutputStreamWriter(System.out);
     }
     
     public final String getInputUrl(){
@@ -52,8 +58,23 @@ public abstract class AbstractPageTemplate {
     public final WebDriver getDriver(){
         return driver;
     }
-    
-    
+    public final OutputStreamWriter getOutputStream(){
+        return out;
+    }
+    public final void writeOutput(CharSequence output){
+        System.out.println(output);
+        //out.write(output.chars());
+        /*
+        
+        byte[] bytes = new byte[output.length() * Character.BYTES];
+        int len = output.length();
+        int[] chars = output.chars().toArray();
+        
+        for(int i = 0; i < len; i++){
+            //how do I convert int array to byte array?
+        }
+        out.write(bytes);*/
+    }
     
     public SafeString extractNextQuery(){
         int endOfQuery = queryFile.indexOf('\n');
@@ -61,11 +82,14 @@ public abstract class AbstractPageTemplate {
             endOfQuery = queryFile.length(); //go to the end of the file
         }
         SafeString ss = queryFile.substring(0, endOfQuery);
-        //System.out.println("Substring");
-        //ss.print();
-        //System.out.println("Before removing");
-        //queryFile.print();
-        //System.out.println("After");
+        if(showOutput){
+            writeOutput("Substring");
+            ss.print();
+            writeOutput("Before removing");
+            queryFile.print();
+            writeOutput("After");
+        }
+        
         queryFile.removeFromStart(endOfQuery + 1);
         //queryFile.print();
         
@@ -88,9 +112,9 @@ public abstract class AbstractPageTemplate {
         queryResult.clearValue();
     }
     
-    public void run(char[] a){
-        //change this to where I can write output to a file
-        PrintStream out = System.out;
+    public void run(char[] a, boolean displayOutput){
+        showOutput = displayOutput;
+        
         queryFile.clearValue();
         queryFile.append(a);
         done = false;
@@ -99,8 +123,8 @@ public abstract class AbstractPageTemplate {
         driver = new ChromeDriver();
         
         
-        out.println("Running " + getClass().getName());
-        out.println("Query file is");
+        writeOutput("Running " + getClass().getName());
+        writeOutput("Query file is");
         queryFile.print();
         
         driver.get(inputURL);
@@ -112,7 +136,7 @@ public abstract class AbstractPageTemplate {
             if(idx != -1){
                 url = url.substring(0, idx);
             }
-            out.println("Current URL is " + url);
+            writeOutput("Current URL is " + url);
             
             if(url.equalsIgnoreCase(inputURL)){
                 doInputQuery();
@@ -137,6 +161,9 @@ public abstract class AbstractPageTemplate {
         
         clean();
         driver.quit();
+    }
+    public void run(char[] a){
+        run(a, true);
     }
     
     public void clean(){
