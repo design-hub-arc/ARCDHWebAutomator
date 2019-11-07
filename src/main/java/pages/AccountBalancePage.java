@@ -1,7 +1,9 @@
 package pages;
 
+import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 /**
  *
@@ -38,12 +40,27 @@ public class AccountBalancePage extends AbstractPageTemplate{
 
     @Override
     public String readQueryResult() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        StringBuilder ret = new StringBuilder();
+        WebElement table = getDriver().findElement(By.xpath("table[@border=1]"));
+        writeOutput(table.toString());
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+        rows.forEach((WebElement row)->{
+            List<WebElement> cells = row.findElements(By.tagName("td"));
+            cells.forEach((WebElement cell)->{
+                ret.append(cell.getText()).append(", ");
+            });
+            ret.append('\n');
+        });
+        writeOutput(ret);
+        return ret.toString();
     }
 
     @Override
     public void afterReadingQuery() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getDriver()
+            .findElement(
+                By.xpath("a[@href='AccountBalanceSumDescr.asp']")
+            ).click();
     }
     
 }
