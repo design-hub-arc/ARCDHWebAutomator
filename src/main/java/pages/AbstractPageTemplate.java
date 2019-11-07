@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import util.SafeString;
 
 /**
  * @author Matt Crow
@@ -18,8 +20,8 @@ import util.SafeString;
 public abstract class AbstractPageTemplate {
     private final String inputURL;
     private final String resultURL;
-    private final SafeString queryFile;
-    private final SafeString result;
+    private final LinkedList<String> queryFile;
+    private final StringBuilder result;
     private WebDriver driver;
     private boolean done;
     private boolean showOutput;
@@ -32,17 +34,10 @@ public abstract class AbstractPageTemplate {
      * @param resultUrl the URL of the webpage where this should read the result of its query
      */
     public AbstractPageTemplate(String inputUrl, String resultUrl){
-        /*
-        if(!inputUrl.startsWith("/")){
-            inputUrl = "/" + inputUrl;
-        }
-        if(!resultUrl.startsWith("/")){
-            resultUrl = "/" + resultUrl;
-        }*/
         inputURL = inputUrl;
         resultURL = resultUrl;
-        queryFile = new SafeString();
-        result = new SafeString();
+        queryFile = new LinkedList<>();
+        result = new StringBuilder();
         done = true;
         driver = null;
         showOutput = true;
@@ -76,47 +71,57 @@ public abstract class AbstractPageTemplate {
         out.write(bytes);*/
     }
     
-    public SafeString extractNextQuery(){
-        int endOfQuery = queryFile.indexOf('\n');
-        if(endOfQuery == -1){
-            endOfQuery = queryFile.length(); //go to the end of the file
+    public String extractNextQuery(){
+        String ret;
+        
+        if(queryFile.isEmpty()){
+            throw new NoSuchElementException("Query file is empty.");
         }
-        SafeString ss = queryFile.substring(0, endOfQuery);
+        
         if(showOutput){
-            writeOutput("Substring");
-            ss.print();
-            writeOutput("Before removing");
-            queryFile.print();
-            writeOutput("After");
+            writeOutput("Before Dequeing:");
+            queryFile.forEach((query)->{
+                writeOutput(query);
+            });
         }
         
-        queryFile.removeFromStart(endOfQuery + 1);
-        //queryFile.print();
+        ret = queryFile.removeFirst();
         
-        return ss;
+        if(showOutput){
+            writeOutput("After Dequeing:");
+            queryFile.forEach((query)->{
+                writeOutput(query);
+            });
+        }
+        
+        return ret;
     }
     
     private void doInputQuery(){
-        SafeString nextQuery = extractNextQuery();
-        System.out.println("Inputting query:");
-        nextQuery.print();
+        String nextQuery = extractNextQuery();
+        if(showOutput){
+            writeOutput("Inputting query:\n" + nextQuery);
+        }
+        
         inputQuery(nextQuery);
-        nextQuery.clearValue();
     } 
     private void doReadResult(){
-        SafeString queryResult = readQueryResult();
-        System.out.println("Reading query result:");
-        queryResult.print();
+        String queryResult = readQueryResult();
+        if(showOutput){
+            writeOutput("Reading query result:\n" + queryResult);
+        }
         result.append(queryResult);
         afterReadingQuery();
-        queryResult.clearValue();
     }
     
-    public void run(char[] a, boolean displayOutput){
+    public void run(String fileText, boolean displayOutput){
         showOutput = displayOutput;
+        queryFile.clear();
+        String[] split = fileText.split("\n");
+        Arrays.stream(split).forEach((query)->{
+            queryFile.add(query);
+        });
         
-        queryFile.clearValue();
-        queryFile.append(a);
         done = false;
         //change this
         System.setProperty("webdriver.chrome.driver", "C:/Users/Matt/Desktop/chromedriver.exe");
@@ -125,7 +130,9 @@ public abstract class AbstractPageTemplate {
         
         writeOutput("Running " + getClass().getName());
         writeOutput("Query file is");
-        queryFile.print();
+        queryFile.forEach((query)->{
+            writeOutput(query);
+        });
         
         driver.get(inputURL);
         String url;
@@ -153,25 +160,19 @@ public abstract class AbstractPageTemplate {
         
         FileSelector.createNewFile((File f)->{
             try {
-                new ResultFileWriter().writeToFile(f, result);
+                new ResultFileWriter().writeToFile(f, result.toString());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
         
-        clean();
         driver.quit();
     }
-    public void run(char[] a){
-        run(a, true);
+    public void run(String s){
+        run(s, true);
     }
     
-    public void clean(){
-        queryFile.clearValue();
-        result.clearValue();
-    }
-    
-    public abstract void inputQuery(SafeString query);
-    public abstract SafeString readQueryResult();
+    public abstract void inputQuery(String query);
+    public abstract String readQueryResult();
     public abstract void afterReadingQuery();
 }
