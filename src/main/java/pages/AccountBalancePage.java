@@ -4,6 +4,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import util.HtmlTable;
 
 /**
  *
@@ -40,19 +41,8 @@ public class AccountBalancePage extends AbstractPageTemplate{
 
     @Override
     public String readQueryResult() {
-        StringBuilder ret = new StringBuilder();
-        WebElement table = getDriver().findElement(By.xpath("table[@border=1]"));
-        writeOutput(table.toString());
-        List<WebElement> rows = table.findElements(By.tagName("tr"));
-        rows.forEach((WebElement row)->{
-            List<WebElement> cells = row.findElements(By.tagName("td"));
-            cells.forEach((WebElement cell)->{
-                ret.append(cell.getText()).append(", ");
-            });
-            ret.append('\n');
-        });
-        writeOutput(ret);
-        return ret.toString();
+        HtmlTable table = new HtmlTable(getDriver().findElement(By.xpath("table[@border=1]")));
+        return table.toCsv();
     }
 
     @Override
