@@ -1,9 +1,7 @@
 package pages;
 
-import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import util.HtmlTable;
 
 /**
@@ -41,7 +39,7 @@ public class AccountBalancePage extends AbstractPageTemplate{
 
     @Override
     public String readQueryResult() {
-        HtmlTable table = new HtmlTable(getDriver().findElement(By.xpath("table[@border=1]")));
+        HtmlTable table = new HtmlTable(getDriver().findElement(By.xpath("//table[@border=1]")));
         return table.toCsv();
     }
 
@@ -49,7 +47,7 @@ public class AccountBalancePage extends AbstractPageTemplate{
     public void afterReadingQuery() {
         getDriver()
             .findElement(
-                By.xpath("a[@href='AccountBalanceSumDescr.asp']")
+                By.xpath("//a[@href='AccountBalanceSumDescr.asp']")
             ).click();
     }
     
