@@ -123,8 +123,6 @@ public abstract class AbstractPageTemplate {
         });
         
         done = false;
-        //change this
-        System.setProperty("webdriver.chrome.driver", "C:/Users/Matt/Desktop/chromedriver.exe");
         driver = new ChromeDriver();
         
         
