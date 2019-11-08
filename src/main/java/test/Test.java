@@ -1,7 +1,7 @@
 package test;
 
 import java.io.IOException;
-import pages.GoogleSearch;
+import automations.GoogleSearch;
 
 
 /**

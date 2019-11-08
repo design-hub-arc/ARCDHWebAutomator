@@ -24,9 +24,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import pages.AbstractPageTemplate;
-import pages.AccountBalancePage;
-import pages.GoogleSearch;
+import automations.AbstractAutomation;
+import automations.AccountBalancePage;
+import automations.GoogleSearch;
 import util.Browser;
 
 /**
@@ -35,7 +35,7 @@ import util.Browser;
  */
 public class StartPane extends JPanel{
     private Browser selectedBrowser;
-    private AbstractPageTemplate selAutomation;
+    private AbstractAutomation selAutomation;
     private String webDriverPath;
     private File sourceFile;
     
