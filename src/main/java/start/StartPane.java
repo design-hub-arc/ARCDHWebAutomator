@@ -3,13 +3,16 @@ package start;
 import io.FileSelector;
 import io.QueryFileReader;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -19,6 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import pages.AbstractPageTemplate;
 import pages.AccountBalancePage;
 import pages.GoogleSearch;
@@ -40,29 +45,19 @@ public class StartPane extends JPanel{
         webDriverPath = null;
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(browserPanel());
-        add(automationPanel());
-        add(webDriverPanel());
-        add(sourcePanel());
+        Border b = BorderFactory.createLineBorder(Color.black, 5);
         
-        JButton run = new JButton("Run automation");
-        run.addActionListener((e)->{
-            try{
-                if(webDriverPath == null){
-                    throw new Exception("Please select your web driver path");
-                }
-                if(sourceFile == null){
-                    throw new Exception("Please select a data source file");
-                }
-                String data = new QueryFileReader().readFile(sourceFile);
-                selAutomation.run(data);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(run, ex.getMessage());
-            }
+        ArrayList<JPanel> panels = new ArrayList<>();
+        //panels.add(browserPanel());
+        panels.add(automationPanel());
+        panels.add(webDriverPanel());
+        panels.add(sourcePanel());
+        panels.add(runPanel());
+        
+        panels.forEach((j)->{
+            j.setBorder(b);
+            add(j);
         });
-        add(run);
     }
     
     private final JPanel browserPanel(){
@@ -131,7 +126,9 @@ public class StartPane extends JPanel{
         JButton choosePath = new JButton("Choose web driver");
         choosePath.addActionListener((e)->{
             findWebDriver();
-            currentDriver.setText(webDriverPath);
+            if(webDriverPath != null){
+                currentDriver.setText(webDriverPath);
+            }
         });
         webDriverPanel.add(choosePath);
         
@@ -140,11 +137,42 @@ public class StartPane extends JPanel{
     
     private final JPanel sourcePanel(){
         JPanel p = new JPanel();
+        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+        p.add(new JLabel("Data Source File"));
+        JTextArea fileName = new JTextArea("No file selected");
+        fileName.setEditable(false);
+        p.add(fileName);
         JButton fileChooser = new JButton("Choose data source");
         fileChooser.addActionListener((e)->{
             chooseFile();
+            if(sourceFile != null){
+                fileName.setText(sourceFile.getAbsolutePath());
+            }
         });
         p.add(fileChooser);
+        return p;
+    }
+    
+    private final JPanel runPanel(){
+        JPanel p = new JPanel();
+        JButton run = new JButton("Run automation");
+        run.addActionListener((e)->{
+            try{
+                if(webDriverPath == null){
+                    throw new Exception("Please select your web driver path");
+                }
+                if(sourceFile == null){
+                    throw new Exception("Please select a data source file");
+                }
+                String data = new QueryFileReader().readFile(sourceFile);
+                selAutomation.run(data);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(run, ex.getMessage());
+            }
+        });
+        p.add(run);
         return p;
     }
     
