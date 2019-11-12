@@ -33,4 +33,9 @@ public class TableTest extends AbstractAutomation{
     public static void main(String[] args){
         new TableTest().run("test value");
     }
+
+    @Override
+    public String formatFile(String fileText) {
+        return fileText;
+    }
 }

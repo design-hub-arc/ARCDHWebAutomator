@@ -138,7 +138,7 @@ public abstract class AbstractAutomation {
     public void run(String fileText, boolean displayOutput){
         showOutput = displayOutput;
         queryFile.clear();
-        String[] split = fileText.split("\n");
+        String[] split = fileText.split(NEW_LINE);
         Arrays.stream(split).forEach((query)->{
             queryFile.add(query);
         });
@@ -190,6 +190,14 @@ public abstract class AbstractAutomation {
     public void run(String s){
         run(s, true);
     }
+    
+    /**
+     * Converts the given text into the format used by this automation,
+     * if the text cannot be converted, make sure you throw an exception!
+     * @param fileText the text resulting from reading the file the user chose to read queries from
+     * @return the newly formatted text.
+     */
+    public abstract String formatFile(String fileText);
     
     /**
      * Use the provided query to provide input for

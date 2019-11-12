@@ -153,7 +153,7 @@ public class StartPane extends JPanel{
         return p;
     }
     
-    private final JPanel runPanel(){
+    private JPanel runPanel(){
         JPanel p = new JPanel();
         JButton run = new JButton("Run automation");
         run.addActionListener((e)->{

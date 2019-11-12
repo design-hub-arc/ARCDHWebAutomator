@@ -1,5 +1,6 @@
 package automations;
 
+import io.CsvParser;
 import java.util.Arrays;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +11,11 @@ import util.HtmlTable;
  * @author Matt
  */
 public class PurchaseOrderAutomation extends AbstractAutomation{
-
+    private static final String[] HEADERS = new String[]{
+        "Req ID",
+        "PO ID"
+    } ;
+    
     public PurchaseOrderAutomation() {
         super(
             "https://psreports.losrios.edu/PO_History.asp", 
@@ -53,6 +58,11 @@ public class PurchaseOrderAutomation extends AbstractAutomation{
     @Override
     public void afterReadingQuery() {
         getDriver().findElement(By.xpath("//a[@href='PO_history.asp']")).click();
+    }
+
+    @Override
+    public String formatFile(String fileText) {
+        return new CsvParser(HEADERS).reformat(fileText);
     }
     
 }

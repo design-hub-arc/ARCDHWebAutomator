@@ -1,5 +1,6 @@
 package automations;
 
+import io.CsvParser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import util.HtmlTable;
@@ -9,6 +10,16 @@ import util.HtmlTable;
  * @author Matt
  */
 public class AccountBalanceAutomation extends AbstractAutomation{
+    private static final String[] HEADERS = new String[]{
+        "Business Unit",
+        "Account",
+        "Fund",
+        "Org/DeptID",
+        "Program",
+        "Sub-Class",
+        "Project/Grant"
+    };
+    
     public AccountBalanceAutomation(){
         super(
             "https://psreports.losrios.edu/AccountBalanceSumDescr.asp",
@@ -49,6 +60,11 @@ public class AccountBalanceAutomation extends AbstractAutomation{
             .findElement(
                 By.xpath("//a[@href='AccountBalanceSumDescr.asp']")
             ).click();
+    }
+
+    @Override
+    public String formatFile(String fileText) {
+        return new CsvParser(HEADERS).reformat(fileText);
     }
     
 }
