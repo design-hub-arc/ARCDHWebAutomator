@@ -170,6 +170,7 @@ public class StartPane extends JPanel{
                 ex.printStackTrace();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(run, ex.getMessage());
+                ex.printStackTrace();
             }
         });
         p.add(run);

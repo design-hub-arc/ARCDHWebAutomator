@@ -138,7 +138,7 @@ public abstract class AbstractAutomation {
     public void run(String fileText, boolean displayOutput){
         showOutput = displayOutput;
         queryFile.clear();
-        String[] split = fileText.split(NEW_LINE);
+        String[] split = fileText.split("\n?\r"); //don't use NEW_LINE here, somehow it doesn't work
         Arrays.stream(split).forEach((query)->{
             queryFile.add(query);
         });
@@ -152,6 +152,7 @@ public abstract class AbstractAutomation {
         queryFile.forEach((query)->{
             writeOutput(query);
         });
+        writeOutput(String.format("(%d queries)", split.length));
         
         driver.get(inputURL);
         String url;
