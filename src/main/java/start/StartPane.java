@@ -25,7 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import automations.AbstractAutomation;
-import automations.AccountBalancePage;
+import automations.AccountBalanceAutomation;
 import automations.GoogleSearch;
 import util.Browser;
 
@@ -101,7 +101,7 @@ public class StartPane extends JPanel{
         });
         JRadioButton actBal = new JRadioButton("Account Balances");
         actBal.addActionListener((e)->{
-            selAutomation = new AccountBalancePage();
+            selAutomation = new AccountBalanceAutomation();
         });
         automations.add(gs);
         automations.add(actBal);
