@@ -21,6 +21,7 @@ import javax.swing.border.Border;
 import automations.AbstractAutomation;
 import automations.AccountBalanceAutomation;
 import automations.GoogleSearch;
+import java.awt.Dimension;
 import util.Browser;
 
 /**
@@ -32,6 +33,7 @@ public class StartPane extends JPanel{
     private AbstractAutomation selAutomation;
     private String webDriverPath;
     private File sourceFile;
+    private final ScrollableTextDisplay textDisplay;
     
     public StartPane(){
         selectedBrowser = Browser.CHROME;
@@ -46,6 +48,8 @@ public class StartPane extends JPanel{
         panels.add(automationPanel());
         panels.add(webDriverPanel());
         panels.add(sourcePanel());
+        textDisplay = new ScrollableTextDisplay("***Program output will appear here***\n");
+        panels.add(textDisplay);
         panels.add(runPanel());
         
         panels.forEach((j)->{
@@ -113,8 +117,7 @@ public class StartPane extends JPanel{
         
         webDriverPanel.add(new JLabel("Select your web driver"));
         
-        JTextArea currentDriver = new JTextArea("no driver selected");
-        currentDriver.setEditable(false);
+        JLabel currentDriver = new JLabel("no driver selected");
         webDriverPanel.add(currentDriver);
         
         JButton choosePath = new JButton("Choose web driver");
@@ -133,8 +136,7 @@ public class StartPane extends JPanel{
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.add(new JLabel("Data Source File"));
-        JTextArea fileName = new JTextArea("No file selected");
-        fileName.setEditable(false);
+        JLabel fileName = new JLabel("No file selected");
         p.add(fileName);
         JButton fileChooser = new JButton("Choose data source");
         fileChooser.addActionListener((e)->{
