@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import static io.CsvParser.NEW_LINE;
 
 /**
  * An Automation is used to run a process in
@@ -33,8 +34,6 @@ public abstract class AbstractAutomation {
     private boolean done;
     private boolean showOutput;
     private OutputStream out;
-    
-    public static final String NEW_LINE = System.lineSeparator();
     
     /**
      * 
@@ -138,7 +137,7 @@ public abstract class AbstractAutomation {
     public void run(String fileText, boolean displayOutput){
         showOutput = displayOutput;
         queryFile.clear();
-        String[] split = fileText.split("\n?\r"); //don't use NEW_LINE here, somehow it doesn't work
+        String[] split = fileText.split(NEW_LINE); //since fileText has all its line endings replace with NEW_LINE 
         Arrays.stream(split).forEach((query)->{
             queryFile.add(query);
         });

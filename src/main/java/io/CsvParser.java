@@ -9,6 +9,8 @@ import java.util.HashMap;
  * @author Matt
  */
 public class CsvParser {
+    public static final String NEW_LINE = System.lineSeparator();
+    
     private final String[] requiredHeaders;
     
     public CsvParser(String[] reqHeaders){
@@ -16,7 +18,7 @@ public class CsvParser {
     }
     
     public String reformat(String fileText){
-        String[] lines = fileText.split(AbstractAutomation.NEW_LINE);
+        String[] lines = fileText.split(NEW_LINE);
         String[] headers = lines[0].split(",");
         if(headers.length < requiredHeaders.length){
             throw new IllegalArgumentException("File does not contain enough headers. Must contain the headers " + Arrays.toString(requiredHeaders));
@@ -48,7 +50,7 @@ public class CsvParser {
         String data;
         for(int i = 1; i < lines.length; i++){
             //skip header
-            newFile.append("\n");
+            newFile.append(NEW_LINE);
             line = lines[i].split(",");
             for(int j = 0; j < requiredHeaders.length; j++){
                 data = line[headerToCol.get(requiredHeaders[j])];
