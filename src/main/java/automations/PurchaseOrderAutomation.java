@@ -62,7 +62,7 @@ public class PurchaseOrderAutomation extends AbstractAutomation{
 
     @Override
     public String formatFile(String fileText) {
-        return new CsvParser(HEADERS).reformat(fileText, true);
+        return new CsvParser(HEADERS).reformat(fileText, false);
     }
     
 }
