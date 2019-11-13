@@ -137,6 +137,7 @@ public abstract class AbstractAutomation {
     public void run(String fileText, boolean displayOutput){
         showOutput = displayOutput;
         queryFile.clear();
+        fileText = formatFile(fileText);
         String[] split = fileText.split(NEW_LINE); //since fileText has all its line endings replace with NEW_LINE 
         Arrays.stream(split).forEach((query)->{
             queryFile.add(query);

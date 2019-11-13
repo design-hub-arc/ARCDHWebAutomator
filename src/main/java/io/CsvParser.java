@@ -17,11 +17,11 @@ public class CsvParser {
         this.reqHeaders = reqHeaders.clone();
     }
     
-    public String reformat(String fileText){
+    public String reformat(String fileText, boolean removeHeaders){
         String[] lines = fileText.split(NEW_LINE);
         String[] headers = Arrays.stream(lines[0].split(",")).map((h)->h.trim()).toArray((l)->new String[l]);
         if(headers.length < reqHeaders.length){
-            throw new IllegalArgumentException("File does not contain enough headers. Must contain the headers " + Arrays.toString(reqHeaders));
+            throw new CsvFileException("File does not contain enough headers. Must contain the headers " + Arrays.toString(reqHeaders));
         }
         
         //find which column each header occurs in
@@ -38,17 +38,18 @@ public class CsvParser {
                 }
             }
             if(!found){
-                throw new IllegalArgumentException("File is missing header " + header);
+                throw new MissingHeaderException(header, headers);
             }
         }
         System.out.println("building new file...");
         //build the file
         StringBuilder newFile = new StringBuilder();
-        for(int i = 0; i < reqHeaders.length - 1; i++){
-            // don't include last header yet
-            newFile.append(reqHeaders[i]).append(", ");
+        for(int i = 0; !removeHeaders && i < reqHeaders.length; i++){
+            newFile.append(reqHeaders[i]);
+            if(i != reqHeaders.length -1 ){
+                newFile.append(",");
+            }
         }
-        newFile.append(reqHeaders[reqHeaders.length - 1]);
         String[] line;
         String data;
         for(int i = 1; i < lines.length; i++){
@@ -71,6 +72,9 @@ public class CsvParser {
         System.out.println(ret);
         
         return ret;
+    }
+    public String reformat(String fileText){
+        return reformat(fileText, false);
     }
     
     public static void main(String[] args) throws IOException{

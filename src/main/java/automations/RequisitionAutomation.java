@@ -65,7 +65,7 @@ public class RequisitionAutomation extends AbstractAutomation{
 
     @Override
     public String formatFile(String fileText) {
-        return new CsvParser(HEADERS).reformat(fileText);
+        return new CsvParser(HEADERS).reformat(fileText, true);
     }
     
 }

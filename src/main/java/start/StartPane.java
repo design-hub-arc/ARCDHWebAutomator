@@ -4,14 +4,9 @@ import io.FileSelector;
 import io.QueryFileReader;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -23,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import automations.AbstractAutomation;
 import automations.AccountBalanceAutomation;
 import automations.GoogleSearch;
@@ -60,7 +54,7 @@ public class StartPane extends JPanel{
         });
     }
     
-    private final JPanel browserPanel(){
+    private JPanel browserPanel(){
         JPanel browserPanel = new JPanel();
         browserPanel.setLayout(new BorderLayout());
         browserPanel.add(new JLabel("Select Browser to use"), BorderLayout.PAGE_START);
@@ -89,7 +83,7 @@ public class StartPane extends JPanel{
         return browserPanel;
     }
     
-    private final JPanel automationPanel(){
+    private JPanel automationPanel(){
         JPanel autoPanel = new JPanel();
         autoPanel.setLayout(new BorderLayout());
         autoPanel.add(new JLabel("Select which automation to run"), BorderLayout.PAGE_START);
@@ -113,7 +107,7 @@ public class StartPane extends JPanel{
         return autoPanel;
     }
     
-    private final JPanel webDriverPanel(){
+    private JPanel webDriverPanel(){
         JPanel webDriverPanel = new JPanel();
         webDriverPanel.setLayout(new BoxLayout(webDriverPanel, BoxLayout.Y_AXIS));
         
@@ -135,7 +129,7 @@ public class StartPane extends JPanel{
         return webDriverPanel;
     }
     
-    private final JPanel sourcePanel(){
+    private JPanel sourcePanel(){
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.add(new JLabel("Data Source File"));

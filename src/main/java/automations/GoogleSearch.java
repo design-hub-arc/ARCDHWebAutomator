@@ -12,9 +12,7 @@ import org.openqa.selenium.WebElement;
  */
 public class GoogleSearch extends AbstractAutomation{
     private static final String[] HEADERS = new String[]{
-        "Query",
-        "dummy1",
-        "dummy2"
+        "Query"
     };
     public GoogleSearch(){
         super("https://www.google.com/", "https://www.google.com/search");
@@ -45,6 +43,6 @@ public class GoogleSearch extends AbstractAutomation{
 
     @Override
     public String formatFile(String fileText) {
-        return new CsvParser(HEADERS).reformat(fileText);
+        return new CsvParser(HEADERS).reformat(fileText, true);
     }
 }
