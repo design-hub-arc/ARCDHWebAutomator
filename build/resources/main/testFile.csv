@@ -1,3 +1,4 @@
-this file is a test, nothing else, once we have
-a set of queries we, or just I, want to perform,
-we can test this, just on a real data set, too many commas
+h1, d1, h2, h3
+a, ab, ac, abc
+b, ba, bc, "bca"
+c, ca, cb, 
