@@ -26,6 +26,8 @@ import static io.CsvParser.NEW_LINE;
  * @author Matt Crow
  */
 public abstract class AbstractAutomation {
+    private final String name;
+    private final String description;
     private final String inputURL;
     private final String resultURL;
     private final LinkedList<String> queryFile;
@@ -37,10 +39,14 @@ public abstract class AbstractAutomation {
     
     /**
      * 
+     * @param n the name to display for this automation.
+     * @param desc the description of what this automation does
      * @param inputUrl the URL of the webpage where this should input queries
      * @param resultUrl the URL of the webpage where this should read the result of its query
      */
-    public AbstractAutomation(String inputUrl, String resultUrl){
+    public AbstractAutomation(String n, String desc, String inputUrl, String resultUrl){
+        name = n;
+        description = desc;
         inputURL = inputUrl;
         resultURL = resultUrl;
         queryFile = new LinkedList<>();
@@ -49,6 +55,14 @@ public abstract class AbstractAutomation {
         driver = null;
         showOutput = true;
         out = System.out;
+    }
+    
+    public final String getName(){
+        return name;
+    }
+    
+    public final String getDescription(){
+        return description;
     }
     
     /**

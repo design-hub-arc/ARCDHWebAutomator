@@ -11,11 +11,12 @@ import org.openqa.selenium.WebElement;
  * @author Matt
  */
 public class GoogleSearch extends AbstractAutomation{
+    private static final String DESC = "Performs the Google searches contained in a file, then gives the number of results";
     private static final String[] HEADERS = new String[]{
         "Query"
     };
     public GoogleSearch(){
-        super("https://www.google.com/", "https://www.google.com/search");
+        super("Google Searches", DESC, "https://www.google.com/", "https://www.google.com/search");
     }
     @Override
     public void inputQuery(String query) {

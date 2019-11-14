@@ -10,6 +10,7 @@ import util.HtmlTable;
  * @author Matt
  */
 public class AccountBalanceAutomation extends AbstractAutomation{
+    private static final String DESC = "";
     private static final String[] HEADERS = new String[]{
         "Business Unit",
         "Account",
@@ -22,6 +23,8 @@ public class AccountBalanceAutomation extends AbstractAutomation{
     
     public AccountBalanceAutomation(){
         super(
+            "PSReports Account Balance",
+            DESC,
             "https://psreports.losrios.edu/AccountBalanceSumDescr.asp",
             "https://psreports.losrios.edu/AccountBalanceSumDescrQ.asp"
         );

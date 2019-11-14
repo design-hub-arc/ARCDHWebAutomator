@@ -1,5 +1,6 @@
 package start;
 
+import gui.ScrollableTextDisplay;
 import io.FileSelector;
 import io.QueryFileReader;
 import java.awt.BorderLayout;

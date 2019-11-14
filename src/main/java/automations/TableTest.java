@@ -8,9 +8,15 @@ import util.HtmlTable;
  * @author Matt
  */
 public class TableTest extends AbstractAutomation{
-
+    private static final String DESC = "";
+    
     public TableTest() {
-        super("https://www.google.com/", "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table");
+        super(
+            "Table test", 
+            DESC,
+            "https://www.google.com/", 
+            "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table"
+        );
     }
 
     @Override

@@ -1,5 +1,6 @@
-package start;
+package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
@@ -24,9 +25,9 @@ public class ScrollableTextDisplay extends JPanel{
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setRows(4);
-        JScrollPane p = new JScrollPane();
+        textArea.setBackground(Color.white);
+        JScrollPane p = new JScrollPane(textArea);
         p.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        p.add(textArea);
         add(p);
         revalidate();
         repaint();

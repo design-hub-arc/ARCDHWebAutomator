@@ -11,6 +11,7 @@ import util.HtmlTable;
  * @author Matt
  */
 public class PurchaseOrderAutomation extends AbstractAutomation{
+    private static final String DESC = "";
     private static final String[] HEADERS = new String[]{
         "Req ID",
         "PO ID"
@@ -18,6 +19,8 @@ public class PurchaseOrderAutomation extends AbstractAutomation{
     
     public PurchaseOrderAutomation() {
         super(
+            "PSReports Purchase Order",
+            DESC,
             "https://psreports.losrios.edu/PO_History.asp", 
             "https://psreports.losrios.edu/PO_HistoryQ.asp"
         );

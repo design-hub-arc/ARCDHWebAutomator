@@ -12,13 +12,19 @@ import util.HtmlTable;
  * @author Matt
  */
 public class RequisitionAutomation extends AbstractAutomation{
+    private static final String DESC = "";
     private static final String[] HEADERS = new String[]{
         "requestor ID",
         "requisition number"
     };
     
     public RequisitionAutomation() {
-        super("https://psreports.losrios.edu/REQ_History.asp", "https://psreports.losrios.edu/REQ_HistoryQ.asp");
+        super(
+            "PSReports Requisitions",
+            DESC,
+            "https://psreports.losrios.edu/REQ_History.asp", 
+            "https://psreports.losrios.edu/REQ_HistoryQ.asp"
+        );
     }
 
     @Override
