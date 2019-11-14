@@ -20,8 +20,8 @@ public class Application extends JPanel{
         CardLayout l = new CardLayout();
         setLayout(l);
         
-        AutomationSelect auto = new AutomationSelect();
-        InputFileSelect file = new InputFileSelect();
+        AutomationSelect auto = new AutomationSelect(this);
+        InputFileSelect file = new InputFileSelect(this);
         
         auto.setOnDone(()->{
             selAuto = auto.getSelected();
@@ -32,5 +32,13 @@ public class Application extends JPanel{
         
         
         add(file, DATA);
+    }
+    
+    public final void prev(){
+        ((CardLayout)getLayout()).previous(this);
+    }
+    
+    public final void next(){
+        ((CardLayout)getLayout()).next(this);
     }
 }

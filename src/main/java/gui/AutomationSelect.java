@@ -7,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -15,19 +14,23 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
 /**
- *
- * @author Matt
+ * The page where users will select which automation
+ * they wish to run. I will want to update this to search
+ * for available automations instead of having to manually 
+ * add them myself.
+ * 
+ * @author Matt Crow
  */
-public class AutomationSelect extends JPanel{
+public class AutomationSelect extends Page{
     private AbstractAutomation selectedAutomation;
     private JLabel selText;
-    private Runnable onDone;
     
-    public AutomationSelect(){
-        super();
+    public AutomationSelect(Application app){
+        super(app);
         setLayout(new BorderLayout());
         add(new JLabel("Select an Automation to run"), BorderLayout.PAGE_START);
         
+        //construct the list of automations to choose from
         JPanel list = new JPanel();
         list.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -46,6 +49,7 @@ public class AutomationSelect extends JPanel{
             new PurchaseOrderInfoAutomation()
         };
         
+        //pair buttons with automation info
         ButtonGroup bg = new ButtonGroup();
         JPanel j;
         JRadioButton b;
@@ -75,15 +79,11 @@ public class AutomationSelect extends JPanel{
             if(selectedAutomation == null){
                 JOptionPane.showMessageDialog(this, "Please select an automation");
             } else {
-                onDone.run();
+                next();
             }
         });
         bottom.add(nextStep);
         add(bottom, BorderLayout.PAGE_END);
-        
-        onDone = ()->{
-            throw new UnsupportedOperationException();
-        };
         
         revalidate();
         repaint();
@@ -91,18 +91,5 @@ public class AutomationSelect extends JPanel{
     
     public final AbstractAutomation getSelected(){
         return selectedAutomation;
-    }
-    
-    public final void setOnDone(Runnable r){
-        onDone = r;
-    }
-    
-    public static void main(String[] args){
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setContentPane(new AutomationSelect());
-        f.setVisible(true);
-        f.revalidate();
-        f.repaint();
     }
 }

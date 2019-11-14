@@ -1,5 +1,6 @@
 package automations;
 
+import io.CsvFileException;
 import io.FileSelector;
 import io.ResultFileWriter;
 import java.io.File;
@@ -90,6 +91,11 @@ public abstract class AbstractAutomation {
     }
     public final OutputStream getOutputStream(){
         return out;
+    }
+    
+    public final boolean validateFile(String fileText) throws CsvFileException{
+        formatFile(fileText);
+        return true;
     }
     
     /**
