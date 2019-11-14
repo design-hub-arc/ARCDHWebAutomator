@@ -1,5 +1,6 @@
 package start;
 
+import gui.Application;
 import javax.swing.JFrame;
 
 /**
@@ -13,7 +14,10 @@ public class StartWindow extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500, 500);
         setVisible(true);
-        setContentPane(new StartPane());
+        
+        //setContentPane(new StartPane());
+        setContentPane(new Application());
+        
         revalidate();
         repaint();
     }

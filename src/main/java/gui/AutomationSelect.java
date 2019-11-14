@@ -2,7 +2,6 @@ package gui;
 
 import automations.*;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -10,6 +9,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -21,6 +21,8 @@ import javax.swing.JScrollPane;
 public class AutomationSelect extends JPanel{
     private AbstractAutomation selectedAutomation;
     private JLabel selText;
+    private Runnable onDone;
+    
     public AutomationSelect(){
         super();
         setLayout(new BorderLayout());
@@ -69,8 +71,19 @@ public class AutomationSelect extends JPanel{
         selText = new JLabel("No automation selected");
         bottom.add(selText);
         JButton nextStep = new JButton("Next");
+        nextStep.addActionListener((e)->{
+            if(selectedAutomation == null){
+                JOptionPane.showMessageDialog(this, "Please select an automation");
+            } else {
+                onDone.run();
+            }
+        });
         bottom.add(nextStep);
         add(bottom, BorderLayout.PAGE_END);
+        
+        onDone = ()->{
+            throw new UnsupportedOperationException();
+        };
         
         revalidate();
         repaint();
@@ -78,6 +91,10 @@ public class AutomationSelect extends JPanel{
     
     public final AbstractAutomation getSelected(){
         return selectedAutomation;
+    }
+    
+    public final void setOnDone(Runnable r){
+        onDone = r;
     }
     
     public static void main(String[] args){
