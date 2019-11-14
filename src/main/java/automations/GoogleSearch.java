@@ -15,8 +15,19 @@ public class GoogleSearch extends AbstractAutomation{
     private static final String[] HEADERS = new String[]{
         "Query"
     };
+    private static final String FILE_REQ = 
+        "Input files must be in CSV format, "
+        + "and should contain at least one column, "
+        + "labeled 'Query'.";
+    
     public GoogleSearch(){
-        super("Google Searches", DESC, "https://www.google.com/", "https://www.google.com/search");
+        super(
+            "Google Searches", 
+            DESC, 
+            "https://www.google.com/", 
+            "https://www.google.com/search"
+        );
+        setFileReqDesc(FILE_REQ);
     }
     @Override
     public void inputQuery(String query) {

@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 public class InputFileSelect extends JPanel{
     private String fileText;
     private final JLabel autoText;
+    private final ScrollableTextDisplay disp;
     private AbstractAutomation forAuto;
     private Runnable onDone;
     
@@ -31,7 +32,7 @@ public class InputFileSelect extends JPanel{
         };
         setLayout(new BorderLayout());
         add(autoText, BorderLayout.PAGE_START);
-        ScrollableTextDisplay disp = new ScrollableTextDisplay("***Program output appears here***\n");
+        disp = new ScrollableTextDisplay("***Program output appears here***\n");
         add(disp, BorderLayout.CENTER);
         JButton select = new JButton("Select a file");
         select.addActionListener((e)->{
@@ -53,6 +54,8 @@ public class InputFileSelect extends JPanel{
     public final void setAuto(AbstractAutomation aa){
         forAuto = aa;
         autoText.setText("Select source file for " + aa.getName());
+        disp.clear();
+        disp.appendText(aa.getFileReqDesc());
     }
     
     public final String getFileText(){

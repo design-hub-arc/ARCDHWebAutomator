@@ -28,6 +28,7 @@ import static io.CsvParser.NEW_LINE;
 public abstract class AbstractAutomation {
     private final String name;
     private final String description;
+    private String fileReqDesc;
     private final String inputURL;
     private final String resultURL;
     private final LinkedList<String> queryFile;
@@ -47,6 +48,7 @@ public abstract class AbstractAutomation {
     public AbstractAutomation(String n, String desc, String inputUrl, String resultUrl){
         name = n;
         description = desc;
+        fileReqDesc = "This automation accepts any file.";
         inputURL = inputUrl;
         resultURL = resultUrl;
         queryFile = new LinkedList<>();
@@ -63,6 +65,14 @@ public abstract class AbstractAutomation {
     
     public final String getDescription(){
         return description;
+    }
+    
+    public final void setFileReqDesc(String text){
+        fileReqDesc = text;
+    }
+    
+    public final String getFileReqDesc(){
+        return fileReqDesc;
     }
     
     /**

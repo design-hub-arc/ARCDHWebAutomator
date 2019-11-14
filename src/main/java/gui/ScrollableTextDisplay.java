@@ -51,7 +51,11 @@ public class ScrollableTextDisplay extends JPanel{
         repaint();
     }
     public void setText(String newText){
-        text.delete(0, text.length());
+        clear();
         appendText(newText);
+    }
+    public void clear(){
+        text.delete(0, text.length());
+        textArea.setText("");
     }
 }
