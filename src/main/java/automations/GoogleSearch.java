@@ -46,12 +46,6 @@ public class GoogleSearch extends AbstractAutomation{
     public void afterReadingQuery() {
         getDriver().get(getInputUrl());
     }
-    
-    public static void main(String[] args) throws IOException{
-        GoogleSearch p = new GoogleSearch();
-        String file = new QueryFileReader().readStream(GoogleSearch.class.getResourceAsStream("/googleSearches.txt"));
-        p.run(file, true);
-    } 
 
     @Override
     public String formatFile(String fileText) {

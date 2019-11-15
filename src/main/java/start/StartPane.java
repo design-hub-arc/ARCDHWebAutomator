@@ -23,6 +23,7 @@ import automations.AbstractAutomation;
 import automations.AccountBalanceAutomation;
 import automations.GoogleSearch;
 import java.awt.Dimension;
+import org.openqa.selenium.chrome.ChromeDriver;
 import util.Browser;
 
 /**
@@ -162,7 +163,7 @@ public class StartPane extends JPanel{
                     throw new Exception("Please select a data source file");
                 }
                 String data = new QueryFileReader().readFile(sourceFile);
-                selAutomation.run(data);
+                selAutomation.run(new ChromeDriver(), data);
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {

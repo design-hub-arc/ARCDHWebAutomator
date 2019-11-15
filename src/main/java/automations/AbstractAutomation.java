@@ -159,12 +159,13 @@ public abstract class AbstractAutomation {
      * Runs the automation,
      * then allows the user to save the results as a file on their computer.
      * 
+     * @param drive the WebDriver to run this automation on.
      * @param fileText the text of the data source file for this automation.
      * @param displayOutput whether or not to send output to this' current output stream.
      * 
      * TODO: error handling, different WebDrivers
      */
-    public void run(String fileText, boolean displayOutput){
+    public void run(WebDriver drive, String fileText, boolean displayOutput){
         showOutput = displayOutput;
         queryFile.clear();
         result.delete(0, result.length());
@@ -175,8 +176,7 @@ public abstract class AbstractAutomation {
         });
         
         done = false;
-        driver = new ChromeDriver();
-        
+        driver = drive;
         
         writeOutput("Running " + getClass().getName());
         writeOutput("Query file is");
@@ -219,8 +219,8 @@ public abstract class AbstractAutomation {
         
         driver.quit();
     }
-    public void run(String s){
-        run(s, true);
+    public void run(WebDriver driver, String s){
+        run(driver, s, true);
     }
     
     /**
