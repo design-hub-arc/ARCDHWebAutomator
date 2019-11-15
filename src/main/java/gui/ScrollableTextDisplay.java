@@ -32,6 +32,10 @@ public class ScrollableTextDisplay extends JPanel{
         revalidate();
         repaint();
     }
+
+    ScrollableTextDisplay() {
+        this("");
+    }
     
     //https://stackoverflow.com/questions/1345902/jmenuitem-setminimumsize-doesnt-work
     @Override
