@@ -14,6 +14,7 @@ public class FileSelector{
     private final Consumer<File> action;
     
     public static final String[] CSV = new String[]{"Comma Separated Values", "csv"};
+    public static final String[] EXE = new String[]{"Executable file", "exe", "dmg"};
     public static final String[] DIR = new String[]{"Directory", "Folder"};
     
     public FileSelector(String[] types, Consumer<File> act){
