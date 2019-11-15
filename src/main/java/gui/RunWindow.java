@@ -13,7 +13,7 @@ import org.openqa.selenium.WebDriver;
  * @author Matt
  */
 public class RunWindow extends Page{
-    private ScrollableTextDisplay text;
+    private final ScrollableTextDisplay text;
     public RunWindow(Application app) {
         super(app);
         setLayout(new BorderLayout());
@@ -23,15 +23,19 @@ public class RunWindow extends Page{
         add(text, BorderLayout.CENTER);
         
         JPanel bottom = new JPanel();
+        
         JButton back = new JButton("Go Back");
         back.addActionListener((e)->{
             prev();
         });
+        bottom.add(back);
         
         JButton finish = new JButton("Return to start");
         finish.addActionListener((e)->{
             next();
         });
+        bottom.add(finish);
+        
         add(bottom, BorderLayout.PAGE_END);
     }
     
@@ -47,6 +51,6 @@ public class RunWindow extends Page{
                     text.appendText(Arrays.toString(ex.getStackTrace()));
                 }
             }
-        }.run();
+        }.start();
     }
 }

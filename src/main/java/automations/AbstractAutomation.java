@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import static io.CsvParser.NEW_LINE;
 
 /**
@@ -169,7 +168,7 @@ public abstract class AbstractAutomation {
         showOutput = displayOutput;
         queryFile.clear();
         result.delete(0, result.length());
-        fileText = formatFile(fileText);
+        fileText = formatFile(fileText).trim();
         String[] split = fileText.split(NEW_LINE); //since fileText has all its line endings replace with NEW_LINE 
         Arrays.stream(split).forEach((query)->{
             queryFile.add(query);

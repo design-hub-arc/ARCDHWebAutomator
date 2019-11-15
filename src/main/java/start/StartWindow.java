@@ -15,7 +15,6 @@ public class StartWindow extends JFrame{
         setSize(500, 500);
         setVisible(true);
         
-        //setContentPane(new StartPane());
         setContentPane(new Application());
         
         revalidate();
