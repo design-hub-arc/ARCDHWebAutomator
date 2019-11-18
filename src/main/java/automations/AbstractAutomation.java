@@ -5,7 +5,6 @@ import io.FileSelector;
 import io.ResultFileWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -104,6 +103,13 @@ public abstract class AbstractAutomation {
     public final WebDriver getDriver(){
         return driver;
     }
+    
+    /**
+     * Sets the object which should receive output from the automation.
+     * This defaults to sending output to System.out, but RunWindow calls this method,
+     * passing in its ScrollableTextDisplay.
+     * @param l an object implementing the logging.Logger interface
+     */
     public final void setLogger(Logger l){
         logger = l;
     }
@@ -114,10 +120,8 @@ public abstract class AbstractAutomation {
     }
     
     /**
-     * Sends a string to the current output stream,
+     * Sends a string to the current logger,
      * <b>if showOutput is set to true</b>.
-     * By default, this writes to System.out, but
-     * later versions will be able to write to a file.
      * @param output the text to write to output, with a newline appended to the end.
      */
     public final void writeOutput(String output){
@@ -208,12 +212,15 @@ public abstract class AbstractAutomation {
             } else if(url.equalsIgnoreCase(resultURL)){
                 doReadResult();
                 if(queryFile.isEmpty()){
+                    //need this in here, otherwise it exits after inputing the last query
                     done = true;
-                    writeOutput("Exitting");
+                    writeOutput("Done with browser. Quitting.");
+                    driver.quit();
                 }
             } else {
                 System.err.println("Ahhh bad URL " + url);
                 done = true;
+                driver.quit();
             }
         }
         
@@ -229,7 +236,7 @@ public abstract class AbstractAutomation {
             }
         });
         
-        driver.quit();
+        
         writeOutput("process complete");
     }
     public void run(WebDriver driver, String s){
