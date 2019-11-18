@@ -189,7 +189,6 @@ public abstract class AbstractAutomation {
         while(!done){
             url = driver.getCurrentUrl();
             int idx = url.indexOf('?');
-            //out.println("idx is " + idx);
             if(idx != -1){
                 url = url.substring(0, idx);
             }
@@ -201,6 +200,7 @@ public abstract class AbstractAutomation {
                 doReadResult();
                 if(queryFile.isEmpty()){
                     done = true;
+                    writeOutput("Exitting");
                 }
             } else {
                 System.err.println("Ahhh bad URL " + url);
@@ -208,15 +208,20 @@ public abstract class AbstractAutomation {
             }
         }
         
+        writeOutput("Saving file");
         FileSelector.createNewFile((File f)->{
+            writeOutput("Attempting to write to " + f.getAbsolutePath());
             try {
                 new ResultFileWriter().writeToFile(f, result.toString());
+                writeOutput("file successfully written");
             } catch (IOException ex) {
                 ex.printStackTrace();
+                writeOutput("failed to write to file");
             }
         });
         
         driver.quit();
+        writeOutput("process complete");
     }
     public void run(WebDriver driver, String s){
         run(driver, s, true);

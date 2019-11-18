@@ -40,7 +40,8 @@ public class FileSelector{
     public static void createNewFile(Consumer<File> action){
         JFileChooser jfc = new JFileChooser();
         jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        if(jfc.showOpenDialog(jfc) == JFileChooser.APPROVE_OPTION){ 
+        int result = jfc.showOpenDialog(null);
+        if(result == JFileChooser.APPROVE_OPTION){ 
             String name = JOptionPane.showInputDialog(null, "What do you want to name this new file?");
             File newFile = new File(jfc.getSelectedFile().getAbsolutePath() + File.separator + name);
             action.accept(newFile);
