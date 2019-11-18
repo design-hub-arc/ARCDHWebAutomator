@@ -44,6 +44,7 @@ public class RunWindow extends Page{
             @Override
             public void run(){
                 try{
+                    aa.setLogger(text);
                     aa.run(driver, fileText);
                 } catch (Exception ex){
                     text.appendText("Something went wrong:\n");

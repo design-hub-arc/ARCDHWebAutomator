@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
+import logging.Logger;
 
 /**
  * An Automation is used to run a process in
@@ -36,7 +37,21 @@ public abstract class AbstractAutomation {
     private WebDriver driver;
     private boolean done;
     private boolean showOutput;
-    private OutputStream out;
+    
+    private final StringBuilder log; 
+    private Logger logger;
+    
+    private static final Logger DEFAULT_LOGGER = new Logger(){
+        @Override
+        public void log(String s) {
+            System.out.println(s);
+        }
+
+        @Override
+        public String getLog() {
+            return "";
+        }
+    };
     
     /**
      * 
@@ -56,7 +71,8 @@ public abstract class AbstractAutomation {
         done = true;
         driver = null;
         showOutput = true;
-        out = System.out;
+        log = new StringBuilder();
+        logger = DEFAULT_LOGGER;
     }
     
     public final String getName(){
@@ -88,8 +104,8 @@ public abstract class AbstractAutomation {
     public final WebDriver getDriver(){
         return driver;
     }
-    public final OutputStream getOutputStream(){
-        return out;
+    public final void setLogger(Logger l){
+        logger = l;
     }
     
     public final boolean validateFile(String fileText) throws CsvFileException{
@@ -108,12 +124,7 @@ public abstract class AbstractAutomation {
         if(!showOutput){
             return;
         }
-        try {
-            out.write((output + NEW_LINE).getBytes());
-            out.flush();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        logger.log(output + "\n");
     }
     
     /**
@@ -160,9 +171,7 @@ public abstract class AbstractAutomation {
      * 
      * @param drive the WebDriver to run this automation on.
      * @param fileText the text of the data source file for this automation.
-     * @param displayOutput whether or not to send output to this' current output stream.
-     * 
-     * TODO: error handling, different WebDrivers
+     * @param displayOutput whether or not to send output to this' current output stream
      */
     public void run(WebDriver drive, String fileText, boolean displayOutput){
         showOutput = displayOutput;

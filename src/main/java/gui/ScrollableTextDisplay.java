@@ -6,18 +6,22 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import logging.Logger;
 
 /**
  *
  * @author Matt
  */
-public class ScrollableTextDisplay extends JPanel{
+public class ScrollableTextDisplay extends JPanel implements Logger{
     private final JTextArea textArea;
     private final StringBuilder text;
+    private final StringBuilder log;
+    
     public ScrollableTextDisplay(String displayText){
         super();
         setLayout(new GridLayout(1, 1));
         text = new StringBuilder();
+        log = new StringBuilder();
         text.append(displayText);
         
         textArea = new JTextArea(displayText);
@@ -61,5 +65,16 @@ public class ScrollableTextDisplay extends JPanel{
     public void clear(){
         text.delete(0, text.length());
         textArea.setText("");
+    }
+
+    @Override
+    public void log(String s) {
+        log.append(s).append('\n');
+        appendText(s);
+    }
+
+    @Override
+    public String getLog() {
+        return log.toString();
     }
 }
