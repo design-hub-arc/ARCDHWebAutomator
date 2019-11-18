@@ -27,7 +27,7 @@ public class TableTest extends AbstractAutomation{
     @Override
     public String readQueryResult() {
         ////*[@id="wikiArticle"]/table[1]
-        HtmlTable table = new HtmlTable(getDriver().findElement(By.xpath("//*[@id=\"wikiArticle\"]/table[1]")));
+        HtmlTable table = new HtmlTable(getDriver().findElement(By.xpath("//*[@id=\"wikiArticle\"]/table[2]")));
         return table.toCsv();
     }
 

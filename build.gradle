@@ -22,10 +22,12 @@ repositories {
 }
 
 jar {
+    //need to manually set main class, otherwise, it just compiles the JAR as a library
     manifest {
         attributes 'Main-Class': 'start.StartWindow'
     }
     
+    //include dependencies in JAR file
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
