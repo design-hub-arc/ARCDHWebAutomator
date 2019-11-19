@@ -5,12 +5,12 @@ import io.FileSelector;
 import io.ResultFileWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
+import logging.Logger;
 
 /**
  * An Automation is used to run a process in
@@ -36,7 +36,21 @@ public abstract class AbstractAutomation {
     private WebDriver driver;
     private boolean done;
     private boolean showOutput;
-    private OutputStream out;
+    
+    private final StringBuilder log; 
+    private Logger logger;
+    
+    private static final Logger DEFAULT_LOGGER = new Logger(){
+        @Override
+        public void log(String s) {
+            System.out.println(s);
+        }
+
+        @Override
+        public String getLog() {
+            return "";
+        }
+    };
     
     /**
      * 
@@ -56,7 +70,8 @@ public abstract class AbstractAutomation {
         done = true;
         driver = null;
         showOutput = true;
-        out = System.out;
+        log = new StringBuilder();
+        logger = DEFAULT_LOGGER;
     }
     
     public final String getName(){
@@ -88,8 +103,15 @@ public abstract class AbstractAutomation {
     public final WebDriver getDriver(){
         return driver;
     }
-    public final OutputStream getOutputStream(){
-        return out;
+    
+    /**
+     * Sets the object which should receive output from the automation.
+     * This defaults to sending output to System.out, but RunWindow calls this method,
+     * passing in its ScrollableTextDisplay.
+     * @param l an object implementing the logging.Logger interface
+     */
+    public final void setLogger(Logger l){
+        logger = l;
     }
     
     public final boolean validateFile(String fileText) throws CsvFileException{
@@ -98,22 +120,15 @@ public abstract class AbstractAutomation {
     }
     
     /**
-     * Sends a string to the current output stream,
+     * Sends a string to the current logger,
      * <b>if showOutput is set to true</b>.
-     * By default, this writes to System.out, but
-     * later versions will be able to write to a file.
      * @param output the text to write to output, with a newline appended to the end.
      */
     public final void writeOutput(String output){
         if(!showOutput){
             return;
         }
-        try {
-            out.write((output + NEW_LINE).getBytes());
-            out.flush();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        logger.log(output + "\n");
     }
     
     /**
@@ -160,9 +175,7 @@ public abstract class AbstractAutomation {
      * 
      * @param drive the WebDriver to run this automation on.
      * @param fileText the text of the data source file for this automation.
-     * @param displayOutput whether or not to send output to this' current output stream.
-     * 
-     * TODO: error handling, different WebDrivers
+     * @param displayOutput whether or not to send output to this' current output stream
      */
     public void run(WebDriver drive, String fileText, boolean displayOutput){
         showOutput = displayOutput;
@@ -189,7 +202,6 @@ public abstract class AbstractAutomation {
         while(!done){
             url = driver.getCurrentUrl();
             int idx = url.indexOf('?');
-            //out.println("idx is " + idx);
             if(idx != -1){
                 url = url.substring(0, idx);
             }
@@ -200,23 +212,32 @@ public abstract class AbstractAutomation {
             } else if(url.equalsIgnoreCase(resultURL)){
                 doReadResult();
                 if(queryFile.isEmpty()){
+                    //need this in here, otherwise it exits after inputing the last query
                     done = true;
+                    writeOutput("Done with browser. Quitting.");
+                    driver.quit();
                 }
             } else {
                 System.err.println("Ahhh bad URL " + url);
                 done = true;
+                driver.quit();
             }
         }
         
+        writeOutput("Saving file");
         FileSelector.createNewFile((File f)->{
+            writeOutput("Attempting to write to " + f.getAbsolutePath());
             try {
                 new ResultFileWriter().writeToFile(f, result.toString());
+                writeOutput("file successfully written");
             } catch (IOException ex) {
                 ex.printStackTrace();
+                writeOutput("failed to write to file");
             }
         });
         
-        driver.quit();
+        
+        writeOutput("process complete");
     }
     public void run(WebDriver driver, String s){
         run(driver, s, true);

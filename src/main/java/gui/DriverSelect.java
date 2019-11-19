@@ -11,6 +11,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -122,6 +124,8 @@ public class DriverSelect extends Page{
                     default:
                         throw new UnsupportedOperationException("Invalid browser: " + currentBrowser.name());
                 }
+                driver.manage().window().setSize(new Dimension(500, 500));
+                driver.manage().window().setPosition(new Point(getX() + getWidth(), getY()));
                 JOptionPane.showMessageDialog(this, "Looks like that worked! Please don't close the browser window!");
             } catch(Exception e){
                 text.appendText("Looks like something went wrong:\n");
