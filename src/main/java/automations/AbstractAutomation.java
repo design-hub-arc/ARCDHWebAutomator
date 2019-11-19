@@ -11,6 +11,8 @@ import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
 import logging.Logger;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * An Automation is used to run a process in
@@ -189,6 +191,7 @@ public abstract class AbstractAutomation {
         
         done = false;
         driver = drive;
+        WebDriverWait wait = new WebDriverWait(drive, 10);
         
         writeOutput("Running " + getClass().getName());
         writeOutput("Query file is");
@@ -198,18 +201,31 @@ public abstract class AbstractAutomation {
         writeOutput(String.format("(%d queries)", split.length));
         
         driver.get(inputURL);
-        String url;
+        String url = null;
+        boolean queryInputted = false;
         while(!done){
+            String prevUrl = url;
+            ExpectedCondition e = new ExpectedCondition<Boolean>() {
+                @Override
+                public Boolean apply(WebDriver d) {
+                    return (!driver.getCurrentUrl().equals(prevUrl));
+                }
+            };
+            wait.until(e);
             url = driver.getCurrentUrl();
+            
+            
             int idx = url.indexOf('?');
             if(idx != -1){
                 url = url.substring(0, idx);
             }
             writeOutput("Current URL is " + url);
             
-            if(url.equalsIgnoreCase(inputURL)){
+            if(url.equalsIgnoreCase(inputURL) && !queryInputted){
+                queryInputted = true;
                 doInputQuery();
-            } else if(url.equalsIgnoreCase(resultURL)){
+            } else if(url.equalsIgnoreCase(resultURL) && queryInputted){
+                queryInputted = false;
                 doReadResult();
                 if(queryFile.isEmpty()){
                     //need this in here, otherwise it exits after inputing the last query

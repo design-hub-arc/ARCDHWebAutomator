@@ -2,7 +2,11 @@ package automations;
 
 import io.CsvParser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
  *
@@ -36,6 +40,8 @@ public class GoogleSearch extends AbstractAutomation{
 
     @Override
     public String readQueryResult() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("resultStats")));
         WebElement numResultBox = getDriver().findElement(By.id("resultStats"));
         String ret = numResultBox.getText() + '\n';
         return ret;
