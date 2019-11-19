@@ -5,19 +5,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
       <group>
-        <file>file:/C:/Users/Matt/Documents/GitHub/PSDataImprovementSelenium/src/main/java/gui/InputFileSelect.java</file>
-        <file>file:/C:/Users/Matt/Documents/GitHub/PSDataImprovementSelenium/src/main/java/gui/Page.java</file>
-        <file>file:/C:/Users/Matt/Documents/GitHub/PSDataImprovementSelenium/src/main/java/start/StartWindow.java</file>
-        <file>file:/C:/Users/Matt/Documents/GitHub/PSDataImprovementSelenium/src/main/java/start/StartPane.java</file>
-        <file>file:/C:/Users/Matt/Documents/GitHub/PSDataImprovementSelenium/src/main/java/gui/Application.java</file>
+        <file>file:/Users/matt/Documents/GitHub/PSDataImprovementSelenium/src/main/java/start/StartWindow.java</file>
       </group>
     </open-files>
     <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-      <group>
-        <file>file:/C:/Users/Matt/Documents/GitHub/PSDataImprovementSelenium/src/main/java/gui/RunWindow.java</file>
-        <file>file:/C:/Users/Matt/Documents/GitHub/PSDataImprovementSelenium/src/main/java/automations/AbstractAutomation.java</file>
-      </group>
-    </open-files>
   </auxiliary>
 </gradle-project-properties>
