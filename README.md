@@ -11,18 +11,33 @@ This process is needlessly tedious, and so this project was created to automate 
 
 ## Getting Started
 
-Currently, the project only runs in Netbeans IDE 8.2, and is untested in other versions of the IDE.
+To use this project, you need Java installed on your computer. You can check if Java is installed by attempting to run the project JAR file (see the section "Running the program"), or you can open your terminal, and type
+```
+java -version
+```
+if your computer can find java, you're good! Otherwise, you can download it [here](https://www.java.com/en/). 
+To start, you will want to download the project by clicking the "clone or download button", clicking "download zip", and extracting the files on your computer.
 
-### Prerequisites
+### Running the program (for users)
+
+Once you've downloaded and unzipped the project, you can ignore most of the files. Go to PSDataImprovementSelenium-master/build/libs, and you will find the project JAR file, PSDataImprovementSelenium.jar. Feel free to move this to anywhere on your computer, as it is completely self-contained. Double click the JAR file to run it, or if that doesn't work, you can can see what's going wrong by opening up your terminal (Command Prompt for Windows, or Terminal for Mac), and type
+```
+java -jar
+```
+(make sure you have a space after -jar) Drag and drop the JAR file to the terminal window, and you should see something like this:
+```
+java -jar C:\Users\****\Desktop\PSDataImprovementSelenium.jar
+```
+You can then hit enter, at which point, if the application doesn't start, the terminal will tell you what went wrong. Feel free to email Matt, and he can tell you what went wrong (screenshots are helpful).
+
+### How to edit the application (for developers)
 
 You will need Netbeans IDE version 8.2 with the Gradle plugin installed to run the project.
-Obviously, Java is needed to allow the project to run.
-You will also need to download the Google Chrome WebDriver for your version of Chrome [here](https://sites.google.com/a/chromium.org/chromedriver/downloads).
-You can find your version by going to the "Customize and Control Google Chrome" button (triple dots) on the right-hand side of your Chrome browser, and click on Help->About Google Chrome.
-
-### Installing
-
-Download and unzip the repository, and open it in NetBeans. 
+Obviously, Java is needed to allow the project to run. You can use
+```
+gradle jar
+```
+to rebuild the JAR file for the project.
 
 ## Built With
 
