@@ -34,6 +34,9 @@ public class RunWindow extends Page{
         finish.addActionListener((e)->{
             next();
         });
+        setOnDone(()->{
+            //do nothing
+        });
         bottom.add(finish);
         
         add(bottom, BorderLayout.PAGE_END);
@@ -44,6 +47,7 @@ public class RunWindow extends Page{
             @Override
             public void run(){
                 try{
+                    text.setText("***Program output will appear here***\n");
                     aa.setLogger(text);
                     aa.run(driver, fileText);
                 } catch (Exception ex){

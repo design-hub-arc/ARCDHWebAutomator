@@ -11,7 +11,10 @@ import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
 import logging.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
@@ -35,7 +38,10 @@ public abstract class AbstractAutomation {
     private final String resultURL;
     private final LinkedList<String> queryFile;
     private final StringBuilder result;
+    
     private WebDriver driver;
+    private WebDriverWait wait;
+    
     private boolean done;
     private boolean showOutput;
     
@@ -71,6 +77,7 @@ public abstract class AbstractAutomation {
         result = new StringBuilder();
         done = true;
         driver = null;
+        wait = null;
         showOutput = true;
         log = new StringBuilder();
         logger = DEFAULT_LOGGER;
@@ -104,6 +111,13 @@ public abstract class AbstractAutomation {
     }
     public final WebDriver getDriver(){
         return driver;
+    }
+    
+    public final WebElement awaitFindElement(By by){
+        if(wait == null || driver == null){
+            throw new NullPointerException("process is not running, so the WebDriver isn't set");
+        }
+        return wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
     
     /**
@@ -191,7 +205,7 @@ public abstract class AbstractAutomation {
         
         done = false;
         driver = drive;
-        WebDriverWait wait = new WebDriverWait(drive, 10);
+        wait = new WebDriverWait(drive, 10);
         
         writeOutput("Running " + getClass().getName());
         writeOutput("Query file is");
@@ -237,6 +251,8 @@ public abstract class AbstractAutomation {
                 System.err.println("Ahhh bad URL " + url);
                 done = true;
                 driver.quit();
+                driver = null;
+                wait = null;
             }
         }
         

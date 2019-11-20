@@ -33,16 +33,14 @@ public class GoogleSearch extends AbstractAutomation{
     }
     @Override
     public void inputQuery(String query) {
-        WebElement queryBox = this.getDriver().findElement(By.name("q"));
+        WebElement queryBox = awaitFindElement(By.name("q"));
         queryBox.sendKeys(query);
         queryBox.submit();
     }
 
     @Override
     public String readQueryResult() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), 10);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("resultStats")));
-        WebElement numResultBox = getDriver().findElement(By.id("resultStats"));
+        WebElement numResultBox = awaitFindElement(By.id("resultStats"));
         String ret = numResultBox.getText() + '\n';
         return ret;
     }
