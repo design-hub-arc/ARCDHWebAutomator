@@ -1,6 +1,8 @@
 package automations;
 
 import io.CsvParser;
+import io.FileRequirements;
+import io.FileType;
 import java.util.Arrays;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,11 +14,15 @@ import util.HtmlTable;
  * @author Matt
  */
 public class RequisitionAutomation extends AbstractAutomation{
-    private static final String DESC = "";
+    private static final String DESC = "Queries the PeopleSoft requistion history page.";
     private static final String[] HEADERS = new String[]{
         "requestor ID",
         "requisition number"
     };
+    
+    private static final FileRequirements FILE_REQ = new FileRequirements(
+        "Input file should be in CSV format, with the following columns: " + Arrays.toString(HEADERS), FileType.CSV
+    );
     
     public RequisitionAutomation() {
         super(
@@ -25,6 +31,7 @@ public class RequisitionAutomation extends AbstractAutomation{
             "https://psreports.losrios.edu/REQ_History.asp", 
             "https://psreports.losrios.edu/REQ_HistoryQ.asp"
         );
+        setFileReq(FILE_REQ);
     }
 
     @Override

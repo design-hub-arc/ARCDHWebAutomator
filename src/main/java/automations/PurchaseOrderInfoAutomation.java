@@ -1,6 +1,8 @@
 package automations;
 
 import io.CsvParser;
+import io.FileRequirements;
+import io.FileType;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -9,11 +11,15 @@ import util.HtmlTable;
  * @author Matt
  */
 public class PurchaseOrderInfoAutomation extends AbstractAutomation{
-    private static final String DESC = "";
+    private static final String DESC = "Querys the PeopleSoft purchase order information page";
     private static final String[] HEADERS = new String[]{
         "Req ID",
         "PO ID"
     };
+    
+    private static final FileRequirements FILE_REQ = new FileRequirements(
+        "Input file should be the file downloaded from running the PSReports Requisitions automation", FileType.CSV
+    );
     
     public PurchaseOrderInfoAutomation() {
         super(
@@ -22,6 +28,7 @@ public class PurchaseOrderInfoAutomation extends AbstractAutomation{
             "https://psreports.losrios.edu/PurchaseOrderInformation.asp", 
             "https://psreports.losrios.edu/PurchaseOrderInformationQ.asp"
         );
+        setFileReq(FILE_REQ);
     }
 
     @Override
