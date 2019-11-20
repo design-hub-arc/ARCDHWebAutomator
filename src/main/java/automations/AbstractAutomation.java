@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
+import io.FileRequirements;
 import java.util.List;
 import logging.Logger;
 import org.openqa.selenium.By;
@@ -34,7 +35,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public abstract class AbstractAutomation {
     private final String name;
     private final String description;
-    private String fileReqDesc;
+    private FileRequirements fileReq;
     private final String inputURL;
     private final String resultURL;
     private final LinkedList<String> queryFile;
@@ -71,7 +72,7 @@ public abstract class AbstractAutomation {
     public AbstractAutomation(String n, String desc, String inputUrl, String resultUrl){
         name = n;
         description = desc;
-        fileReqDesc = "This automation accepts any file.";
+        fileReq = FileRequirements.NO_REQ;
         inputURL = inputUrl;
         resultURL = resultUrl;
         queryFile = new LinkedList<>();
@@ -92,12 +93,12 @@ public abstract class AbstractAutomation {
         return description;
     }
     
-    public final void setFileReqDesc(String text){
-        fileReqDesc = text;
+    public final void setFileReq(FileRequirements req){
+        fileReq = req;
     }
     
-    public final String getFileReqDesc(){
-        return fileReqDesc;
+    public final FileRequirements getFileReq(){
+        return fileReq;
     }
     
     /**

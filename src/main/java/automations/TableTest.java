@@ -8,7 +8,7 @@ import util.HtmlTable;
  * @author Matt
  */
 public class TableTest extends AbstractAutomation{
-    private static final String DESC = "";
+    private static final String DESC = "Tests the program's HTML table reading capabilities.";
     
     public TableTest() {
         super(

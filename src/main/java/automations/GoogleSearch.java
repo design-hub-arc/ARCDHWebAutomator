@@ -1,6 +1,8 @@
 package automations;
 
 import io.CsvParser;
+import io.FileRequirements;
+import io.FileType;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -13,10 +15,11 @@ public class GoogleSearch extends AbstractAutomation{
     private static final String[] HEADERS = new String[]{
         "Query"
     };
-    private static final String FILE_REQ = 
+    private static final FileRequirements FILE_REQ = new FileRequirements(
         "Input files must be in CSV format, "
         + "and should contain at least one column, "
-        + "labeled 'Query'.";
+        + "labeled 'Query'.", FileType.CSV
+    );
     
     public GoogleSearch(){
         super(
@@ -25,7 +28,7 @@ public class GoogleSearch extends AbstractAutomation{
             "https://www.google.com/", 
             "https://www.google.com/search"
         );
-        setFileReqDesc(FILE_REQ);
+        setFileReq(FILE_REQ);
     }
     @Override
     public void inputQuery(String query) {

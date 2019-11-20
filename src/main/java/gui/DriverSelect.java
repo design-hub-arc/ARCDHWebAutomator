@@ -106,7 +106,7 @@ public class DriverSelect extends Page{
     }
     
     private void selectDriver(){
-        FileSelector f = new FileSelector(FileSelector.EXE, (file)->{
+        FileSelector.chooseExeFile((file)->{
             try{
                 switch(currentBrowser){
                     case CHROME:
@@ -133,7 +133,6 @@ public class DriverSelect extends Page{
                 text.appendText("\n");
             }
         });
-        f.chooseFile();
     }
     
     public final WebDriver getDriver(){

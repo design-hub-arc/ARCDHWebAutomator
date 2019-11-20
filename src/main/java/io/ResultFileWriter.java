@@ -6,9 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -28,17 +25,12 @@ public class ResultFileWriter {
     
     public static void main(String[] args) throws IOException{
         String s = new QueryFileReader().readStream(ResultFileWriter.class.getResourceAsStream("/testFile.csv"));
-        FileSelector fs = new FileSelector(FileSelector.DIR, (File f)->{
-            String name = JOptionPane.showInputDialog(null, "What do you want to name this new file?");      
-            File newFile = new File(f.getAbsolutePath() + File.separator + name);
-            
+        FileSelector.createNewFile((File newFile)->{
             try {
                 new ResultFileWriter().writeToFile(newFile, s);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
-        
-        fs.chooseFile();
     }
 }

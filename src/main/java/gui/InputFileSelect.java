@@ -2,6 +2,7 @@ package gui;
 
 import automations.AbstractAutomation;
 import io.CsvFileException;
+import io.FileRequirements;
 import io.FileSelector;
 import io.QueryFileReader;
 import java.awt.BorderLayout;
@@ -66,9 +67,18 @@ public class InputFileSelect extends Page{
     
     public final void setAuto(AbstractAutomation aa){
         forAuto = aa;
-        autoText.setText("Select source file for " + aa.getName() + "\n");
         disp.clear();
-        disp.appendText(aa.getFileReqDesc() + "\n");        
+        if(aa.getFileReq().equals(FileRequirements.NO_REQ)){
+            autoText.setText(aa.getName() + " doesn't need a query file to run");
+            disp.appendText("No need to select a file.");
+            fileText = "";
+            accepted = true;
+            next();
+        } else {
+            autoText.setText("Select source file for " + aa.getName());
+            disp.appendText(aa.getFileReq().getReqDesc() + "\n"); 
+            accepted = false;
+        }
     }
     
     private void selectFile(File f){

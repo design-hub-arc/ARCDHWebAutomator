@@ -23,7 +23,6 @@ import javax.swing.JScrollPane;
  */
 public class AutomationSelect extends Page{
     private AbstractAutomation selectedAutomation;
-    private JLabel selText;
     
     public AutomationSelect(Application app){
         super(app);
@@ -59,7 +58,6 @@ public class AutomationSelect extends Page{
             b = new JRadioButton();
             b.addActionListener((e)->{
                 selectedAutomation = aa;
-                selText.setText("You have selected: " + aa.getName());
             });
             bg.add(b);
             j.add(b, BorderLayout.LINE_START);
@@ -70,10 +68,6 @@ public class AutomationSelect extends Page{
         add(availAuto, BorderLayout.CENTER);
         
         //bottom section
-        JPanel bottom = new JPanel();
-        bottom.setLayout(new GridLayout(1, 2));
-        selText = new JLabel("No automation selected");
-        bottom.add(selText);
         JButton nextStep = new JButton("Next");
         nextStep.addActionListener((e)->{
             if(selectedAutomation == null){
@@ -82,8 +76,7 @@ public class AutomationSelect extends Page{
                 next();
             }
         });
-        bottom.add(nextStep);
-        add(bottom, BorderLayout.PAGE_END);
+        add(nextStep, BorderLayout.PAGE_END);
         
         revalidate();
         repaint();

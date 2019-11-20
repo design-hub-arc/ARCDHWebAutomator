@@ -30,16 +30,16 @@ public class Application extends JPanel{
         
         auto.setOnDone(()->{
             selAuto = auto.getSelected();
-            file.setAuto(selAuto);
             l.show(this, DATA);
+            file.setAuto(selAuto);
         });
         file.setOnDone(()->{
-            fileText = file.getFileText();
             l.show(this, DRIVER);
+            fileText = file.getFileText();
         });
         driverSel.setOnDone(()->{
-            driver = driverSel.getDriver();
             l.show(this, RUN);
+            driver = driverSel.getDriver();
             run.run(selAuto, fileText, driver);
         });
         add(auto, AUTO);
