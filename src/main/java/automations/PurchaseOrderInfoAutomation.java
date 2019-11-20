@@ -2,7 +2,6 @@ package automations;
 
 import io.CsvParser;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import util.HtmlTable;
 
 /**
@@ -28,21 +27,20 @@ public class PurchaseOrderInfoAutomation extends AbstractAutomation{
     @Override
     public void inputQuery(String query) {
         String[] params = query.split(",");
-        WebDriver driver = getDriver();
-        driver.findElement(By.xpath("//input[@name='PurchaseOrderNumber']")).sendKeys(params[1]);
-        driver.findElement(By.xpath("//input[@name='RequisitionNumber']")).sendKeys(params[0]);
-        driver.findElement(By.name("B1")).click();
+        awaitFindElement(By.xpath("//input[@name='PurchaseOrderNumber']")).sendKeys(params[1]);
+        awaitFindElement(By.xpath("//input[@name='RequisitionNumber']")).sendKeys(params[0]);
+        awaitFindElement(By.name("B1")).click();
     }
 
     @Override
     public String readQueryResult() {
-        HtmlTable t = new HtmlTable(getDriver().findElement(By.xpath("//table[@border=1]")));
+        HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         return t.toCsv();
     }
 
     @Override
     public void afterReadingQuery() {
-        getDriver().findElement(By.xpath("//a[@href='PurchaseOrderInformation.asp'")).click();
+        awaitFindElement(By.xpath("//a[@href='PurchaseOrderInformation.asp'")).click();
     }
 
     @Override

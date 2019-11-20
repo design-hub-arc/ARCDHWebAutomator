@@ -30,10 +30,9 @@ public class RequisitionAutomation extends AbstractAutomation{
     @Override
     public void inputQuery(String query) {
         String[] params = query.split(",");
-        WebDriver driver = getDriver();
-        driver.findElement(By.name("REQUESTOR_ID")).sendKeys(params[0]);
-        driver.findElement(By.name("REQ_NO")).sendKeys(params[1]);
-        driver.findElement(By.name("Query")).click();
+        awaitFindElement(By.name("REQUESTOR_ID")).sendKeys(params[0]);
+        awaitFindElement(By.name("REQ_NO")).sendKeys(params[1]);
+        awaitFindElement(By.name("Query")).click();
     }
 
     @Override
@@ -55,18 +54,18 @@ public class RequisitionAutomation extends AbstractAutomation{
             
         }
         if(expand){
-            d.findElement(By.xpath("//a[@href='/REQ_HistoryQ.asp?REQ_History_PagingMove=ALL']")).click();
+            awaitFindElement(By.xpath("//a[@href='/REQ_HistoryQ.asp?REQ_History_PagingMove=ALL']")).click();
         }
         writeOutput((expand) ? "I should probably expand this." : "Don't bother expanding");
         
-        WebElement e = d.findElement(By.xpath("//table[@border=1]"));
+        WebElement e = awaitFindElement(By.xpath("//table[@border=1]"));
         HtmlTable t = new HtmlTable(e);
         return t.toCsv();
     }
 
     @Override
     public void afterReadingQuery() {
-        getDriver().findElement(By.xpath("//a[@href='REQ_History.asp']")).click();
+        awaitFindElement(By.xpath("//a[@href='REQ_History.asp']")).click();
     }
 
     @Override

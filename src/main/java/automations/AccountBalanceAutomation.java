@@ -2,7 +2,6 @@ package automations;
 
 import io.CsvParser;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import util.HtmlTable;
 
 /**
@@ -32,7 +31,6 @@ public class AccountBalanceAutomation extends AbstractAutomation{
     @Override
     public void inputQuery(String query) {
         String[] params = query.split(",");
-        WebDriver driver = getDriver();
         String[] names = new String[]{
             "BusinessUnit",
             "Account",
@@ -44,25 +42,24 @@ public class AccountBalanceAutomation extends AbstractAutomation{
             "ProjectGrant"
         };
         for(int i = 0; i < params.length; i++){
-            driver.findElement(By.name(names[i])).sendKeys(params[i]);
+            awaitFindElement(By.name(names[i])).sendKeys(params[i]);
         }
         
         //do I want autoclick to be optional?
-        driver.findElement(By.name("Query")).click();
+        awaitFindElement(By.name("Query")).click();
     }
 
     @Override
     public String readQueryResult() {
-        HtmlTable table = new HtmlTable(getDriver().findElement(By.xpath("//table[@border=1]")));
+        HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         return table.toCsv();
     }
 
     @Override
     public void afterReadingQuery() {
-        getDriver()
-            .findElement(
-                By.xpath("//a[@href='AccountBalanceSumDescr.asp']")
-            ).click();
+        awaitFindElement(
+            By.xpath("//a[@href='AccountBalanceSumDescr.asp']")
+        ).click();
     }
 
     @Override

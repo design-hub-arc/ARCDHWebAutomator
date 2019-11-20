@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
+import java.util.List;
 import logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -113,11 +114,42 @@ public abstract class AbstractAutomation {
         return driver;
     }
     
+    /**
+     * Waits for an element in the webpage to load,
+     * then returns it.
+     * 
+     * Since FireFoxDriver appears to not block while the
+     * webpage is loading, using driver.findElement(By by)
+     * will usually through a StaleElementException,
+     * so this method circumvents this problem.
+     * 
+     * @param by the locator used to find the element
+     * @return the WebElement found by the "by" parameter.
+     */
     public final WebElement awaitFindElement(By by){
         if(wait == null || driver == null){
             throw new NullPointerException("process is not running, so the WebDriver isn't set");
         }
         return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+    }
+    
+    /**
+     * Waits for elements in the webpage to load,
+     * then returns them.
+     * 
+     * Since FireFoxDriver appears to not block while the
+     * webpage is loading, using driver.findElement(By by)
+     * will usually through a StaleElementException,
+     * so this method circumvents this problem.
+     * 
+     * @param by the locator used to find the elements
+     * @return the WebElements found by the "by" parameter.
+     */
+    public final List<WebElement> awaitFindElements(By by){
+        if(wait == null || driver == null){
+            throw new NullPointerException("process is not running, so the WebDriver isn't set");
+        }
+        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
     }
     
     /**
@@ -218,14 +250,8 @@ public abstract class AbstractAutomation {
         String url = null;
         boolean queryInputted = false;
         while(!done){
-            String prevUrl = url;
-            ExpectedCondition e = new ExpectedCondition<Boolean>() {
-                @Override
-                public Boolean apply(WebDriver d) {
-                    return (!driver.getCurrentUrl().equals(prevUrl));
-                }
-            };
-            wait.until(e);
+            ExpectedCondition e  = ExpectedConditions.urlMatches((queryInputted) ? resultURL : inputURL);
+            wait.until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
             url = driver.getCurrentUrl();
             
             

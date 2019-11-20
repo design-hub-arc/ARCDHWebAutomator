@@ -29,8 +29,8 @@ public class PurchaseOrderAutomation extends AbstractAutomation{
     @Override
     public void inputQuery(String query) {
         String[] params = query.split(",");
-        getDriver().findElement(By.name("PO_ID_Input")).sendKeys(params[1]);
-        getDriver().findElement(By.name("Query")).click();
+        awaitFindElement(By.name("PO_ID_Input")).sendKeys(params[1]);
+        awaitFindElement(By.name("Query")).click();
     }
 
     @Override
@@ -51,16 +51,16 @@ public class PurchaseOrderAutomation extends AbstractAutomation{
             
         }
         if(expand){
-            driver.findElement(By.xpath("//a[@href='/PO_HistoryQ.asp?POID_History_PagingMove=ALL']")).click();
+            awaitFindElement(By.xpath("//a[@href='/PO_HistoryQ.asp?POID_History_PagingMove=ALL']")).click();
         }
         writeOutput((expand) ? "I should probably expand this." : "Don't bother expanding");
-        HtmlTable t = new HtmlTable(driver.findElement(By.xpath("//table[@border=1]")));
+        HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         return t.toCsv();
     }
 
     @Override
     public void afterReadingQuery() {
-        getDriver().findElement(By.xpath("//a[@href='PO_history.asp']")).click();
+        awaitFindElement(By.xpath("//a[@href='PO_history.asp']")).click();
     }
 
     @Override
