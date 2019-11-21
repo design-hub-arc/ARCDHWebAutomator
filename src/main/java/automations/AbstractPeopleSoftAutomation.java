@@ -11,7 +11,6 @@ import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
 import io.FileRequirements;
-import logging.Logger;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -35,23 +34,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
     private final LinkedList<String> queryFile;
     private final StringBuilder result;
     
-    private boolean showOutput;
-    
-    private final StringBuilder log; 
-    private Logger logger;
-    
-    private static final Logger DEFAULT_LOGGER = new Logger(){
-        @Override
-        public void log(String s) {
-            System.out.println(s);
-        }
-
-        @Override
-        public String getLog() {
-            return "";
-        }
-    };
-    
     /**
      * 
      * @param n the name to display for this automation.
@@ -66,9 +48,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
         resultURL = resultUrl;
         queryFile = new LinkedList<>();
         result = new StringBuilder();
-        showOutput = true;
-        log = new StringBuilder();
-        logger = DEFAULT_LOGGER;
     }
     
     public final void setFileReq(FileRequirements req){
@@ -90,31 +69,9 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
         return resultURL;
     }
     
-    /**
-     * Sets the object which should receive output from the automation.
-     * This defaults to sending output to System.out, but RunWindow calls this method,
-     * passing in its ScrollableTextDisplay.
-     * @param l an object implementing the logging.Logger interface
-     */
-    public final void setLogger(Logger l){
-        logger = l;
-    }
-    
     public final boolean validateFile(String fileText) throws CsvFileException{
         formatFile(fileText);
         return true;
-    }
-    
-    /**
-     * Sends a string to the current logger,
-     * <b>if showOutput is set to true</b>.
-     * @param output the text to write to output, with a newline appended to the end.
-     */
-    public final void writeOutput(String output){
-        if(!showOutput){
-            return;
-        }
-        logger.log(output + "\n");
     }
     
     /**
@@ -155,16 +112,7 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
         afterReadingQuery();
     }
     
-    /**
-     * Runs the automation,
-     * then allows the user to save the results as a file on their computer.
-     * 
-     * @param drive the WebDriver to run this automation on.
-     * @param fileText the text of the data source file for this automation.
-     * @param displayOutput whether or not to send output to this' current output stream
-     */
-    public void run(WebDriver drive, String fileText, boolean displayOutput){
-        showOutput = displayOutput;
+    public final void preRun(WebDriver drive, String fileText){
         queryFile.clear();
         result.delete(0, result.length());
         fileText = formatFile(fileText).trim();
@@ -174,7 +122,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
         });
         
         setDriver(drive);
-        start(); //change this later
         
         writeOutput("Running " + getClass().getName());
         writeOutput("Query file is");
@@ -182,7 +129,16 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
             writeOutput(query);
         });
         writeOutput(String.format("(%d queries)", split.length));
-        
+    }
+    
+    /**
+     * Runs the automation,
+     * then allows the user to save the results as a file on their computer.
+     * 
+     */
+    @Override
+    public void doRun(){
+        WebDriver drive = getDriver();
         drive.get(inputURL);
         String url = null;
         boolean queryInputted = false;
@@ -207,11 +163,11 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
                 if(queryFile.isEmpty()){
                     //need this in here, otherwise it exits after inputing the last query
                     writeOutput("Done with browser. Quitting.");
-                    finish();
+                    quit();
                 }
             } else {
-                System.err.println("Ahhh bad URL " + url);
-                finish();
+                reportError("Ahhh bad URL " + url);
+                quit();
             }
         }
         
@@ -229,9 +185,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
         
         
         writeOutput("process complete");
-    }
-    public void run(WebDriver driver, String s){
-        run(driver, s, true);
     }
     
     /**

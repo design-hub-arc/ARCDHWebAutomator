@@ -1,6 +1,7 @@
 package automations;
 
 import java.util.List;
+import logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,6 +25,11 @@ public abstract class AbstractAutomation {
     private WebDriverWait wait;
     private boolean running;
     
+    private final StringBuilder outputLog;
+    private final StringBuilder errorLog;
+    private Logger logger;
+    private Logger errorLogger;
+    
     /**
      * 
      * @param autoName the name of this automation
@@ -36,6 +42,35 @@ public abstract class AbstractAutomation {
         driver = null;
         wait = null;
         running = false;
+        outputLog = new StringBuilder();
+        errorLog = new StringBuilder();
+        
+        //default output log
+        logger = new Logger() {
+            @Override
+            public void log(String s) {
+                outputLog.append(s).append('\n');
+                System.out.println(s);
+            }
+
+            @Override
+            public String getLog() {
+                return outputLog.toString();
+            }
+        };
+        
+        errorLogger = new Logger(){
+            @Override
+            public void log(String s) {
+                errorLog.append(s).append('\n');
+                System.err.println(s);
+            }
+
+            @Override
+            public String getLog() {
+                return errorLog.toString();
+            }
+        };
     }
     
     public final String getName(){
@@ -60,6 +95,36 @@ public abstract class AbstractAutomation {
      */
     public final boolean isRunning(){
         return running;
+    }
+    
+    public final AbstractAutomation quit(){
+        running = false;
+        
+        return this;
+    }
+    
+    /**
+     * Sets the object which should receive output from the automation.
+     * This defaults to sending output to System.out, but RunWindow calls this method,
+     * passing in its ScrollableTextDisplay.
+     * @param l an object implementing the logging.Logger interface
+     * @return this, for chaining purposes
+     */
+    public final AbstractAutomation setLogger(Logger l){
+        logger = l;
+        return this;
+    }
+    
+    /**
+     * Sets the Logger which should receive any error messages
+     * this automation produces.
+     * 
+     * @param l an object implementing the logging.Logger interface
+     * @return this, for chaining purposes
+     */
+    public final AbstractAutomation setErrorLogger(Logger l){
+        errorLogger = l;
+        return this;
     }
     
     /**
@@ -147,8 +212,29 @@ public abstract class AbstractAutomation {
         return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
     }
     
-    //change this
-    public final AbstractAutomation start(){
+    /**
+     * Sends a string to the current logger.
+     * 
+     * @param output the text to write to output, with a newline appended to the end.
+     * @return this, for chaining purposes
+     */
+    public final AbstractAutomation writeOutput(String output){
+        logger.log(output + "\n");
+        return this;
+    }
+    
+    /**
+     * Sends an error message to the error log.
+     * 
+     * @param msg the error text to write.
+     * @return this, for chaining purposes
+     */
+    public final AbstractAutomation reportError(String msg){
+        errorLogger.log(msg + "\n");
+        return this;
+    }
+    
+    private AbstractAutomation start(){
         running = true;
         return this;
     }
@@ -160,7 +246,7 @@ public abstract class AbstractAutomation {
      * 
      * @return this, for chaining purposes. 
      */
-    public final AbstractAutomation finish(){
+    private AbstractAutomation finish(){
         if(wait == null || driver == null){
             throw new NullPointerException("Process is not running, so it cannot finish");
         }
@@ -172,4 +258,24 @@ public abstract class AbstractAutomation {
         
         return this;
     }
+    
+    /**
+     * Performs the automation.
+     * This process handles both setup and
+     * cleanup.
+     * 
+     * @return this, for chaining purposes
+     */
+    public final AbstractAutomation run(){
+        start();
+        doRun();
+        finish();
+        return this;
+    }
+    
+    /**
+     * This method should contain the process executed by the automation.
+     * This method is called by the run() method.
+     */
+    public abstract void doRun();
 }

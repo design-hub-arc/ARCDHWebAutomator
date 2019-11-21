@@ -49,7 +49,8 @@ public class RunWindow extends Page{
                 try{
                     text.setText("***Program output will appear here***\n");
                     aa.setLogger(text);
-                    aa.run(driver, fileText);
+                    aa.preRun(driver, fileText);
+                    aa.run();
                 } catch (Exception ex){
                     text.appendText("Something went wrong:\n");
                     text.appendText(ex.toString());
