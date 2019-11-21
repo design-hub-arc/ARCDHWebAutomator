@@ -32,7 +32,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * 7. Write the combined results of every query to a file on the user's computer.
  * @author Matt Crow
  */
-public abstract class AbstractAutomation {
+public abstract class AbstractPeopleSoftAutomation {
     private final String name;
     private final String description;
     private FileRequirements fileReq;
@@ -69,7 +69,7 @@ public abstract class AbstractAutomation {
      * @param inputUrl the URL of the webpage where this should input queries
      * @param resultUrl the URL of the webpage where this should read the result of its query
      */
-    public AbstractAutomation(String n, String desc, String inputUrl, String resultUrl){
+    public AbstractPeopleSoftAutomation(String n, String desc, String inputUrl, String resultUrl){
         name = n;
         description = desc;
         fileReq = FileRequirements.NO_REQ;

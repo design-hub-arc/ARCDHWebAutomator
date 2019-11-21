@@ -7,7 +7,7 @@ import util.HtmlTable;
  *
  * @author Matt
  */
-public class TableTest extends AbstractAutomation{
+public class TableTest extends AbstractPeopleSoftAutomation{
     private static final String DESC = "Tests the program's HTML table reading capabilities.";
     
     public TableTest() {

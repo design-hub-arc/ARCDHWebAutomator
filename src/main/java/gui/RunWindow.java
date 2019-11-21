@@ -1,6 +1,6 @@
 package gui;
 
-import automations.AbstractAutomation;
+import automations.AbstractPeopleSoftAutomation;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 import javax.swing.JButton;
@@ -42,7 +42,7 @@ public class RunWindow extends Page{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public final void run(AbstractAutomation aa, String fileText, WebDriver driver){
+    public final void run(AbstractPeopleSoftAutomation aa, String fileText, WebDriver driver){
         new Thread(){
             @Override
             public void run(){

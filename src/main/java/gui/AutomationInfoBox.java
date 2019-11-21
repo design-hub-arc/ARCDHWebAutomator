@@ -1,6 +1,6 @@
 package gui;
 
-import automations.AbstractAutomation;
+import automations.AbstractPeopleSoftAutomation;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -10,8 +10,8 @@ import javax.swing.JPanel;
  * @author Matt
  */
 public class AutomationInfoBox extends JPanel{
-    private final AbstractAutomation auto;
-    public AutomationInfoBox(AbstractAutomation aa){
+    private final AbstractPeopleSoftAutomation auto;
+    public AutomationInfoBox(AbstractPeopleSoftAutomation aa){
         auto = aa;
         setLayout(new BorderLayout());
         add(new JLabel(aa.getName()), BorderLayout.PAGE_START);
@@ -19,7 +19,7 @@ public class AutomationInfoBox extends JPanel{
         add(text, BorderLayout.CENTER);
     }
     
-    public final AbstractAutomation getAutomation(){
+    public final AbstractPeopleSoftAutomation getAutomation(){
         return auto;
     }
 }

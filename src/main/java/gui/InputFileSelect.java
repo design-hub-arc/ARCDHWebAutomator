@@ -1,6 +1,6 @@
 package gui;
 
-import automations.AbstractAutomation;
+import automations.AbstractPeopleSoftAutomation;
 import io.CsvFileException;
 import io.FileRequirements;
 import io.FileSelector;
@@ -22,7 +22,7 @@ public class InputFileSelect extends Page{
     private boolean accepted;
     private final JLabel autoText;
     private final ScrollableTextDisplay disp;
-    private AbstractAutomation forAuto;
+    private AbstractPeopleSoftAutomation forAuto;
     
     public InputFileSelect(Application app){
         super(app);
@@ -65,7 +65,7 @@ public class InputFileSelect extends Page{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public final void setAuto(AbstractAutomation aa){
+    public final void setAuto(AbstractPeopleSoftAutomation aa){
         forAuto = aa;
         disp.clear();
         if(aa.getFileReq().equals(FileRequirements.NO_REQ)){

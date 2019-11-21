@@ -12,7 +12,7 @@ import util.HtmlTable;
  *
  * @author Matt
  */
-public class PurchaseOrderAutomation extends AbstractAutomation{
+public class PurchaseOrderAutomation extends AbstractPeopleSoftAutomation{
     private static final String DESC = "Queries the PeopleSoft purchase order history page.";
     private static final String[] HEADERS = new String[]{
         "Req ID",

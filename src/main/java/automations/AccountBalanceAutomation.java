@@ -11,7 +11,7 @@ import util.HtmlTable;
  *
  * @author Matt
  */
-public class AccountBalanceAutomation extends AbstractAutomation{
+public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
     private static final String DESC = "Queries the PeopleSoft account balance summary page.";
     private static final String[] HEADERS = new String[]{
         "Business Unit",
