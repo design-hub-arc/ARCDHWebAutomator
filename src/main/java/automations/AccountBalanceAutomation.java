@@ -36,7 +36,7 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
             "https://psreports.losrios.edu/AccountBalanceSumDescr.asp",
             "https://psreports.losrios.edu/AccountBalanceSumDescrQ.asp"
         );
-        setFileReq(FILE_REQ);
+        setQueryFileReqs(FILE_REQ);
     }
     @Override
     public void inputQuery(String query) {

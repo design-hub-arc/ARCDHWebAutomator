@@ -28,7 +28,7 @@ public class PurchaseOrderInfoAutomation extends AbstractPeopleSoftAutomation{
             "https://psreports.losrios.edu/PurchaseOrderInformation.asp", 
             "https://psreports.losrios.edu/PurchaseOrderInformationQ.asp"
         );
-        setFileReq(FILE_REQ);
+        setQueryFileReqs(FILE_REQ);
     }
 
     @Override

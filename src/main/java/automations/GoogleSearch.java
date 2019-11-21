@@ -28,7 +28,7 @@ public class GoogleSearch extends AbstractPeopleSoftAutomation{
             "https://www.google.com/", 
             "https://www.google.com/search"
         );
-        setFileReq(FILE_REQ);
+        setQueryFileReqs(FILE_REQ);
     }
     @Override
     public void inputQuery(String query) {

@@ -27,7 +27,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * 7. Write the combined results of every query to a file on the user's computer.
  * @author Matt Crow
  */
-public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
+public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation implements QueryingAutomation{
     private FileRequirements fileReq;
     private final String inputURL;
     private final String resultURL;
@@ -50,12 +50,19 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
         result = new StringBuilder();
     }
     
-    public final void setFileReq(FileRequirements req){
+    //methods from QueryingAutomation
+    @Override
+    public final void setQueryFileReqs(FileRequirements req){
         fileReq = req;
     }
-    
-    public final FileRequirements getFileReq(){
+    @Override
+    public final FileRequirements getQueryFileReqs(){
         return fileReq;
+    }
+    @Override
+    public final boolean validateFile(String fileText) throws CsvFileException{
+        formatFile(fileText);
+        return true;
     }
     
     /**
@@ -67,11 +74,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
     }
     public final String getResultUrl(){
         return resultURL;
-    }
-    
-    public final boolean validateFile(String fileText) throws CsvFileException{
-        formatFile(fileText);
-        return true;
     }
     
     /**

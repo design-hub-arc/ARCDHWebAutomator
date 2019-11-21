@@ -31,7 +31,7 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
             "https://psreports.losrios.edu/REQ_History.asp", 
             "https://psreports.losrios.edu/REQ_HistoryQ.asp"
         );
-        setFileReq(FILE_REQ);
+        setQueryFileReqs(FILE_REQ);
     }
 
     @Override

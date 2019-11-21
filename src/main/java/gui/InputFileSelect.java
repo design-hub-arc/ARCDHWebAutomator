@@ -1,8 +1,8 @@
 package gui;
 
 import automations.AbstractPeopleSoftAutomation;
+import automations.QueryingAutomation;
 import io.CsvFileException;
-import io.FileRequirements;
 import io.FileSelector;
 import io.QueryFileReader;
 import java.awt.BorderLayout;
@@ -68,7 +68,7 @@ public class InputFileSelect extends Page{
     public final void setAuto(AbstractPeopleSoftAutomation aa){
         forAuto = aa;
         disp.clear();
-        if(aa.getFileReq().equals(FileRequirements.NO_REQ)){
+        if(!(aa instanceof QueryingAutomation)){
             autoText.setText(aa.getName() + " doesn't need a query file to run");
             disp.appendText("No need to select a file.");
             fileText = "";
@@ -76,7 +76,7 @@ public class InputFileSelect extends Page{
             next();
         } else {
             autoText.setText("Select source file for " + aa.getName());
-            disp.appendText(aa.getFileReq().getReqDesc() + "\n"); 
+            disp.appendText(((QueryingAutomation)aa).getQueryFileReqs().getReqDesc() + "\n"); 
             accepted = false;
         }
     }
