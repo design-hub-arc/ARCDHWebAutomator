@@ -1,6 +1,6 @@
 package gui;
 
-import automations.AbstractPeopleSoftAutomation;
+import automations.AbstractAutomation;
 import automations.QueryingAutomation;
 import io.CsvFileException;
 import io.FileSelector;
@@ -22,7 +22,7 @@ public class InputFileSelect extends Page{
     private boolean accepted;
     private final JLabel autoText;
     private final ScrollableTextDisplay disp;
-    private AbstractPeopleSoftAutomation forAuto;
+    private AbstractAutomation forAuto;
     
     public InputFileSelect(Application app){
         super(app);
@@ -65,7 +65,7 @@ public class InputFileSelect extends Page{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public final void setAuto(AbstractPeopleSoftAutomation aa){
+    public final void setAuto(AbstractAutomation aa){
         forAuto = aa;
         disp.clear();
         if(!(aa instanceof QueryingAutomation)){
@@ -76,28 +76,37 @@ public class InputFileSelect extends Page{
             next();
         } else {
             autoText.setText("Select source file for " + aa.getName());
-            disp.appendText(((QueryingAutomation)aa).getQueryFileReqs().getReqDesc() + "\n"); 
+            disp.appendText(((QueryingAutomation)aa).getQueryManager().getQueryFileReqs().getReqDesc() + "\n"); 
             accepted = false;
         }
     }
     
     private void selectFile(File f){
-        accepted = false;
-        try {
-            fileText = new QueryFileReader().readFile(f);
-            forAuto.validateFile(fileText);
+        if(forAuto instanceof QueryingAutomation){
+            accepted = false;
+            try {
+                fileText = new QueryFileReader().readFile(f);
+                ((QueryingAutomation)forAuto).validateFile(fileText);
+                accepted = true;
+                disp.clear();
+                disp.appendText(f.getName() + " was accepted! \n");
+                disp.appendText(fileText);
+            } catch (CsvFileException ex){
+                disp.appendText("The file was not accepted for the following reasons:\n");
+                disp.appendText(ex.getMessage());
+            } catch (IOException ex) {
+                disp.appendText("Encountered this error: ");
+                disp.appendText(ex.getMessage());
+                ex.printStackTrace();
+            }    
+        } else {
             accepted = true;
-            disp.clear();
-            disp.appendText(f.getName() + " was accepted! \n");
-            disp.appendText(fileText);
-        } catch (CsvFileException ex){
-            disp.appendText("The file was not accepted for the following reasons:\n");
-            disp.appendText(ex.getMessage());
-        } catch (IOException ex) {
-            disp.appendText("Encountered this error: ");
-            disp.appendText(ex.getMessage());
-            ex.printStackTrace();
+            autoText.setText(forAuto.getName() + " doesn't need a query file to run");
+            disp.appendText("No need to select a file.");
+            fileText = "";
         }
+        
+        
     }
     
     public final String getFileText(){

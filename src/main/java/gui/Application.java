@@ -1,6 +1,6 @@
 package gui;
 
-import automations.AbstractPeopleSoftAutomation;
+import automations.AbstractAutomation;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +15,7 @@ public class Application extends JPanel{
     private static final String DRIVER = "DRIVER";
     private static final String RUN = "RUN"; //use this page to show program output
     
-    private AbstractPeopleSoftAutomation selAuto;
+    private AbstractAutomation selAuto;
     private String fileText;
     private WebDriver driver;
     

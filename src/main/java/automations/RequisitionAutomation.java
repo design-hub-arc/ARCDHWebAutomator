@@ -29,9 +29,9 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
             "PSReports Requisitions",
             DESC,
             "https://psreports.losrios.edu/REQ_History.asp", 
-            "https://psreports.losrios.edu/REQ_HistoryQ.asp"
+            "https://psreports.losrios.edu/REQ_HistoryQ.asp",
+            new QueryManager(FILE_REQ)
         );
-        setQueryFileReqs(FILE_REQ);
     }
 
     @Override

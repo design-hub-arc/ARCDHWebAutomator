@@ -14,23 +14,11 @@ import io.FileRequirements;
  * @author Matt Crow
  */
 public interface QueryingAutomation {
-    /**
-     * Sets the requirements that query files fed into
-     * this automation must adhere to.
-     * 
-     * @param reqs the requirements for this automation.
-     */
-    public void setQueryFileReqs(FileRequirements reqs);
+    public QueryManager getQueryManager();
     
     /**
-     * Used to obtain the requirements that query
-     * files submitted to this class must follow.
+     * Move this to QueryManager
      * 
-     * @return 
-     */
-    public FileRequirements getQueryFileReqs();
-    
-    /**
      * Used to verify if a file adheres to the
      * standards specified by the FileRequirements
      * passed to setQueryFileReqs.

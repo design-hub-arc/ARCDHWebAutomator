@@ -1,5 +1,6 @@
 package gui;
 
+import automations.AbstractAutomation;
 import automations.AbstractPeopleSoftAutomation;
 import java.awt.BorderLayout;
 import java.util.Arrays;
@@ -42,15 +43,20 @@ public class RunWindow extends Page{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public final void run(AbstractPeopleSoftAutomation aa, String fileText, WebDriver driver){
+    public final void run(AbstractAutomation aa, String fileText, WebDriver driver){
         new Thread(){
             @Override
             public void run(){
                 try{
                     text.setText("***Program output will appear here***\n");
                     aa.setLogger(text);
-                    aa.preRun(driver, fileText);
-                    aa.run();
+                    
+                    //change this to querying 
+                    if(aa instanceof AbstractPeopleSoftAutomation){
+                        ((AbstractPeopleSoftAutomation)aa).preRun(driver, fileText);
+                    }
+                    
+                    aa.run(driver);
                 } catch (Exception ex){
                     text.appendText("Something went wrong:\n");
                     text.appendText(ex.toString());

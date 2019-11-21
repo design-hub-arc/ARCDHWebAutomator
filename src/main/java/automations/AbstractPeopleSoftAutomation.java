@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
 import io.FileRequirements;
+import logging.Logger;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -28,10 +29,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * @author Matt Crow
  */
 public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation implements QueryingAutomation{
-    private FileRequirements fileReq;
+    private final QueryManager queryManager;
     private final String inputURL;
     private final String resultURL;
-    private final LinkedList<String> queryFile;
     private final StringBuilder result;
     
     /**
@@ -41,28 +41,29 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
      * @param inputUrl the URL of the webpage where this should input queries
      * @param resultUrl the URL of the webpage where this should read the result of its query
      */
-    public AbstractPeopleSoftAutomation(String n, String desc, String inputUrl, String resultUrl){
+    public AbstractPeopleSoftAutomation(String n, String desc, String inputUrl, String resultUrl, QueryManager q){
         super(n, desc);
-        fileReq = FileRequirements.NO_REQ;
         inputURL = inputUrl;
         resultURL = resultUrl;
-        queryFile = new LinkedList<>();
         result = new StringBuilder();
+        queryManager = q;
     }
     
     //methods from QueryingAutomation
     @Override
-    public final void setQueryFileReqs(FileRequirements req){
-        fileReq = req;
-    }
-    @Override
-    public final FileRequirements getQueryFileReqs(){
-        return fileReq;
+    public final QueryManager getQueryManager(){
+        return queryManager;
     }
     @Override
     public final boolean validateFile(String fileText) throws CsvFileException{
         formatFile(fileText);
         return true;
+    }
+    
+    @Override
+    public AbstractAutomation setLogger(Logger l){
+        queryManager.setLogger(l);
+        return super.setLogger(l);
     }
     
     /**
@@ -82,24 +83,7 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
      * If there are no queries in the queue, throws a NoSuchElementException
      */
     private void doInputQuery(){
-        if(queryFile.isEmpty()){
-            throw new NoSuchElementException("Query file is empty.");
-        }
-        
-        writeOutput("Before Dequeing:");
-        queryFile.forEach((query)->{
-            writeOutput(query);
-        });
-        
-        String nextQuery = queryFile.removeFirst();
-        
-        writeOutput("After Dequeing:");
-        queryFile.forEach((query)->{
-            writeOutput(query);
-        });
-        writeOutput("Inputting query:\n" + nextQuery);
-        
-        inputQuery(nextQuery);
+        inputQuery(queryManager.getNextQuery());
     }
     
     /**
@@ -115,22 +99,12 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
     }
     
     public final void preRun(WebDriver drive, String fileText){
-        queryFile.clear();
         result.delete(0, result.length());
         fileText = formatFile(fileText).trim();
-        String[] split = fileText.split(NEW_LINE); //since fileText has all its line endings replace with NEW_LINE 
-        Arrays.stream(split).forEach((query)->{
-            queryFile.add(query);
-        });
-        
+        queryManager.setQueryFile(fileText);
         setDriver(drive);
         
         writeOutput("Running " + getClass().getName());
-        writeOutput("Query file is");
-        queryFile.forEach((query)->{
-            writeOutput(query);
-        });
-        writeOutput(String.format("(%d queries)", split.length));
     }
     
     /**
@@ -162,7 +136,7 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
             } else if(url.equalsIgnoreCase(resultURL) && queryInputted){
                 queryInputted = false;
                 doReadResult();
-                if(queryFile.isEmpty()){
+                if(queryManager.isEmpty()){
                     //need this in here, otherwise it exits after inputing the last query
                     writeOutput("Done with browser. Quitting.");
                     quit();
@@ -190,6 +164,8 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
     }
     
     /**
+     * Move this to QueryManager
+     * 
      * Converts the given text into the format used by this automation,
      * if the text cannot be converted, make sure you throw an exception!
      * @param fileText the text resulting from reading the file the user chose to read queries from

@@ -110,7 +110,7 @@ public abstract class AbstractAutomation {
      * @param l an object implementing the logging.Logger interface
      * @return this, for chaining purposes
      */
-    public final AbstractAutomation setLogger(Logger l){
+    public AbstractAutomation setLogger(Logger l){
         logger = l;
         return this;
     }
@@ -122,7 +122,7 @@ public abstract class AbstractAutomation {
      * @param l an object implementing the logging.Logger interface
      * @return this, for chaining purposes
      */
-    public final AbstractAutomation setErrorLogger(Logger l){
+    public AbstractAutomation setErrorLogger(Logger l){
         errorLogger = l;
         return this;
     }
@@ -264,9 +264,11 @@ public abstract class AbstractAutomation {
      * This process handles both setup and
      * cleanup.
      * 
+     * @param d the WebDriver to use for running
      * @return this, for chaining purposes
      */
-    public final AbstractAutomation run(){
+    public final AbstractAutomation run(WebDriver d){
+        setDriver(d);
         start();
         doRun();
         finish();

@@ -7,38 +7,18 @@ import util.HtmlTable;
  *
  * @author Matt
  */
-public class TableTest extends AbstractPeopleSoftAutomation{
+public class TableTest extends AbstractAutomation{
     private static final String DESC = "Tests the program's HTML table reading capabilities.";
     
     public TableTest() {
-        super(
-            "Table test", 
-            DESC,
-            "https://www.google.com/", 
-            "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table"
-        );
+        super("Table test", DESC);
     }
 
     @Override
-    public void inputQuery(String query) {
-        getDriver().get(getResultUrl());
-    }
-
-    @Override
-    public String readQueryResult() {
-        ////*[@id="wikiArticle"]/table[1]
-        ////*[@id="wikiArticle"]/dl[2]/dd/table
+    public void doRun() {
+        getDriver().get("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table");
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//*[@id=\"wikiArticle\"]/dl[2]/dd/table")));
-        return table.toCsv();
-    }
-
-    @Override
-    public void afterReadingQuery() {
-        
-    }
-
-    @Override
-    public String formatFile(String fileText) {
-        return "this will only run once";
+        writeOutput(table.toCsv());
+        //next, save the file
     }
 }

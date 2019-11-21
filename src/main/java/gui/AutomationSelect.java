@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
  * @author Matt Crow
  */
 public class AutomationSelect extends Page{
-    private AbstractPeopleSoftAutomation selectedAutomation;
+    private AbstractAutomation selectedAutomation;
     
     public AutomationSelect(Application app){
         super(app);
@@ -39,7 +39,7 @@ public class AutomationSelect extends Page{
         gbc.weighty = 1;
         
         //TODO: how do I want to allow plugins to add new Automations to this?
-        AbstractPeopleSoftAutomation[] aas = new AbstractPeopleSoftAutomation[]{
+        AbstractAutomation[] aas = new AbstractAutomation[]{
             new GoogleSearch(),
             new TableTest(),
             new AccountBalanceAutomation(),
@@ -52,7 +52,7 @@ public class AutomationSelect extends Page{
         ButtonGroup bg = new ButtonGroup();
         JPanel j;
         JRadioButton b;
-        for(AbstractPeopleSoftAutomation aa : aas){
+        for(AbstractAutomation aa : aas){
             j = new JPanel();
             j.setLayout(new BorderLayout());
             b = new JRadioButton();
@@ -82,7 +82,7 @@ public class AutomationSelect extends Page{
         repaint();
     }
     
-    public final AbstractPeopleSoftAutomation getSelected(){
+    public final AbstractAutomation getSelected(){
         return selectedAutomation;
     }
 }

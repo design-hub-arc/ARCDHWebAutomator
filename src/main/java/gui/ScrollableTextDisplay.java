@@ -77,7 +77,7 @@ public class ScrollableTextDisplay extends JPanel implements Logger{
     @Override
     public void log(String s) {
         log.append(s).append('\n');
-        appendText(s);
+        appendText(s + '\n');
     }
 
     @Override
