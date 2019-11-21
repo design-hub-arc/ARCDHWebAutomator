@@ -15,7 +15,7 @@ public class AutomationInfoBox extends JPanel{
         auto = aa;
         setLayout(new BorderLayout());
         add(new JLabel(aa.getName()), BorderLayout.PAGE_START);
-        ScrollableTextDisplay text = new ScrollableTextDisplay(aa.getDescription());
+        ScrollableTextDisplay text = new ScrollableTextDisplay(aa.getDesc());
         add(text, BorderLayout.CENTER);
     }
     

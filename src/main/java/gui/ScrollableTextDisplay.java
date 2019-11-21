@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import logging.Logger;
 
 /**
@@ -14,6 +16,7 @@ import logging.Logger;
  */
 public class ScrollableTextDisplay extends JPanel implements Logger{
     private final JTextArea textArea;
+    private final JScrollPane pane;
     private final StringBuilder text;
     private final StringBuilder log;
     
@@ -30,9 +33,9 @@ public class ScrollableTextDisplay extends JPanel implements Logger{
         textArea.setWrapStyleWord(true);
         textArea.setRows(4);
         textArea.setBackground(Color.white);
-        JScrollPane p = new JScrollPane(textArea);
-        p.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        add(p);
+        pane = new JScrollPane(textArea);
+        pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        add(pane);
         revalidate();
         repaint();
     }
@@ -57,6 +60,10 @@ public class ScrollableTextDisplay extends JPanel implements Logger{
         text.append(newText);
         textArea.setText(text.toString());
         repaint();
+        SwingUtilities.invokeLater(()->{
+            JScrollBar bar = pane.getVerticalScrollBar();
+            bar.setValue(bar.getMaximum());
+        });
     }
     public void setText(String newText){
         clear();

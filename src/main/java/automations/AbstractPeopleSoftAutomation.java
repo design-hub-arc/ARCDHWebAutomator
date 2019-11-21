@@ -11,17 +11,13 @@ import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import static io.CsvParser.NEW_LINE;
 import io.FileRequirements;
-import java.util.List;
 import logging.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * An Automation is used to run a process in
- * the web browser.
+ * This class serves as the base for automations
+ * for the PeopleSoft financial website.
  * The automations follow this sequence:
  * 1. take a data source file, usually providing values to fill into fields in a web page, and use it as a list of queries.
  * 2. Go to a designated start page.
@@ -32,19 +28,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * 7. Write the combined results of every query to a file on the user's computer.
  * @author Matt Crow
  */
-public abstract class AbstractPeopleSoftAutomation {
-    private final String name;
-    private final String description;
+public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation{
     private FileRequirements fileReq;
     private final String inputURL;
     private final String resultURL;
     private final LinkedList<String> queryFile;
     private final StringBuilder result;
     
-    private WebDriver driver;
-    private WebDriverWait wait;
-    
-    private boolean done;
     private boolean showOutput;
     
     private final StringBuilder log; 
@@ -70,27 +60,15 @@ public abstract class AbstractPeopleSoftAutomation {
      * @param resultUrl the URL of the webpage where this should read the result of its query
      */
     public AbstractPeopleSoftAutomation(String n, String desc, String inputUrl, String resultUrl){
-        name = n;
-        description = desc;
+        super(n, desc);
         fileReq = FileRequirements.NO_REQ;
         inputURL = inputUrl;
         resultURL = resultUrl;
         queryFile = new LinkedList<>();
         result = new StringBuilder();
-        done = true;
-        driver = null;
-        wait = null;
         showOutput = true;
         log = new StringBuilder();
         logger = DEFAULT_LOGGER;
-    }
-    
-    public final String getName(){
-        return name;
-    }
-    
-    public final String getDescription(){
-        return description;
     }
     
     public final void setFileReq(FileRequirements req){
@@ -110,47 +88,6 @@ public abstract class AbstractPeopleSoftAutomation {
     }
     public final String getResultUrl(){
         return resultURL;
-    }
-    public final WebDriver getDriver(){
-        return driver;
-    }
-    
-    /**
-     * Waits for an element in the webpage to load,
-     * then returns it.
-     * 
-     * Since FireFoxDriver appears to not block while the
-     * webpage is loading, using driver.findElement(By by)
-     * will usually through a StaleElementException,
-     * so this method circumvents this problem.
-     * 
-     * @param by the locator used to find the element
-     * @return the WebElement found by the "by" parameter.
-     */
-    public final WebElement awaitFindElement(By by){
-        if(wait == null || driver == null){
-            throw new NullPointerException("process is not running, so the WebDriver isn't set");
-        }
-        return wait.until(ExpectedConditions.presenceOfElementLocated(by));
-    }
-    
-    /**
-     * Waits for elements in the webpage to load,
-     * then returns them.
-     * 
-     * Since FireFoxDriver appears to not block while the
-     * webpage is loading, using driver.findElement(By by)
-     * will usually through a StaleElementException,
-     * so this method circumvents this problem.
-     * 
-     * @param by the locator used to find the elements
-     * @return the WebElements found by the "by" parameter.
-     */
-    public final List<WebElement> awaitFindElements(By by){
-        if(wait == null || driver == null){
-            throw new NullPointerException("process is not running, so the WebDriver isn't set");
-        }
-        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
     }
     
     /**
@@ -236,9 +173,8 @@ public abstract class AbstractPeopleSoftAutomation {
             queryFile.add(query);
         });
         
-        done = false;
-        driver = drive;
-        wait = new WebDriverWait(drive, 10);
+        setDriver(drive);
+        start(); //change this later
         
         writeOutput("Running " + getClass().getName());
         writeOutput("Query file is");
@@ -247,13 +183,13 @@ public abstract class AbstractPeopleSoftAutomation {
         });
         writeOutput(String.format("(%d queries)", split.length));
         
-        driver.get(inputURL);
+        drive.get(inputURL);
         String url = null;
         boolean queryInputted = false;
-        while(!done){
+        while(isRunning()){
             ExpectedCondition e  = ExpectedConditions.urlMatches((queryInputted) ? resultURL : inputURL);
-            wait.until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
-            url = driver.getCurrentUrl();
+            getWait().until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
+            url = drive.getCurrentUrl();
             
             
             int idx = url.indexOf('?');
@@ -270,16 +206,12 @@ public abstract class AbstractPeopleSoftAutomation {
                 doReadResult();
                 if(queryFile.isEmpty()){
                     //need this in here, otherwise it exits after inputing the last query
-                    done = true;
                     writeOutput("Done with browser. Quitting.");
-                    driver.quit();
+                    finish();
                 }
             } else {
                 System.err.println("Ahhh bad URL " + url);
-                done = true;
-                driver.quit();
-                driver = null;
-                wait = null;
+                finish();
             }
         }
         
