@@ -44,9 +44,9 @@ public class ResultManager implements Logger{
     
     public final void append(String s){
         log("Appending to result: " + s);
+        result.append(s);
         log("Result is now ");
         log(toString());
-        result.append(s);
     }
 
     public void setLogger(Logger l){
