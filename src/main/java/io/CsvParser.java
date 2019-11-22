@@ -83,7 +83,11 @@ public class CsvParser {
         String data;
         for(int i = 1; i < lines.length; i++){
             //skip header
-            newFile.append(NEW_LINE);
+            //always include new line if we have headers,
+            //otherwise, don't include new line for first line
+            if(includeHeaders || i != 1){
+                newFile.append(NEW_LINE);
+            }
             line = lines[i].split(",");
             for(int j = 0; j < reqHeaders.length; j++){
                 data = line[headerToCol.get(reqHeaders[j])];

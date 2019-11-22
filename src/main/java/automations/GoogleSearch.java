@@ -1,8 +1,6 @@
 package automations;
 
-import io.CsvParser;
-import io.FileRequirements;
-import io.FileType;
+import io.CsvFileRequirements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -15,19 +13,18 @@ public class GoogleSearch extends AbstractPeopleSoftAutomation{
     private static final String[] HEADERS = new String[]{
         "Query"
     };
-    private static final FileRequirements FILE_REQ = new FileRequirements(
+    private static final CsvFileRequirements FILE_REQ = new CsvFileRequirements(
         "Input files must be in CSV format, "
         + "and should contain at least one column, "
-        + "labeled 'Query'.", FileType.CSV
+        + "labeled 'Query'.", HEADERS
     );
     
     public GoogleSearch(){
         super(
             "Google Searches", 
             DESC, 
-            "https://www.google.com/", 
             "https://www.google.com/search",
-            new QueryManager(FILE_REQ)
+            new QueryManager("https://www.google.com/", FILE_REQ)
         );
     }
     @Override
@@ -45,11 +42,6 @@ public class GoogleSearch extends AbstractPeopleSoftAutomation{
     }
     @Override
     public void afterReadingQuery() {
-        getDriver().get(getInputUrl());
-    }
-
-    @Override
-    public String formatFile(String fileText) {
-        return new CsvParser(HEADERS).reformat(fileText, false);
+        getDriver().get(getQueryManager().getInputUrl());
     }
 }

@@ -1,8 +1,7 @@
 package automations;
 
+import io.CsvFileRequirements;
 import io.CsvParser;
-import io.FileRequirements;
-import io.FileType;
 import java.util.Arrays;
 import org.openqa.selenium.By;
 import util.HtmlTable;
@@ -23,19 +22,18 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
         "Project/Grant"
     };
     
-    private static final FileRequirements FILE_REQ = new FileRequirements(
+    private static final CsvFileRequirements FILE_REQ = new CsvFileRequirements(
         "Input files must be in CSV format, "
         + "and should contain the following columns: "
-        + Arrays.toString(HEADERS), FileType.CSV
+        + Arrays.toString(HEADERS), HEADERS
     );
     
     public AccountBalanceAutomation(){
         super(
             "PSReports Account Balance",
             DESC,
-            "https://psreports.losrios.edu/AccountBalanceSumDescr.asp",
             "https://psreports.losrios.edu/AccountBalanceSumDescrQ.asp",
-            new QueryManager(FILE_REQ)
+            new QueryManager("https://psreports.losrios.edu/AccountBalanceSumDescr.asp", FILE_REQ)
         );
     }
     @Override
@@ -71,10 +69,4 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
             By.xpath("//a[@href='AccountBalanceSumDescr.asp']")
         ).click();
     }
-
-    @Override
-    public String formatFile(String fileText) {
-        return new CsvParser(HEADERS).reformat(fileText, false);
-    }
-    
 }

@@ -4,11 +4,9 @@ package io;
  *
  * @author Matt
  */
-public class FileRequirements {
+public abstract class FileRequirements {
     private final String reqDesc;
     private final FileType type;
-    
-    public static final FileRequirements NO_REQ = new FileRequirements("Any file", FileType.ANY);
     
     public FileRequirements(String desc, FileType fileType){
         reqDesc = desc;
@@ -22,4 +20,6 @@ public class FileRequirements {
     public final FileType getReqType(){
         return type;
     }
+    
+    public abstract String reformatFile(String fileText);
 }

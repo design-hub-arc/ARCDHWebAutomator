@@ -5,12 +5,7 @@ import io.FileSelector;
 import io.ResultFileWriter;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
-import static io.CsvParser.NEW_LINE;
-import io.FileRequirements;
 import logging.Logger;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -30,7 +25,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  */
 public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation implements QueryingAutomation{
     private final QueryManager queryManager;
-    private final String inputURL;
     private final String resultURL;
     private final StringBuilder result;
     
@@ -38,25 +32,30 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
      * 
      * @param n the name to display for this automation.
      * @param desc the description of what this automation does
-     * @param inputUrl the URL of the webpage where this should input queries
      * @param resultUrl the URL of the webpage where this should read the result of its query
+     * @param q the QueryManager which manages all the input data used by this object
      */
-    public AbstractPeopleSoftAutomation(String n, String desc, String inputUrl, String resultUrl, QueryManager q){
+    public AbstractPeopleSoftAutomation(String n, String desc, String resultUrl, QueryManager q){
         super(n, desc);
-        inputURL = inputUrl;
         resultURL = resultUrl;
         result = new StringBuilder();
         queryManager = q;
     }
     
-    //methods from QueryingAutomation
+    /**
+     * The QueryManager formats and stores the
+     * queries that the automation should input.
+     * 
+     * @return the QueryManager for this automation
+     */
     @Override
     public final QueryManager getQueryManager(){
         return queryManager;
     }
+    
     @Override
     public final boolean validateFile(String fileText) throws CsvFileException{
-        formatFile(fileText);
+        queryManager.getQueryFileReqs().reformatFile(fileText); //change this
         return true;
     }
     
@@ -66,13 +65,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
         return super.setLogger(l);
     }
     
-    /**
-     * 
-     * @return the URL this should fill out forms on.
-     */
-    public final String getInputUrl(){
-        return inputURL;
-    }
     public final String getResultUrl(){
         return resultURL;
     }
@@ -100,7 +92,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
     
     public final void preRun(WebDriver drive, String fileText){
         result.delete(0, result.length());
-        fileText = formatFile(fileText).trim();
         queryManager.setQueryFile(fileText);
         setDriver(drive);
         
@@ -115,11 +106,11 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
     @Override
     public void doRun(){
         WebDriver drive = getDriver();
-        drive.get(inputURL);
+        drive.get(queryManager.getInputUrl());
         String url = null;
         boolean queryInputted = false;
         while(isRunning()){
-            ExpectedCondition e  = ExpectedConditions.urlMatches((queryInputted) ? resultURL : inputURL);
+            ExpectedCondition e  = ExpectedConditions.urlMatches((queryInputted) ? resultURL : queryManager.getInputUrl());
             getWait().until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
             url = drive.getCurrentUrl();
             
@@ -130,7 +121,7 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
             }
             writeOutput("Current URL is " + url);
             
-            if(url.equalsIgnoreCase(inputURL) && !queryInputted){
+            if(url.equalsIgnoreCase(queryManager.getInputUrl()) && !queryInputted){
                 queryInputted = true;
                 doInputQuery();
             } else if(url.equalsIgnoreCase(resultURL) && queryInputted){
@@ -162,16 +153,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
         
         writeOutput("process complete");
     }
-    
-    /**
-     * Move this to QueryManager
-     * 
-     * Converts the given text into the format used by this automation,
-     * if the text cannot be converted, make sure you throw an exception!
-     * @param fileText the text resulting from reading the file the user chose to read queries from
-     * @return the newly formatted text.
-     */
-    public abstract String formatFile(String fileText);
     
     /**
      * Use the provided query to provide input for

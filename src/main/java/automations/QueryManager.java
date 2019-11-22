@@ -16,16 +16,19 @@ public class QueryManager implements Logger{
     private final LinkedList<String> queryFile;
     private final StringBuilder queryLog;
     private Logger log;
+    private final String queryUrl;
     
     /**
      * 
+     * @param inputUrl the URL this QueryManager should input queries into
      * @param reqs the requirements that query 
      * files fed into this must adhere to.
      */
-    public QueryManager(FileRequirements reqs){
+    public QueryManager(String inputUrl, FileRequirements reqs){
         fileReqs = reqs;
         queryFile = new LinkedList<>();
         queryLog = new StringBuilder();
+        queryUrl = inputUrl;
         log = new Logger() {
             @Override
             public void log(String s) {
@@ -50,12 +53,22 @@ public class QueryManager implements Logger{
         return fileReqs;
     }
     
+    /**
+     * 
+     * @return the URL this object's
+     * queries are meant to be put into.
+     */
+    public final String getInputUrl(){
+        return queryUrl;
+    }
+    
     public final boolean isEmpty(){
         return queryFile.isEmpty();
     }
     
     public final void setQueryFile(String fileText){
         queryFile.clear();
+        fileText = fileReqs.reformatFile(fileText);
         Arrays.stream(fileText.split(NEW_LINE)).forEach((s)->{
             queryFile.add(s);
         });

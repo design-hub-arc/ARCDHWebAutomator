@@ -1,5 +1,6 @@
 package automations;
 
+import io.CsvFileRequirements;
 import io.CsvParser;
 import io.FileRequirements;
 import io.FileType;
@@ -20,17 +21,16 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
         "requisition number"
     };
     
-    private static final FileRequirements FILE_REQ = new FileRequirements(
-        "Input file should be in CSV format, with the following columns: " + Arrays.toString(HEADERS), FileType.CSV
+    private static final CsvFileRequirements FILE_REQ = new CsvFileRequirements(
+        "Input file should be in CSV format, with the following columns: " + Arrays.toString(HEADERS), HEADERS
     );
     
     public RequisitionAutomation() {
         super(
             "PSReports Requisitions",
             DESC,
-            "https://psreports.losrios.edu/REQ_History.asp", 
             "https://psreports.losrios.edu/REQ_HistoryQ.asp",
-            new QueryManager(FILE_REQ)
+            new QueryManager("https://psreports.losrios.edu/REQ_History.asp", FILE_REQ)
         );
     }
 
@@ -74,10 +74,4 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
     public void afterReadingQuery() {
         awaitFindElement(By.xpath("//a[@href='REQ_History.asp']")).click();
     }
-
-    @Override
-    public String formatFile(String fileText) {
-        return new CsvParser(HEADERS).reformat(fileText, false);
-    }
-    
 }
