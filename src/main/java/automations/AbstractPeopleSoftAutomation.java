@@ -1,9 +1,5 @@
 package automations;
 
-import io.FileSelector;
-import io.ResultFileWriter;
-import java.io.File;
-import java.io.IOException;
 import org.openqa.selenium.WebDriver;
 import logging.Logger;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -22,10 +18,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * 7. Write the combined results of every query to a file on the user's computer.
  * @author Matt Crow
  */
-public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation implements QueryingAutomation{
+public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation implements QueryingAutomation, ReadingAutomation{
     private final QueryManager queryManager;
-    private final String resultURL;
-    private final StringBuilder result;
+    private final ResultManager resultManager;
     
     /**
      * 
@@ -36,9 +31,8 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
      */
     public AbstractPeopleSoftAutomation(String n, String desc, String resultUrl, QueryManager q){
         super(n, desc);
-        resultURL = resultUrl;
-        result = new StringBuilder();
         queryManager = q;
+        resultManager = new ResultManager(resultUrl);
     }
     
     /**
@@ -52,14 +46,23 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
         return queryManager;
     }
     
+    /**
+     * The ResultManager is used to keep track of
+     * what this automation has recorded from webpages
+     * it has visited.
+     * 
+     * @return the ResultManager for this automation
+     */
+    @Override
+    public final ResultManager getResultManager(){
+        return resultManager;
+    }
+    
     @Override
     public AbstractAutomation setLogger(Logger l){
         queryManager.setLogger(l);
+        resultManager.setLogger(l);
         return super.setLogger(l);
-    }
-    
-    public final String getResultUrl(){
-        return resultURL;
     }
     
     /**
@@ -77,14 +80,12 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
      * Afterwards, afterReadingQuery is called.
      */
     private void doReadResult(){
-        String queryResult = readQueryResult();
-        writeOutput("Reading query result:\n" + queryResult);
-        result.append(queryResult);
+        resultManager.append(readQueryResult());
         afterReadingQuery();
     }
     
     public final void preRun(WebDriver drive, String fileText){
-        result.delete(0, result.length());
+        resultManager.clear();
         queryManager.setQueryFile(fileText);
         setDriver(drive);
         
@@ -103,10 +104,9 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
         String url = null;
         boolean queryInputted = false;
         while(isRunning()){
-            ExpectedCondition e  = ExpectedConditions.urlMatches((queryInputted) ? resultURL : queryManager.getInputUrl());
+            ExpectedCondition e  = ExpectedConditions.urlMatches((queryInputted) ? resultManager.getResultUrl() : queryManager.getInputUrl());
             getWait().until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
             url = drive.getCurrentUrl();
-            
             
             int idx = url.indexOf('?');
             if(idx != -1){
@@ -117,7 +117,7 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
             if(url.equalsIgnoreCase(queryManager.getInputUrl()) && !queryInputted){
                 queryInputted = true;
                 doInputQuery();
-            } else if(url.equalsIgnoreCase(resultURL) && queryInputted){
+            } else if(url.equalsIgnoreCase(resultManager.getResultUrl()) && queryInputted){
                 queryInputted = false;
                 doReadResult();
                 if(queryManager.isEmpty()){
@@ -131,18 +131,7 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
             }
         }
         
-        writeOutput("Saving file");
-        FileSelector.createNewFile((File f)->{
-            writeOutput("Attempting to write to " + f.getAbsolutePath());
-            try {
-                new ResultFileWriter().writeToFile(f, result.toString());
-                writeOutput("file successfully written");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                writeOutput("failed to write to file");
-            }
-        });
-        
+        resultManager.saveToFile();
         
         writeOutput("process complete");
     }
