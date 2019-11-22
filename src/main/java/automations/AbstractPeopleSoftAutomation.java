@@ -1,6 +1,5 @@
 package automations;
 
-import io.CsvFileException;
 import io.FileSelector;
 import io.ResultFileWriter;
 import java.io.File;
@@ -51,12 +50,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractAutomation im
     @Override
     public final QueryManager getQueryManager(){
         return queryManager;
-    }
-    
-    @Override
-    public final boolean validateFile(String fileText) throws CsvFileException{
-        queryManager.getQueryFileReqs().reformatFile(fileText); //change this
-        return true;
     }
     
     @Override

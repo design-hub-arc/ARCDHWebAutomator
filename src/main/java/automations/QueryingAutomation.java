@@ -1,7 +1,5 @@
 package automations;
 
-import io.FileRequirements;
-
 /**
  * The QueryingAutomation interface should
  * be implemented by automations that require
@@ -15,16 +13,4 @@ import io.FileRequirements;
  */
 public interface QueryingAutomation {
     public QueryManager getQueryManager();
-    
-    /**
-     * Move this to QueryManager
-     * 
-     * Used to verify if a file adheres to the
-     * standards specified by the FileRequirements
-     * passed to setQueryFileReqs.
-     * 
-     * @param fileText the text of the file to validate
-     * @return whether or not the file is valid
-     */
-    public boolean validateFile(String fileText);
 }

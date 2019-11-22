@@ -8,6 +8,8 @@ import io.QueryFileReader;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -85,16 +87,16 @@ public class InputFileSelect extends Page{
         if(forAuto instanceof QueryingAutomation){
             accepted = false;
             try {
-                fileText = new QueryFileReader().readFile(f);
-                ((QueryingAutomation)forAuto).validateFile(fileText);
+                ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().validateFile(f);
                 accepted = true;
+                fileText = new QueryFileReader().readFile(f);
                 disp.clear();
                 disp.appendText(f.getName() + " was accepted! \n");
                 disp.appendText(fileText);
             } catch (CsvFileException ex){
                 disp.appendText("The file was not accepted for the following reasons:\n");
                 disp.appendText(ex.getMessage());
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 disp.appendText("Encountered this error: ");
                 disp.appendText(ex.getMessage());
                 ex.printStackTrace();
