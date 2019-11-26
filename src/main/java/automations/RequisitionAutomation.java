@@ -1,9 +1,6 @@
 package automations;
 
 import io.CsvFileRequirements;
-import io.CsvParser;
-import io.FileRequirements;
-import io.FileType;
 import java.util.Arrays;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -68,10 +65,5 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
         WebElement e = awaitFindElement(By.xpath("//table[@border=1]"));
         HtmlTable t = new HtmlTable(e);
         return t.toCsv();
-    }
-
-    @Override
-    public void afterReadingQuery() {
-        awaitFindElement(By.xpath("//a[@href='REQ_History.asp']")).click();
     }
 }

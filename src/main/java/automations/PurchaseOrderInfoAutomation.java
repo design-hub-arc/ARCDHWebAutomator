@@ -1,7 +1,6 @@
 package automations;
 
 import io.CsvFileRequirements;
-import io.CsvParser;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -41,10 +40,5 @@ public class PurchaseOrderInfoAutomation extends AbstractPeopleSoftAutomation{
     public String readQueryResult() {
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         return t.toCsv();
-    }
-
-    @Override
-    public void afterReadingQuery() {
-        awaitFindElement(By.xpath("//a[@href='PurchaseOrderInformation.asp'")).click();
     }
 }

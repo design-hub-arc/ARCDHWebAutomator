@@ -61,9 +61,4 @@ public class PurchaseOrderAutomation extends AbstractPeopleSoftAutomation{
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         return t.toCsv();
     }
-
-    @Override
-    public void afterReadingQuery() {
-        awaitFindElement(By.xpath("//a[@href='PO_history.asp']")).click();
-    }
 }

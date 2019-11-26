@@ -2,6 +2,7 @@ package automations;
 
 import io.FileRequirements;
 import logging.Logger;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -88,28 +89,21 @@ public abstract class QueryGatherAutomation extends AbstractAutomation implement
     public void doRun() {
         WebDriver driver = getDriver();
         resultManager.clear();
-        driver.get(queryManager.getInputUrl()); //go to input page
-        String url = "";
         while(isRunning()){
-            url = driver.getCurrentUrl();
-            int idx = url.indexOf('?');
-            if(idx != -1){
-                url = url.substring(0, idx);
-            }
-            writeOutput("Current URL is " + url);
-            
-            if(url.equalsIgnoreCase(queryManager.getInputUrl())){
-                inputQuery(queryManager.getNextQuery());
-            } else {
-                reportError("Began run iteration while not on input URL. Make sure the readResultMethod returns to input URL.");
-                quit();
-            }
-            
-            ExpectedCondition e  = ExpectedConditions.urlMatches(resultManager.getResultUrl());
+            driver.get(queryManager.getInputUrl());
+            ExpectedCondition e  = ExpectedConditions.urlMatches(queryManager.getInputUrl());
             getWait().until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
+           
+            inputQuery(queryManager.getNextQuery());
             
-            resultManager.append(readQueryResult());
-            afterReadingQuery();
+            e = ExpectedConditions.urlMatches(resultManager.getResultUrl());
+            try{
+                getWait().until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
+                resultManager.append(readQueryResult());
+                //afterReadingQuery();
+            } catch(TimeoutException timeOut){
+                reportError("Did not transition to result page after inputting query.");
+            }
             
             if(queryManager.isEmpty()){
                 writeOutput("Done running, quitting browser.");
@@ -138,9 +132,4 @@ public abstract class QueryGatherAutomation extends AbstractAutomation implement
      * @return a string containing the relevant data in the web page.
      */
     public abstract String readQueryResult();
-    
-    /**
-     * Perform any process required to return to the input URL.
-     */
-    public abstract void afterReadingQuery();
 }

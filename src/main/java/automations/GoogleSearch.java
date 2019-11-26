@@ -41,8 +41,4 @@ public class GoogleSearch extends QueryGatherAutomation{
         String ret = numResultBox.getText() + '\n';
         return ret;
     }
-    @Override
-    public void afterReadingQuery() {
-        getDriver().get(getQueryManager().getInputUrl());
-    }
 }

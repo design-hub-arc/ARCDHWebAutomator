@@ -1,7 +1,6 @@
 package automations;
 
 import io.CsvFileRequirements;
-import io.CsvParser;
 import java.util.Arrays;
 import org.openqa.selenium.By;
 import util.HtmlTable;
@@ -61,12 +60,5 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
     public String readQueryResult() {
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         return table.toCsv();
-    }
-
-    @Override
-    public void afterReadingQuery() {
-        awaitFindElement(
-            By.xpath("//a[@href='AccountBalanceSumDescr.asp']")
-        ).click();
     }
 }

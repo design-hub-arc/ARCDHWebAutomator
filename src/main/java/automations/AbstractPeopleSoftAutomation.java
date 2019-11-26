@@ -1,10 +1,5 @@
 package automations;
 
-import org.openqa.selenium.WebDriver;
-import logging.Logger;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-
 /**
  * This class serves as the base for automations
  * for the PeopleSoft financial website.
@@ -29,49 +24,4 @@ public abstract class AbstractPeopleSoftAutomation extends QueryGatherAutomation
     public AbstractPeopleSoftAutomation(String n, String desc, String resultUrl, QueryManager q){
         super(n, desc, q, resultUrl);
     }
-    
-    /**
-     * Runs the automation,
-     * then allows the user to save the results as a file on their computer.
-     * 
-     */
-    /*
-    @Override
-    public void doRun(){
-        WebDriver drive = getDriver();
-        drive.get(queryManager.getInputUrl());
-        String url = null;
-        boolean queryInputted = false;
-        while(isRunning()){
-            ExpectedCondition e  = ExpectedConditions.urlMatches((queryInputted) ? resultManager.getResultUrl() : queryManager.getInputUrl());
-            getWait().until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
-            url = drive.getCurrentUrl();
-            
-            int idx = url.indexOf('?');
-            if(idx != -1){
-                url = url.substring(0, idx);
-            }
-            writeOutput("Current URL is " + url);
-            
-            if(url.equalsIgnoreCase(queryManager.getInputUrl()) && !queryInputted){
-                queryInputted = true;
-                doInputQuery();
-            } else if(url.equalsIgnoreCase(resultManager.getResultUrl()) && queryInputted){
-                queryInputted = false;
-                doReadResult();
-                if(queryManager.isEmpty()){
-                    //need this in here, otherwise it exits after inputing the last query
-                    writeOutput("Done with browser. Quitting.");
-                    quit();
-                }
-            } else {
-                reportError("Ahhh bad URL " + url);
-                quit();
-            }
-        }
-        
-        resultManager.saveToFile();
-        
-        writeOutput("process complete");
-    }*/
 }
