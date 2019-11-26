@@ -1,27 +1,25 @@
 package automationTools;
 
 /**
- * This class serves as the base for automations
- * for the PeopleSoft financial website.
- * The automations follow this sequence:
- * 1. take a data source file, usually providing values to fill into fields in a web page, and use it as a list of queries.
- * 2. Go to a designated start page.
- * 3. repeat steps 4-6 until the list of queries is empty:
- * 4. if the browser is on the given input URL, dequeue the next query, and fill out a form on the webpage, then submit the form.
- * 5. if the browser is on the given result URL, read the result, and append it to the accumulated results of all previous queries.
- * 6. return to the input URL.
- * 7. Write the combined results of every query to a file on the user's computer.
+ * This class currently serves no purpose,
+ * as all the functionality is handled in
+ * superclasses. However, the subclasses of
+ * this class may require special behavior
+ * such as logging in the user or expanding search results,
+ * so later versions may include these added behaviors.
+ * 
+ * @see AbstractQueryGatherAutomation
  * @author Matt Crow
  */
 public abstract class AbstractPeopleSoftAutomation extends AbstractQueryGatherAutomation{
     /**
      * 
-     * @param n the name to display for this automation.
-     * @param desc the description of what this automation does
-     * @param resultUrl the URL of the webpage where this should read the result of its query
+     * @param autoName the name to display for this automation.
+     * @param description the description of what this automation does
      * @param q the QueryManager which manages all the input data used by this object
+     * @param r the ResultManager which handles the results of the automation's queries
      */
-    public AbstractPeopleSoftAutomation(String n, String desc, String resultUrl, QueryManager q){
-        super(n, desc, q, resultUrl);
+    public AbstractPeopleSoftAutomation(String autoName, String description, QueryManager q, ResultManager r) {
+        super(autoName, description, q, r);
     }
 }

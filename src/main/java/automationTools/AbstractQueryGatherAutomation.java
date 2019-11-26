@@ -1,6 +1,5 @@
 package automationTools;
 
-import automationTools.AbstractAutomation;
 import io.FileRequirements;
 import logging.Logger;
 import org.openqa.selenium.TimeoutException;
@@ -92,16 +91,15 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
         resultManager.clear();
         while(isRunning()){
             driver.get(queryManager.getInputUrl());
-            ExpectedCondition e  = ExpectedConditions.urlMatches(queryManager.getInputUrl());
-            getWait().until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
-           
+            ExpectedCondition<Boolean> e  = ExpectedConditions.urlMatches(queryManager.getInputUrl());
+            getWait().until(e);
+            
             inputQuery(queryManager.getNextQuery());
             
             e = ExpectedConditions.urlMatches(resultManager.getResultUrl());
             try{
-                getWait().until(e); //this is compiling with uncheck method invocation, but the documentation doesn't help, and the application still works
+                getWait().until(e); 
                 resultManager.append(readQueryResult());
-                //afterReadingQuery();
             } catch(TimeoutException timeOut){
                 reportError("Did not transition to result page after inputting query.");
             }

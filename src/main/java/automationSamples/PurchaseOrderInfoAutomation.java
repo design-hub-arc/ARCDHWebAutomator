@@ -2,6 +2,7 @@ package automationSamples;
 
 import automationTools.QueryManager;
 import automationTools.AbstractPeopleSoftAutomation;
+import automationTools.ResultManager;
 import io.CsvFileRequirements;
 import org.openqa.selenium.By;
 import util.HtmlTable;
@@ -25,8 +26,8 @@ public class PurchaseOrderInfoAutomation extends AbstractPeopleSoftAutomation{
         super(
             "PSReports Purchase Order Information",
             DESC,
-            "https://psreports.losrios.edu/PurchaseOrderInformationQ.asp",
-            new QueryManager("https://psreports.losrios.edu/PurchaseOrderInformation.asp", FILE_REQ)
+            new QueryManager("https://psreports.losrios.edu/PurchaseOrderInformation.asp", FILE_REQ),
+            new ResultManager("https://psreports.losrios.edu/PurchaseOrderInformationQ.asp")
         );
     }
 
