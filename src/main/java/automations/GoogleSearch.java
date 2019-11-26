@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
  *
  * @author Matt
  */
-public class GoogleSearch extends AbstractPeopleSoftAutomation{
+public class GoogleSearch extends QueryGatherAutomation{
     private static final String DESC = "Performs the Google searches contained in a file, then gives the number of results.";
     private static final String[] HEADERS = new String[]{
         "Query"
@@ -23,8 +23,9 @@ public class GoogleSearch extends AbstractPeopleSoftAutomation{
         super(
             "Google Searches", 
             DESC, 
-            "https://www.google.com/search",
-            new QueryManager("https://www.google.com/", FILE_REQ)
+            "https://www.google.com/",
+            FILE_REQ,
+            "https://www.google.com/search"
         );
     }
     @Override

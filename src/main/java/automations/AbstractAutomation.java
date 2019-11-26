@@ -268,6 +268,7 @@ public abstract class AbstractAutomation {
      * @return this, for chaining purposes
      */
     public final AbstractAutomation run(WebDriver d){
+        writeOutput("Running " + getClass().getName());
         setDriver(d);
         start();
         doRun();

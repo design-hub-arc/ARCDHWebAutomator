@@ -2,6 +2,7 @@ package gui;
 
 import automations.AbstractAutomation;
 import automations.AbstractPeopleSoftAutomation;
+import automations.QueryingAutomation;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 import javax.swing.JButton;
@@ -51,9 +52,8 @@ public class RunWindow extends Page{
                     text.setText("***Program output will appear here***\n");
                     aa.setLogger(text);
                     
-                    //change this to querying 
-                    if(aa instanceof AbstractPeopleSoftAutomation){
-                        ((AbstractPeopleSoftAutomation)aa).preRun(driver, fileText);
+                    if(aa instanceof QueryingAutomation){
+                        ((QueryingAutomation)aa).setInputFile(fileText);
                     }
                     
                     aa.run(driver);

@@ -9,5 +9,6 @@ package automations;
  * @author Matt Crow
  */
 public interface QueryingAutomation {
+    public void setInputFile(String fileText);
     public QueryManager getQueryManager();
 }
