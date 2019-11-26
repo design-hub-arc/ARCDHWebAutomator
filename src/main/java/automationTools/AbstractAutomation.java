@@ -1,4 +1,4 @@
-package automations;
+package automationTools;
 
 import java.util.List;
 import logging.Logger;

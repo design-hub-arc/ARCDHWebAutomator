@@ -1,5 +1,6 @@
-package automations;
+package automationSamples;
 
+import automationTools.AbstractQueryGatherAutomation;
 import io.CsvFileRequirements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -8,7 +9,7 @@ import org.openqa.selenium.WebElement;
  *
  * @author Matt
  */
-public class GoogleSearch extends QueryGatherAutomation{
+public class GoogleSearch extends AbstractQueryGatherAutomation{
     private static final String DESC = "Performs the Google searches contained in a file, then gives the number of results.";
     private static final String[] HEADERS = new String[]{
         "Query"

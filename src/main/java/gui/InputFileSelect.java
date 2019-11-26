@@ -1,7 +1,7 @@
 package gui;
 
-import automations.AbstractAutomation;
-import automations.QueryingAutomation;
+import automationTools.AbstractAutomation;
+import automationTools.QueryingAutomation;
 import io.CsvFileException;
 import io.FileSelector;
 import io.QueryFileReader;

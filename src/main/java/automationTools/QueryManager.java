@@ -1,4 +1,4 @@
-package automations;
+package automationTools;
 
 import static io.CsvParser.NEW_LINE;
 import io.FileRequirements;

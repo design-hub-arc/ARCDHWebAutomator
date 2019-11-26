@@ -1,4 +1,4 @@
-package automations;
+package automationTools;
 
 /**
  * This class serves as the base for automations
@@ -13,7 +13,7 @@ package automations;
  * 7. Write the combined results of every query to a file on the user's computer.
  * @author Matt Crow
  */
-public abstract class AbstractPeopleSoftAutomation extends QueryGatherAutomation{
+public abstract class AbstractPeopleSoftAutomation extends AbstractQueryGatherAutomation{
     /**
      * 
      * @param n the name to display for this automation.

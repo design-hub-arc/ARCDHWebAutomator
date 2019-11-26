@@ -1,6 +1,12 @@
 package gui;
 
-import automations.*;
+import automationSamples.TableTest;
+import automationSamples.PurchaseOrderAutomation;
+import automationSamples.RequisitionAutomation;
+import automationSamples.AccountBalanceAutomation;
+import automationSamples.PurchaseOrderInfoAutomation;
+import automationSamples.GoogleSearch;
+import automationTools.AbstractAutomation;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

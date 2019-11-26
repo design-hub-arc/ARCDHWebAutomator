@@ -1,5 +1,8 @@
-package automations;
+package automationSamples;
 
+import automationTools.ResultManager;
+import automationTools.ReadingAutomation;
+import automationTools.AbstractAutomation;
 import logging.Logger;
 import org.openqa.selenium.By;
 import util.HtmlTable;

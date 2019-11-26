@@ -1,4 +1,4 @@
-package automations;
+package automationTools;
 
 import io.FileSelector;
 import io.ResultFileWriter;

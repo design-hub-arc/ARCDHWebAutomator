@@ -1,5 +1,7 @@
-package automations;
+package automationSamples;
 
+import automationTools.QueryManager;
+import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFileRequirements;
 import org.openqa.selenium.By;
 import util.HtmlTable;

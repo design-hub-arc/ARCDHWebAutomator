@@ -1,4 +1,6 @@
-package automations;
+package automationTools;
+
+import automationTools.QueryManager;
 
 /**
  * The QueryingAutomation interface should

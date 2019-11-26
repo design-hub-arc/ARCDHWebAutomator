@@ -1,5 +1,6 @@
-package automations;
+package automationTools;
 
+import automationTools.AbstractAutomation;
 import io.FileRequirements;
 import logging.Logger;
 import org.openqa.selenium.TimeoutException;
@@ -8,8 +9,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
- * The QueryGatherAutomation follows a
- * basic process:<br>
+ * The AbstractQueryGatherAutomation follows a
+ basic process:<br>
  * 1. take a list of queries<br>
  * 2. for each query in the list, do the following:<br>
  *  a. input the query and submit it<br>
@@ -18,22 +19,22 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * 
  * @author Matt Crow
  */
-public abstract class QueryGatherAutomation extends AbstractAutomation implements QueryingAutomation, ReadingAutomation{
+public abstract class AbstractQueryGatherAutomation extends AbstractAutomation implements QueryingAutomation, ReadingAutomation{
     private final QueryManager queryManager;
     private final ResultManager resultManager;
     
-    public QueryGatherAutomation(String autoName, String description, QueryManager q, ResultManager r){
+    public AbstractQueryGatherAutomation(String autoName, String description, QueryManager q, ResultManager r){
         super(autoName, description);
         queryManager = q;
         resultManager = r;
     }
-    public QueryGatherAutomation(String autoName, String description, QueryManager q, String resultUrl){
+    public AbstractQueryGatherAutomation(String autoName, String description, QueryManager q, String resultUrl){
         this(autoName, description, q, new ResultManager(resultUrl));
     }
-    public QueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, ResultManager r){
+    public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, ResultManager r){
         this(autoName, description, new QueryManager(inputUrl, reqs), r);
     }
-    public QueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
+    public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
         this(autoName, description, new QueryManager(inputUrl, reqs), new ResultManager(resultUrl));
     }
 

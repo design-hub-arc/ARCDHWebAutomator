@@ -1,8 +1,8 @@
 package gui;
 
-import automations.AbstractAutomation;
-import automations.AbstractPeopleSoftAutomation;
-import automations.QueryingAutomation;
+import automationTools.AbstractAutomation;
+import automationTools.AbstractPeopleSoftAutomation;
+import automationTools.QueryingAutomation;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 import javax.swing.JButton;
