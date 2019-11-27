@@ -31,7 +31,8 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
     public void doRun() {
         getDriver().get("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table");
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//*[@id=\"wikiArticle\"]/dl[2]/dd/table")));
-        r.append(table.toCsv());
+        String text = table.toCsv();
+        r.append(text);
         r.saveToFile();
     }
 

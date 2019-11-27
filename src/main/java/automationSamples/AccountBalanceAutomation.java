@@ -61,7 +61,19 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
 
     @Override
     public String readQueryResult() {
+        //todo: remove the headers if this is not the first result
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
-        return table.toCsv();
+        String text = table.toCsv();
+        if(!getResultManager().getResult().equals("")){
+            //already have headers, so remove them from the result
+            int idx = text.indexOf('\n');
+            if(idx == -1){
+                //all headers. Get rid of it
+                text = "";
+            } else {
+                text = text.substring(idx + 1);
+            }
+        }
+        return text;
     }
 }

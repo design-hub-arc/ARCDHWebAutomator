@@ -92,7 +92,7 @@ public class InputFileSelect extends Page{
                 fileText = new QueryFileReader().readFile(f);
                 disp.clear();
                 disp.appendText(f.getName() + " was accepted! \n");
-                disp.appendText(fileText);
+                disp.appendText(((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().reformatFile(fileText));
             } catch (CsvFileException ex){
                 disp.appendText("The file was not accepted for the following reasons:\n");
                 disp.appendText(ex.getMessage());

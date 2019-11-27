@@ -38,6 +38,10 @@ public class ResultManager implements Logger{
         return resultUrl;
     }
     
+    public final String getResult(){
+        return result.toString();
+    }
+    
     public final void clear(){
         result.delete(0, result.length());
     }
