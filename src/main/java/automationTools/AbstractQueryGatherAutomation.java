@@ -89,19 +89,21 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     public void doRun() {
         WebDriver driver = getDriver();
         resultManager.clear();
+        String q;
         while(isRunning()){
             driver.get(queryManager.getInputUrl());
             ExpectedCondition<Boolean> e  = ExpectedConditions.urlMatches(queryManager.getInputUrl());
             getWait().until(e);
             
-            inputQuery(queryManager.getNextQuery());
+            q = queryManager.getNextQuery();
+            inputQuery(q);
             
             e = ExpectedConditions.urlMatches(resultManager.getResultUrl());
             try{
                 getWait().until(e); 
                 resultManager.append(readQueryResult());
             } catch(TimeoutException timeOut){
-                reportError("Did not transition to result page after inputting query.");
+                reportError("Did not transition to result page after inputting query: [" + q + "]");
             }
             
             if(queryManager.isEmpty()){

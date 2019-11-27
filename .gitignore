@@ -2,3 +2,4 @@
 .gradle
 .nb-gradle/private
 .nb-gradle/profiles/private
+*.DS_Store

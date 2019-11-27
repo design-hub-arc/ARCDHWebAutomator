@@ -270,9 +270,14 @@ public abstract class AbstractAutomation {
     public final AbstractAutomation run(WebDriver d){
         writeOutput("Running " + getClass().getName());
         setDriver(d);
-        start();
-        doRun();
-        finish();
+        try{
+            start();
+            doRun();
+            finish();
+        } catch(Exception e){
+            finish(); //make sure we finish
+            throw e;
+        }
         return this;
     }
     

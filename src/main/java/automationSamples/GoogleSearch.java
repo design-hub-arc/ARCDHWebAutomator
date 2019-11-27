@@ -40,6 +40,7 @@ public class GoogleSearch extends AbstractQueryGatherAutomation{
     public String readQueryResult() {
         WebElement numResultBox = awaitFindElement(By.id("resultStats"));
         String ret = numResultBox.getText() + '\n';
+        
         return ret;
     }
 }
