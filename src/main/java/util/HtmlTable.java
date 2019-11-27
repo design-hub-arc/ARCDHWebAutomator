@@ -15,6 +15,11 @@ public class HtmlTable {
         table = t;
     }
     
+    /**
+     * Converts the text content of this HTML table's
+     * th and td elements into a CSV file, <b>with commas removed from their text</b>
+     * @return 
+     */
     public String toCsv(){
         StringBuilder ret = new StringBuilder();
         System.out.println("Table is " + table.toString());
@@ -24,9 +29,12 @@ public class HtmlTable {
             //                                                  in the row, th or td
             List<WebElement> cells = row.findElements(By.xpath(".//th|.//td"));
             System.out.println(cells.size() + " cells");
-            cells.forEach((WebElement cell)->{
-                ret.append(cell.getText()).append(", ");
-            });
+            for(int i = 0; i < cells.size(); i++){
+                ret.append(cells.get(i).getText().replaceAll(",", ""));
+                if(i != cells.size() - 1){
+                    ret.append(", ");
+                }
+            }
             ret.append('\n');
         });
         System.out.println("Ret is \n" + ret);
