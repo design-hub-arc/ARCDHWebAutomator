@@ -8,8 +8,18 @@ import java.util.NoSuchElementException;
 import logging.Logger;
 
 /**
- *
- * @author Matt
+ * The QueryManager is used by automations implementing
+ * the QueryingAutomation interface. The QueryManager
+ * maintains a list of queries the automation should input.
+ * Prior to running an automation, the user specifies a
+ * query file, which must conform to the FileRequirements
+ * of this QueryManager. The FileRequirements will usually
+ * reformat files fed into this class, such as a rearranging
+ * columns in a CSV file.
+ * 
+ * @see FileRequirements
+ * 
+ * @author Matt Crow
  */
 public class QueryManager implements Logger{
     private final FileRequirements fileReqs;

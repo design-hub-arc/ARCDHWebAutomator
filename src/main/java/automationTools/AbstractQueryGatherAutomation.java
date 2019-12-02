@@ -36,16 +36,6 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
         this(autoName, description, new QueryManager(inputUrl, reqs), new ResultManager(resultUrl));
     }
-
-    /**
-     * Reformats the file containing queries which 
-     * will be inputted by the automation 
-     * @param fileText the un-reformatted file text
-     */
-    @Override
-    public final void setInputFile(String fileText){
-        queryManager.setQueryFile(fileText);
-    }
     
     /**
      * The QueryManager formats and stores the

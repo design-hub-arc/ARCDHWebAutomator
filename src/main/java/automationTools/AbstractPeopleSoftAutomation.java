@@ -20,6 +20,6 @@ public abstract class AbstractPeopleSoftAutomation extends AbstractQueryGatherAu
      * @param r the ResultManager which handles the results of the automation's queries
      */
     public AbstractPeopleSoftAutomation(String autoName, String description, QueryManager q, ResultManager r) {
-        super(autoName, description, q, r);
+        super(autoName, description + " (notice: this automation only works for American River College staff with access to https://psreports.losrios.edu)", q, r);
     }
 }

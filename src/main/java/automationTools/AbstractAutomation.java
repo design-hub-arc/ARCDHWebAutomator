@@ -17,6 +17,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * specialized behavior should be implemented
  * into subclasses.
  * 
+ * @see AbstractQueryGatherAutomation
+ * 
  * @author Matt Crow
  */
 public abstract class AbstractAutomation {
@@ -85,6 +87,12 @@ public abstract class AbstractAutomation {
         return running;
     }
     
+    /**
+     * Sets the 'running' flag for this automation
+     * to false.
+     * 
+     * @return this, for chaining purposes
+     */
     public final AbstractAutomation quit(){
         running = false;
         
