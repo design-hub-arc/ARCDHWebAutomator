@@ -11,16 +11,28 @@ This process is needlessly tedious, and so this project was created to automate 
 
 ## Getting Started
 
+### Required Installations
 To use this project, you need Java installed on your computer. You can check if Java is installed by attempting to run the project JAR file (see the section "Running the program"), or you can open your terminal, and type
 ```
 java -version
 ```
 if your computer can find java, you're good! Otherwise, you can download it [here](https://www.java.com/en/). 
+
+### Downloading and Installing
+
 To start, you will want to download the project by clicking the "clone or download button", clicking "download zip", and extracting the files on your computer.
+This program requires no installation to run, so you don't need administrative access for it to work.
 
 ### Running the program (for users)
 
-Once you've downloaded and unzipped the project, you can ignore most of the files. Go to PSDataImprovementSelenium-master/build/libs, and you will find the project JAR file, PSDataImprovementSelenium.jar. Feel free to move this to anywhere on your computer, as it is completely self-contained. Double click the JAR file to run it, or if that doesn't work, you can can see what's going wrong by opening up your terminal (Command Prompt for Windows, or Terminal for Mac), and type
+Once you've downloaded and unzipped the project, you can ignore most of the files. Go to 
+```
+PSDataImprovementSelenium-master/build/libs
+```
+, and you will find the project JAR file, PSDataImprovementSelenium.jar. Feel free to move this to anywhere on your computer, as it is completely self-contained. Double click the JAR file to run it, and the program should launch.
+
+### Troubleshooting
+If the JAR file doesn't open when you double-click it, you can can see what's going wrong by opening up your terminal (Command Prompt for Windows, or Terminal for Mac), and type
 ```
 java -jar
 ```
