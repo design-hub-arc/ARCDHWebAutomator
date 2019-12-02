@@ -104,6 +104,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
                 resultManager.append(readQueryResult());
             } catch(TimeoutException timeOut){
                 reportError("Did not transition to result page after inputting query: [" + q + "]");
+                reportError(timeOut);
             }
             
             if(queryManager.isEmpty()){

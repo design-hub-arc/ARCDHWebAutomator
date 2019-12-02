@@ -1,6 +1,7 @@
 package automationTools;
 
 import java.util.List;
+import logging.ErrorLogger;
 import logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,9 +27,8 @@ public abstract class AbstractAutomation {
     private boolean running;
     
     private final StringBuilder outputLog;
-    private final StringBuilder errorLog;
     private Logger logger;
-    private Logger errorLogger;
+    private ErrorLogger errorLogger;
     
     /**
      * 
@@ -43,7 +43,6 @@ public abstract class AbstractAutomation {
         wait = null;
         running = false;
         outputLog = new StringBuilder();
-        errorLog = new StringBuilder();
         
         //default output log
         logger = new Logger() {
@@ -59,18 +58,7 @@ public abstract class AbstractAutomation {
             }
         };
         
-        errorLogger = new Logger(){
-            @Override
-            public void log(String s) {
-                errorLog.append(s).append('\n');
-                System.err.println(s);
-            }
-
-            @Override
-            public String getLog() {
-                return errorLog.toString();
-            }
-        };
+        errorLogger = new ErrorLogger();
     }
     
     public final String getName(){
@@ -116,13 +104,13 @@ public abstract class AbstractAutomation {
     }
     
     /**
-     * Sets the Logger which should receive any error messages
+     * Sets the ErrorLogger which should receive any error messages
      * this automation produces.
      * 
-     * @param l an object implementing the logging.Logger interface
+     * @param l the ErrorLogger which should receive error messages from this
      * @return this, for chaining purposes
      */
-    public AbstractAutomation setErrorLogger(Logger l){
+    public AbstractAutomation setErrorLogger(ErrorLogger l){
         errorLogger = l;
         return this;
     }
@@ -231,6 +219,17 @@ public abstract class AbstractAutomation {
      */
     public final AbstractAutomation reportError(String msg){
         errorLogger.log(msg + "\n");
+        return this;
+    }
+    
+    /**
+     * Sends an error message to the error log.
+     * 
+     * @param ex the exception to send to the error logger
+     * @return this, for chaining purposes
+     */
+    public final AbstractAutomation reportError(Exception ex){
+        errorLogger.log(ex);
         return this;
     }
     
