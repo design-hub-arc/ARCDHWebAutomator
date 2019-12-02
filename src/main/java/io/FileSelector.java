@@ -17,7 +17,10 @@ public class FileSelector{
     public FileSelector(FileType type, Consumer<File> act){
         chooser = new JFileChooser();
         chooser.setFileSelectionMode((type == FileType.DIR) ? JFileChooser.DIRECTORIES_ONLY : JFileChooser.FILES_ONLY);
-        chooser.setFileFilter(new FileNameExtensionFilter(type.getName(), type.getExtensions()));
+        if(type != FileType.EXE && System.getProperty("os.name").toLowerCase().contains("mac")){
+            //Mac chromedriver doesn't have extension
+            chooser.setFileFilter(new FileNameExtensionFilter(type.getName(), type.getExtensions()));
+        }
         action = act;
     }
     

@@ -1,11 +1,13 @@
 package gui;
 
-import automations.AbstractAutomation;
+import automationTools.AbstractAutomation;
+import automationTools.QueryingAutomation;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import logging.ErrorLogger;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -14,8 +16,14 @@ import org.openqa.selenium.WebDriver;
  */
 public class RunWindow extends Page{
     private final ScrollableTextDisplay text;
+    private final ErrorLogger errorLog;
+    private final JButton anyErrors;
+    
     public RunWindow(Application app) {
         super(app);
+        
+        errorLog = new ErrorLogger();
+        
         setLayout(new BorderLayout());
         
         add(new JLabel("Please wait while the automation runs..."), BorderLayout.PAGE_START);
@@ -38,8 +46,17 @@ public class RunWindow extends Page{
             //do nothing
         });
         bottom.add(finish);
+        anyErrors = new JButton("No errors to report");
+        anyErrors.addActionListener((e)->{
+            errorLog.showPopup();
+        });
+        bottom.add(anyErrors);
         
         add(bottom, BorderLayout.PAGE_END);
+        
+        errorLog.setOnEncounterError((errMsg)->{
+            anyErrors.setText("Encountered an error");
+        });
     }
     
     public final void run(AbstractAutomation aa, String fileText, WebDriver driver){
@@ -47,13 +64,19 @@ public class RunWindow extends Page{
             @Override
             public void run(){
                 try{
+                    anyErrors.setText("No errors to report");
+                    errorLog.clear();
                     text.setText("***Program output will appear here***\n");
                     aa.setLogger(text);
-                    aa.run(driver, fileText);
+                    aa.setErrorLogger(errorLog);
+                    
+                    if(aa instanceof QueryingAutomation){
+                        ((QueryingAutomation)aa).setInputFile(fileText);
+                    }
+                    
+                    aa.run(driver);
                 } catch (Exception ex){
-                    text.appendText("Something went wrong:\n");
-                    text.appendText(ex.toString());
-                    text.appendText(Arrays.toString(ex.getStackTrace()));
+                    errorLog.log(ex);
                 }
             }
         }.start();

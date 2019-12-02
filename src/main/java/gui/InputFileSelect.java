@@ -1,13 +1,15 @@
 package gui;
 
-import automations.AbstractAutomation;
+import automationTools.AbstractAutomation;
+import automationTools.QueryingAutomation;
 import io.CsvFileException;
-import io.FileRequirements;
 import io.FileSelector;
 import io.QueryFileReader;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -68,7 +70,7 @@ public class InputFileSelect extends Page{
     public final void setAuto(AbstractAutomation aa){
         forAuto = aa;
         disp.clear();
-        if(aa.getFileReq().equals(FileRequirements.NO_REQ)){
+        if(!(aa instanceof QueryingAutomation)){
             autoText.setText(aa.getName() + " doesn't need a query file to run");
             disp.appendText("No need to select a file.");
             fileText = "";
@@ -76,28 +78,37 @@ public class InputFileSelect extends Page{
             next();
         } else {
             autoText.setText("Select source file for " + aa.getName());
-            disp.appendText(aa.getFileReq().getReqDesc() + "\n"); 
+            disp.appendText(((QueryingAutomation)aa).getQueryManager().getQueryFileReqs().getReqDesc() + "\n"); 
             accepted = false;
         }
     }
     
     private void selectFile(File f){
-        accepted = false;
-        try {
-            fileText = new QueryFileReader().readFile(f);
-            forAuto.validateFile(fileText);
+        if(forAuto instanceof QueryingAutomation){
+            accepted = false;
+            try {
+                ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().validateFile(f);
+                accepted = true;
+                fileText = new QueryFileReader().readFile(f);
+                disp.clear();
+                disp.appendText(f.getName() + " was accepted! \n");
+                disp.appendText(((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().reformatFile(fileText));
+            } catch (CsvFileException ex){
+                disp.appendText("The file was not accepted for the following reasons:\n");
+                disp.appendText(ex.getMessage());
+            } catch (Exception ex) {
+                disp.appendText("Encountered this error: ");
+                disp.appendText(ex.getMessage());
+                ex.printStackTrace();
+            }    
+        } else {
             accepted = true;
-            disp.clear();
-            disp.appendText(f.getName() + " was accepted! \n");
-            disp.appendText(fileText);
-        } catch (CsvFileException ex){
-            disp.appendText("The file was not accepted for the following reasons:\n");
-            disp.appendText(ex.getMessage());
-        } catch (IOException ex) {
-            disp.appendText("Encountered this error: ");
-            disp.appendText(ex.getMessage());
-            ex.printStackTrace();
+            autoText.setText(forAuto.getName() + " doesn't need a query file to run");
+            disp.appendText("No need to select a file.");
+            fileText = "";
         }
+        
+        
     }
     
     public final String getFileText(){

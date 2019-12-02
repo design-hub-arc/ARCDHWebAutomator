@@ -1,6 +1,6 @@
 package gui;
 
-import automations.AbstractAutomation;
+import automationTools.AbstractAutomation;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
 import org.openqa.selenium.WebDriver;
