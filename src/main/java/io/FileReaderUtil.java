@@ -10,10 +10,14 @@ import java.io.InputStreamReader;
 import static io.CsvParser.NEW_LINE;
 
 /**
- * Might change this to an abstract class later
- * @author Matt
+ * The FileReaderUtil is a static class providing
+ * basic file reading. You can use this class to
+ * easily convert files and streams to a String of
+ * their content
+ * 
+ * @author Matt Crow
  */
-public class QueryFileReader {
+public class FileReaderUtil {
     
     /**
      * Reads the given input stream, and returns its contents
@@ -24,7 +28,7 @@ public class QueryFileReader {
      * @return the contents of s, converted to a String
      * @throws IOException 
      */
-    public String readStream(InputStream s) throws IOException{
+    public static String readStream(InputStream s) throws IOException{
         StringBuilder ret = new StringBuilder();
         
         BufferedReader read = new BufferedReader(new InputStreamReader(s));
@@ -36,13 +40,13 @@ public class QueryFileReader {
         return ret.toString();
     }
     
-    public String readFile(File f) throws FileNotFoundException, IOException{
+    public static String readFile(File f) throws FileNotFoundException, IOException{
         return readStream(new FileInputStream(f));
     }
     
     public static void main(String[] args) throws IOException{
-        InputStream in = QueryFileReader.class.getResourceAsStream("/testFile.csv");
-        String result = new QueryFileReader().readStream(in);
+        InputStream in = FileReaderUtil.class.getResourceAsStream("/testFile.csv");
+        String result = FileReaderUtil.readStream(in);
         System.out.println(result);
     }
 }

@@ -8,13 +8,32 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- *
- * @author Matt
+ * The FileSelector class is used to more conveniently select files
+ * than by having to manually construct a JFileChooser every time.
+ * 
+ * The class provides three static methods for easily allowing the
+ * user to select a file:
+ * <ul>
+ * <li>chooseCsvFile</li>
+ * <li>chooseExeFile</li>
+ * <li>createNewFile</li>
+ * </ul>
+ * You can also use the FileSelector constructor to create
+ * file selectors for other file types, or if you need specific behavior.
+ * 
+ * @author Matt Crow
  */
 public class FileSelector{
     private final JFileChooser chooser;
     private final Consumer<File> action;
     
+    /**
+     * Creates a file selector which can select files of the specified type.
+     * Upon invoking the chooseFile method, the user will be prompted to select a file.
+     * If the user selects a valid file, it is passed to act.
+     * @param type the file type this should select.
+     * @param act the action to run after the user selects a file.
+     */
     public FileSelector(FileType type, Consumer<File> act){
         chooser = new JFileChooser();
         chooser.setFileSelectionMode((type == FileType.DIR) ? JFileChooser.DIRECTORIES_ONLY : JFileChooser.FILES_ONLY);
@@ -39,6 +58,12 @@ public class FileSelector{
         new FileSelector(FileType.EXE, action).chooseFile();
     }
     
+    /**
+     * Asks the user for a directory to save the new file to,
+     * asks for a name for the file, 
+     * and passes the newly created file to action.
+     * @param action 
+     */
     public static void createNewFile(Consumer<File> action){
         new FileSelector(FileType.DIR, (File f)->{
             String name = JOptionPane.showInputDialog(null, "What do you want to name this new file?");

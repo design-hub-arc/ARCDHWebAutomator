@@ -128,7 +128,7 @@ public class CsvParser {
             "h2",
             "h3"
         });
-        String s = new QueryFileReader().readStream(CsvParser.class.getResourceAsStream("/testFile.csv"));
+        String s = FileReaderUtil.readStream(CsvParser.class.getResourceAsStream("/testFile.csv"));
         System.out.println(s);
         try{
             String n = cp.reformat(s);

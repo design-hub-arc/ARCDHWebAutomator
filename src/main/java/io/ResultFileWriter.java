@@ -24,7 +24,7 @@ public class ResultFileWriter {
     }
     
     public static void main(String[] args) throws IOException{
-        String s = new QueryFileReader().readStream(ResultFileWriter.class.getResourceAsStream("/testFile.csv"));
+        String s = FileReaderUtil.readStream(ResultFileWriter.class.getResourceAsStream("/testFile.csv"));
         FileSelector.createNewFile((File newFile)->{
             try {
                 new ResultFileWriter().writeToFile(newFile, s);

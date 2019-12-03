@@ -4,7 +4,7 @@ import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
 import io.CsvFileException;
 import io.FileSelector;
-import io.QueryFileReader;
+import io.FileReaderUtil;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
@@ -89,7 +89,7 @@ public class InputFileSelect extends Page{
             try {
                 ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().validateFile(f);
                 accepted = true;
-                fileText = new QueryFileReader().readFile(f);
+                fileText = FileReaderUtil.readFile(f);
                 disp.clear();
                 disp.appendText(f.getName() + " was accepted! \n");
                 disp.appendText(((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().reformatFile(fileText));
