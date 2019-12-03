@@ -104,8 +104,6 @@ public class InputFileSelect extends Page{
             disp.appendText("No need to select a file.");
             fileText = "";
         }
-        
-        
     }
     
     public final String getFileText(){

@@ -1,9 +1,11 @@
 package logging;
 
+import gui.ErrorPopup;
 import io.FileSelector;
 import io.FileWriterUtil;
 import java.io.IOException;
 import java.util.function.Consumer;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
@@ -52,16 +54,12 @@ public class ErrorLogger implements Logger{
         if(errors){
             String msg = 
                 "Encountered the following errors:\n" 
-                + getLog() 
-                + "\n Would you like to download this message as a text file?";
-            
-            int r = JOptionPane.showConfirmDialog(null, msg, "Error Log", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-            if(r == JOptionPane.YES_OPTION){
-                saveToFile();
-            }
+                + getLog();
+                
+            new ErrorPopup(msg);
+        } else {
+            JOptionPane.showMessageDialog(null, "No errors to report");
         }
-        
-        
     }
     
     public void saveToFile(){
