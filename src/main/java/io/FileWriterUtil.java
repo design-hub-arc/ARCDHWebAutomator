@@ -8,26 +8,27 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 /**
- *
- * @author Matt
+ * The FileWriterUtil is used to easily write Strings to a file or outputstream.
+ * 
+ * @author Matt Crow
  */
-public class ResultFileWriter {
-    public void writeStream(OutputStream os, String s) throws IOException{
+public class FileWriterUtil {
+    public static void writeStream(OutputStream os, String s) throws IOException{
         OutputStreamWriter write = new OutputStreamWriter(os);
         write.write(s);
         write.flush();
         write.close();
     }
     
-    public void writeToFile(File f, String s) throws FileNotFoundException, IOException{
+    public static void writeToFile(File f, String s) throws FileNotFoundException, IOException{
         writeStream(new FileOutputStream(f), s);
     }
     
     public static void main(String[] args) throws IOException{
-        String s = FileReaderUtil.readStream(ResultFileWriter.class.getResourceAsStream("/testFile.csv"));
+        String s = FileReaderUtil.readStream(FileWriterUtil.class.getResourceAsStream("/testFile.csv"));
         FileSelector.createNewFile((File newFile)->{
             try {
-                new ResultFileWriter().writeToFile(newFile, s);
+                FileWriterUtil.writeToFile(newFile, s);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

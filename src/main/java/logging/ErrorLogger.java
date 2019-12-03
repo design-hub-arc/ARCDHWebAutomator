@@ -1,7 +1,7 @@
 package logging;
 
 import io.FileSelector;
-import io.ResultFileWriter;
+import io.FileWriterUtil;
 import java.io.IOException;
 import java.util.function.Consumer;
 import javax.swing.JOptionPane;
@@ -67,7 +67,7 @@ public class ErrorLogger implements Logger{
     public void saveToFile(){
         FileSelector.createNewFile((newFile)->{
             try {
-                new ResultFileWriter().writeToFile(newFile, getLog());
+                FileWriterUtil.writeToFile(newFile, getLog());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

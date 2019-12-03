@@ -1,7 +1,7 @@
 package automationTools;
 
 import io.FileSelector;
-import io.ResultFileWriter;
+import io.FileWriterUtil;
 import java.io.File;
 import java.io.IOException;
 import logging.Logger;
@@ -62,7 +62,7 @@ public class ResultManager implements Logger{
         FileSelector.createNewFile((File f)->{
             log("Attempting to write to " + f.getAbsolutePath());
             try {
-                new ResultFileWriter().writeToFile(f, toString());
+                FileWriterUtil.writeToFile(f, toString());
                 log("file successfully written");
             } catch (IOException ex) {
                 ex.printStackTrace();

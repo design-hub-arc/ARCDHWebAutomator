@@ -78,7 +78,7 @@ public class FileSelector{
     public static void main(String[] args){
         createNewFile((f)->{
             try {
-                new ResultFileWriter().writeToFile(f, "whatever");
+                FileWriterUtil.writeToFile(f, "whatever");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
