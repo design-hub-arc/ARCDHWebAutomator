@@ -4,7 +4,7 @@ import java.io.File;
 
 /**
  *
- * @author Matt
+ * @author Matt Crow
  */
 public class CsvFileRequirements extends FileRequirements{
     private final String[] headers;

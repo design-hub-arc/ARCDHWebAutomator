@@ -1,6 +1,7 @@
 package io;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.function.Consumer;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -41,8 +42,21 @@ public class FileSelector{
     public static void createNewFile(Consumer<File> action){
         new FileSelector(FileType.DIR, (File f)->{
             String name = JOptionPane.showInputDialog(null, "What do you want to name this new file?");
+            if(name.isEmpty()){
+                name = "name-not-set";
+            }
             File newFile = new File(f.getAbsolutePath() + File.separator + name);
             action.accept(newFile);
         }).chooseFile();
+    }
+    
+    public static void main(String[] args){
+        createNewFile((f)->{
+            try {
+                new ResultFileWriter().writeToFile(f, "whatever");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 }
