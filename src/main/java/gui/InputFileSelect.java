@@ -45,7 +45,7 @@ public class InputFileSelect extends Page{
         
         JButton select = new JButton("Select a file");
         select.addActionListener((e)->{
-            FileSelector.chooseCsvFile((f)->{
+            FileSelector.chooseCsvFile("Select the data file", (f)->{
                 selectFile(f);
             });
         });

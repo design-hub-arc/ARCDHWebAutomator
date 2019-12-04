@@ -26,7 +26,7 @@ public class FileWriterUtil {
     
     public static void main(String[] args) throws IOException{
         String s = FileReaderUtil.readStream(FileWriterUtil.class.getResourceAsStream("/testFile.csv"));
-        FileSelector.createNewFile((File newFile)->{
+        FileSelector.createNewFile("Where do you want to copy testFile.csv to?", (File newFile)->{
             try {
                 FileWriterUtil.writeToFile(newFile, s);
             } catch (IOException ex) {

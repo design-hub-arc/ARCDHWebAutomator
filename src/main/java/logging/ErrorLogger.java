@@ -63,7 +63,7 @@ public class ErrorLogger implements Logger{
     }
     
     public void saveToFile(){
-        FileSelector.createNewFile((newFile)->{
+        FileSelector.createNewFile("Where do you want to save the error log?", (newFile)->{
             try {
                 FileWriterUtil.writeToFile(newFile, getLog());
             } catch (IOException ex) {

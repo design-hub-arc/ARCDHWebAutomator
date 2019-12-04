@@ -102,18 +102,12 @@ public class DriverSelect extends Page{
         });
         bottom.add(next);
         
-        JButton temp = new JButton("test");
-        temp.addActionListener((e)->{
-            System.out.println(System.getProperty("webdriver.chrome.driver"));
-        });
-        bottom.add(temp);
-        
         add(bottom, BorderLayout.PAGE_END);
     }
     
     private void selectDriver(){
         if(System.getProperty(currentBrowser.getDriverEnvVar()) == null){
-            FileSelector.chooseExeFile((file)->{
+            FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
                 System.setProperty(currentBrowser.getDriverEnvVar(), file.getAbsolutePath());
             });
         }

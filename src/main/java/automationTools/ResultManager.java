@@ -59,7 +59,7 @@ public class ResultManager implements Logger{
     
     public void saveToFile(){
         log("Saving file");
-        FileSelector.createNewFile((File f)->{
+        FileSelector.createNewFile("Where do you want to save the automation result?", (File f)->{
             log("Attempting to write to " + f.getAbsolutePath());
             try {
                 FileWriterUtil.writeToFile(f, toString());

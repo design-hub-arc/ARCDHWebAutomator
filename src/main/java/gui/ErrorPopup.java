@@ -4,7 +4,6 @@ import io.FileSelector;
 import io.FileWriterUtil;
 import java.awt.BorderLayout;
 import java.io.IOException;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -50,7 +49,7 @@ public class ErrorPopup extends JDialog{
     }
     
     private void save(){
-        FileSelector.createNewFile((newFile)->{
+        FileSelector.createNewFile("Where do you want to save the error log?", (newFile)->{
             try {
                 FileWriterUtil.writeToFile(newFile, msg);
             } catch (IOException ex) {

@@ -31,11 +31,13 @@ public class FileSelector{
      * Creates a file selector which can select files of the specified type.
      * Upon invoking the chooseFile method, the user will be prompted to select a file.
      * If the user selects a valid file, it is passed to act.
+     * @param text the text to display in the file selector popup
      * @param type the file type this should select.
      * @param act the action to run after the user selects a file.
      */
-    public FileSelector(FileType type, Consumer<File> act){
+    public FileSelector(String text, FileType type, Consumer<File> act){
         chooser = new JFileChooser();
+        chooser.setDialogTitle(text);
         chooser.setFileSelectionMode((type == FileType.DIR) ? JFileChooser.DIRECTORIES_ONLY : JFileChooser.FILES_ONLY);
         if(!(type == FileType.EXE && System.getProperty("os.name").toLowerCase().contains("mac"))){
             //Mac chromedriver doesn't have extension, so skip this section for mac exe's
@@ -50,12 +52,12 @@ public class FileSelector{
         }
     }
     
-    public static void chooseCsvFile(Consumer<File> action){
-        new FileSelector(FileType.CSV, action).chooseFile();
+    public static void chooseCsvFile(String text, Consumer<File> action){
+        new FileSelector(text, FileType.CSV, action).chooseFile();
     }
     
-    public static void chooseExeFile(Consumer<File> action){
-        new FileSelector(FileType.EXE, action).chooseFile();
+    public static void chooseExeFile(String text, Consumer<File> action){
+        new FileSelector(text, FileType.EXE, action).chooseFile();
     }
     
     /**
@@ -64,8 +66,8 @@ public class FileSelector{
      * and passes the newly created file to action.
      * @param action 
      */
-    public static void createNewFile(Consumer<File> action){
-        new FileSelector(FileType.DIR, (File f)->{
+    public static void createNewFile(String text, Consumer<File> action){
+        new FileSelector(text, FileType.DIR, (File f)->{
             String name = JOptionPane.showInputDialog(null, "What do you want to name this new file?");
             if(name.isEmpty()){
                 name = "name-not-set";
@@ -76,7 +78,7 @@ public class FileSelector{
     }
     
     public static void main(String[] args){
-        createNewFile((f)->{
+        createNewFile("Create a file here", (f)->{
             try {
                 FileWriterUtil.writeToFile(f, "whatever");
             } catch (IOException ex) {
