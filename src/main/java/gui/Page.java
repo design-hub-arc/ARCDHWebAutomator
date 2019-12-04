@@ -17,6 +17,10 @@ public class Page extends JPanel{
         };
     }
     
+    public Application getHost(){
+        return host;
+    }
+    
     public final void setOnDone(Runnable r){
         onDone = r;
     }

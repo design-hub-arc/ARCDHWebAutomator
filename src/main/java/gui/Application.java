@@ -4,6 +4,7 @@ import automationTools.AbstractAutomation;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
 import org.openqa.selenium.WebDriver;
+import util.User;
 
 /**
  *
@@ -15,11 +16,14 @@ public class Application extends JPanel{
     private static final String DRIVER = "DRIVER";
     private static final String RUN = "RUN"; //use this page to show program output
     
+    private final User user;
     private AbstractAutomation selAuto;
     private String fileText;
     private WebDriver driver;
     
     public Application(){
+        user = new User();
+        
         CardLayout l = new CardLayout();
         setLayout(l);
         
@@ -46,6 +50,10 @@ public class Application extends JPanel{
         add(file, DATA);
         add(driverSel, DRIVER);
         add(run, RUN);
+    }
+    
+    public final User getUser(){
+        return user;
     }
     
     public final void prev(){

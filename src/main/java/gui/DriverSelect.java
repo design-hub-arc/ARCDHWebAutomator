@@ -109,6 +109,7 @@ public class DriverSelect extends Page{
         if(System.getProperty(currentBrowser.getDriverEnvVar()) == null){
             FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
                 System.setProperty(currentBrowser.getDriverEnvVar(), file.getAbsolutePath());
+                getHost().getUser().setDriverPath(currentBrowser, file.getAbsolutePath());
             });
         }
         try{
