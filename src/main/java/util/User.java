@@ -43,6 +43,33 @@ public class User {
         return this;
     }
     
+    public final String getDriverPath(Browser b){
+        return webDrivers.get(b);
+    }
+    
+    /**
+     * Removes the given Browser's driver path from
+     * the system properties.
+     * This method should be used whenever an invalid driver path is entered.
+     * 
+     * @param b
+     * @return 
+     */
+    public final User clearDriverPath(Browser b){
+        webDrivers.remove(b);
+        System.clearProperty(b.getDriverEnvVar());
+        return this;
+    }
+    
+    public final User clearAllDriverPaths() {
+        webDrivers.keySet().forEach((browser)->{
+            //calling clearDriverPath(browser) would throw a concurrent modification exception
+            System.clearProperty(browser.getDriverEnvVar());
+        });
+        webDrivers.clear();
+        return this;
+    }
+    
     public final void save(OutputStream os) throws IOException{
         os.write(toString().getBytes());
     }
@@ -54,6 +81,7 @@ public class User {
         path = path.substring(0, path.lastIndexOf(File.separatorChar));
         path = path + File.separatorChar + FILE_NAME;
         System.out.println("Path is " + path);
+        System.out.println(toString());
         FileWriterUtil.writeToFile(new File(path), toString());
     }
     

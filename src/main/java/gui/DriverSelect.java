@@ -92,6 +92,12 @@ public class DriverSelect extends Page{
         });
         bottom.add(select);
         
+        JButton clear = new JButton("Clear saved paths");
+        clear.addActionListener((e)->{
+            getHost().getUser().clearAllDriverPaths();
+        });
+        bottom.add(clear);
+        
         JButton next = new JButton("Next");
         next.addActionListener((e)->{
             if(driver == null){
@@ -108,7 +114,6 @@ public class DriverSelect extends Page{
     private void selectDriver(){
         if(System.getProperty(currentBrowser.getDriverEnvVar()) == null){
             FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
-                System.setProperty(currentBrowser.getDriverEnvVar(), file.getAbsolutePath());
                 getHost().getUser().setDriverPath(currentBrowser, file.getAbsolutePath());
             });
         }
@@ -133,7 +138,7 @@ public class DriverSelect extends Page{
             text.appendText("Looks like something went wrong:\n");
             text.appendText(e.toString());
             text.appendText("\n");
-            System.clearProperty(currentBrowser.getDriverEnvVar());
+            getHost().getUser().clearDriverPath(currentBrowser);
         }
     }
     
