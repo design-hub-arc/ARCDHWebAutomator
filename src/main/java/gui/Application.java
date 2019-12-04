@@ -2,6 +2,8 @@ package gui;
 
 import automationTools.AbstractAutomation;
 import java.awt.CardLayout;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import javax.swing.JPanel;
 import org.openqa.selenium.WebDriver;
 import util.User;
@@ -23,7 +25,13 @@ public class Application extends JPanel{
     
     public Application(){
         user = new User();
-        
+        try {
+            user.load();
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         CardLayout l = new CardLayout();
         setLayout(l);
         

@@ -1,9 +1,13 @@
 package util;
 
+import io.FileReaderUtil;
 import io.FileWriterUtil;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -68,6 +72,20 @@ public class User {
         });
         webDrivers.clear();
         return this;
+    }
+    
+    public final void load(InputStream is) throws IOException{
+        String fileText = FileReaderUtil.readStream(is);
+        System.out.println(fileText);
+    }
+    public final void load(File f) throws FileNotFoundException, IOException{
+        load(new FileInputStream(f));
+    }
+    public final void load() throws URISyntaxException, IOException{
+        String path = new File(User.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+        path = path.substring(0, path.lastIndexOf(File.separatorChar));
+        path = path + File.separatorChar + FILE_NAME;
+        load(new File(path));
     }
     
     public final void save(OutputStream os) throws IOException{
