@@ -5,8 +5,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -23,6 +21,7 @@ public class StartWindow extends JFrame{
         
         Application a = new Application();
         setContentPane(a);
+        /*
         addWindowListener(new WindowAdapter(){
             @Override
             public void windowClosing(WindowEvent we) {
@@ -35,7 +34,7 @@ public class StartWindow extends JFrame{
                 }
             }
         });
-        
+        */
         revalidate();
         repaint();
     }

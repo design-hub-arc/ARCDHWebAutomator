@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -77,6 +78,12 @@ public class User {
     public final void load(InputStream is) throws IOException{
         String fileText = FileReaderUtil.readStream(is);
         System.out.println(fileText);
+        String[] lines = fileText.split(io.CsvParser.NEW_LINE);
+        Arrays.stream(lines).forEach((line)->{
+            if(!"".equals(line.trim())){
+                
+            }
+        });
     }
     public final void load(File f) throws FileNotFoundException, IOException{
         load(new FileInputStream(f));
