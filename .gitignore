@@ -4,3 +4,4 @@
 .nb-gradle/profiles/private
 *.DS_Store
 *.user
+/.nb-gradle/
