@@ -7,7 +7,7 @@ package io;
  */
 public enum FileType {
     CSV("Comma Separated Values", new String[]{"csv"}),
-    EXE("Executable", new String[]{"exe", "dmg"}),
+    EXE("Executable", new String[]{"exe", "dmg", "app"}),
     DIR("Directory", new String[]{"directory", "folder"}),
     ANY("Any file", new String[]{});
     

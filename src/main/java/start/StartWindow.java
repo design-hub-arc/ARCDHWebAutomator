@@ -1,6 +1,10 @@
 package start;
 
 import gui.Application;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import javax.swing.JFrame;
 
 /**
@@ -15,8 +19,22 @@ public class StartWindow extends JFrame{
         setSize(500, 500);
         setVisible(true);
         
-        setContentPane(new Application());
-        
+        Application a = new Application();
+        setContentPane(a);
+        /*
+        addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent we) {
+                try {
+                    a.getUser().save();
+                } catch (URISyntaxException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        */
         revalidate();
         repaint();
     }

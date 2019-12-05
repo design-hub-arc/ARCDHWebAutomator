@@ -25,7 +25,6 @@ import util.Browser;
  */
 public class DriverSelect extends Page{
     private Browser currentBrowser;
-    //maybe wait to load the driver? How would I check if it works beforehand?
     private WebDriver driver;
     private ScrollableTextDisplay text;
     
@@ -93,6 +92,12 @@ public class DriverSelect extends Page{
         });
         bottom.add(select);
         
+        JButton clear = new JButton("Clear saved paths");
+        clear.addActionListener((e)->{
+            getHost().getUser().clearAllDriverPaths();
+        });
+        bottom.add(clear);
+        
         JButton next = new JButton("Next");
         next.addActionListener((e)->{
             if(driver == null){
@@ -102,37 +107,39 @@ public class DriverSelect extends Page{
             }
         });
         bottom.add(next);
+        
         add(bottom, BorderLayout.PAGE_END);
     }
     
     private void selectDriver(){
-        FileSelector.chooseExeFile((file)->{
-            try{
-                switch(currentBrowser){
-                    case CHROME:
-                        System.setProperty("webdriver.chrome.driver", file.getAbsolutePath());
-                        driver = new ChromeDriver();
-                        break;
-                    case FIRE_FOX:
-                        System.setProperty("webdriver.gecko.driver", file.getAbsolutePath());
-                        driver = new FirefoxDriver();
-                        break;
-                    case EDGE:
-                        System.setProperty("webdriver.edge.driver", file.getAbsolutePath());
-                        driver = new EdgeDriver();
-                        break;
-                    default:
-                        throw new UnsupportedOperationException("Invalid browser: " + currentBrowser.name());
-                }
-                driver.manage().window().setSize(new Dimension(500, 500));
-                driver.manage().window().setPosition(new Point(getX() + getWidth(), getY()));
-                JOptionPane.showMessageDialog(this, "Looks like that worked! Please don't close the browser window!");
-            } catch(Exception e){
-                text.appendText("Looks like something went wrong:\n");
-                text.appendText(e.toString());
-                text.appendText("\n");
+        if(System.getProperty(currentBrowser.getDriverEnvVar()) == null){
+            FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
+                getHost().getUser().setDriverPath(currentBrowser, file.getAbsolutePath());
+            });
+        }
+        try{
+            switch(currentBrowser){
+                case CHROME:
+                    driver = new ChromeDriver();
+                    break;
+                case FIRE_FOX:
+                    driver = new FirefoxDriver();
+                    break;
+                case EDGE:
+                    driver = new EdgeDriver();
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Invalid browser: " + currentBrowser.name());
             }
-        });
+            driver.manage().window().setSize(new Dimension(500, 500));
+            driver.manage().window().setPosition(new Point(getX() + getWidth(), getY()));
+            JOptionPane.showMessageDialog(this, "Looks like that worked! Please don't close the browser window!");
+        } catch(Exception e){
+            text.appendText("Looks like something went wrong:\n");
+            text.appendText(e.toString());
+            text.appendText("\n");
+            getHost().getUser().clearDriverPath(currentBrowser);
+        }
     }
     
     public final WebDriver getDriver(){

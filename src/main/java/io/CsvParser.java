@@ -43,10 +43,12 @@ public class CsvParser {
      * Converts the given fileText into the format specified by the
      * required headers passed to this' constructor. It also removes quote marks from the resulting string.
      * @param fileText text in CSV format.
-     * @param includeHeaders if the resulting String should contain headers. Defaults to true. 
+     * @param includeHeaders if the resulting String should contain headers. Defaults to true.
      * @return the newly formatted String.
      */
     public String reformat(String fileText, boolean includeHeaders){
+        boolean debug = false;
+        
         String[] lines = fileText.split(NEW_LINE);
         String[] headers = Arrays.stream(lines[0].split(",")).map((h)->h.trim()).toArray((l)->new String[l]);
         if(headers.length < reqHeaders.length){
@@ -57,20 +59,29 @@ public class CsvParser {
         HashMap<String, Integer> headerToCol = new HashMap<>();
         for(String header : reqHeaders){
             boolean found = false;
-            //System.out.println("Searching for " + header);
+            if(debug){
+                System.out.println("Searching for " + header);
+            }
+            
             for(int i = 0; i < headers.length && !found; i++){
-                //System.out.println("[" + headers[i] + "]");
+                if(debug){
+                    System.out.println("[" + headers[i] + "]");
+                }
                 if(headers[i].equalsIgnoreCase(header)){
                     headerToCol.put(header, i);
-                    //System.out.println("Found it!");
                     found = true;
+                    if(debug){
+                        System.out.println("Found it!");
+                    }
                 }
             }
             if(!found){
                 throw new MissingHeaderException(header, headers);
             }
         }
-        System.out.println("building new file...");
+        if(debug){
+            System.out.println("building new file...");
+        }
         //build the file
         StringBuilder newFile = new StringBuilder();
         for(int i = 0; includeHeaders && i < reqHeaders.length; i++){
@@ -101,9 +112,10 @@ public class CsvParser {
         }
         
         String ret = newFile.toString();
-        System.out.println("CsvParser returns this in CsvParser.java");
-        System.out.println(ret);
-        
+        if(debug){
+            System.out.println("CsvParser returns this in CsvParser.java");
+            System.out.println(ret);
+        }
         return ret;
     }
     public String reformat(String fileText){
@@ -116,11 +128,11 @@ public class CsvParser {
             "h2",
             "h3"
         });
-        String s = new QueryFileReader().readStream(CsvParser.class.getResourceAsStream("/testFile.csv"));
+        String s = FileReaderUtil.readStream(CsvParser.class.getResourceAsStream("/testFile.csv"));
         System.out.println(s);
         try{
             String n = cp.reformat(s);
-            //System.out.println(n);
+            System.out.println(n);
         }catch(Exception e){
             e.printStackTrace();
             System.err.println(e.getMessage());

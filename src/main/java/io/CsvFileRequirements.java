@@ -4,7 +4,7 @@ import java.io.File;
 
 /**
  *
- * @author Matt
+ * @author Matt Crow
  */
 public class CsvFileRequirements extends FileRequirements{
     private final String[] headers;
@@ -23,7 +23,7 @@ public class CsvFileRequirements extends FileRequirements{
     @Override
     public boolean validateFile(File f) throws Exception {
         super.validateFile(f);
-        parser.reformat(new QueryFileReader().readFile(f)); //throws CsvFileException if it can't be reformatted
+        parser.reformat(FileReaderUtil.readFile(f)); //throws CsvFileException if it can't be reformatted
         return true;
     }
     

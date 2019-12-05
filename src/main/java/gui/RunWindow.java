@@ -3,7 +3,6 @@ package gui;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
 import java.awt.BorderLayout;
-import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;

@@ -4,12 +4,9 @@ import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
 import io.CsvFileException;
 import io.FileSelector;
-import io.QueryFileReader;
+import io.FileReaderUtil;
 import java.awt.BorderLayout;
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -48,7 +45,7 @@ public class InputFileSelect extends Page{
         
         JButton select = new JButton("Select a file");
         select.addActionListener((e)->{
-            FileSelector.chooseCsvFile((f)->{
+            FileSelector.chooseCsvFile("Select the data file", (f)->{
                 selectFile(f);
             });
         });
@@ -89,7 +86,7 @@ public class InputFileSelect extends Page{
             try {
                 ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().validateFile(f);
                 accepted = true;
-                fileText = new QueryFileReader().readFile(f);
+                fileText = FileReaderUtil.readFile(f);
                 disp.clear();
                 disp.appendText(f.getName() + " was accepted! \n");
                 disp.appendText(((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().reformatFile(fileText));
@@ -107,8 +104,6 @@ public class InputFileSelect extends Page{
             disp.appendText("No need to select a file.");
             fileText = "";
         }
-        
-        
     }
     
     public final String getFileText(){
