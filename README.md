@@ -1,4 +1,4 @@
-# PSDataImprovementSelenium
+# American River College Design Hub Web Automator
 
 An automation program used to speed up the American River College business systems.
 
@@ -27,9 +27,9 @@ This program requires no installation to run, so you don't need administrative a
 
 Once you've downloaded and unzipped the project, you can ignore most of the files. Go to 
 ```
-PSDataImprovementSelenium-master/build/libs
+ARCDHWebAutomator-master/build/libs
 ```
-, and you will find the project JAR file, PSDataImprovementSelenium.jar. Feel free to move this to anywhere on your computer, as it is completely self-contained. Double click the JAR file to run it, and the program should launch.
+, and you will find the project JAR file, ARCDHWebAutomator.jar. Feel free to move this to anywhere on your computer, as it is completely self-contained. Double click the JAR file to run it, and the program should launch.
 
 ### Troubleshooting
 If the JAR file doesn't open when you double-click it, you can can see what's going wrong by opening up your terminal (Command Prompt for Windows, or Terminal for Mac), and type
@@ -38,7 +38,7 @@ java -jar
 ```
 (make sure you have a space after -jar) Drag and drop the JAR file to the terminal window, and you should see something like this:
 ```
-java -jar C:\Users\****\Desktop\PSDataImprovementSelenium.jar
+java -jar C:\Users\****\Desktop\ARCDHWebAutomator.jar
 ```
 You can then hit enter, at which point, if the application doesn't start, the terminal will tell you what went wrong. Feel free to email Matt, and he can tell you what went wrong (screenshots are helpful).
 
@@ -64,4 +64,4 @@ Since this project is the property of the American River College Design Hub, it 
 
 * **Matt Crow** - *Initial work* - [IronHeart7334](https://github.com/IronHeart7334)
 
-See also the list of [contributors](https://github.com/design-hub-arc/PSDataImprovementSelenium/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/design-hub-arc/ARCDHWebAutomator/contributors) who participated in this project.
