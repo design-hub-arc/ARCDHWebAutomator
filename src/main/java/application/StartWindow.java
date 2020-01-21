@@ -1,4 +1,4 @@
-package start;
+package application;
 
 import gui.Application;
 import java.awt.event.WindowAdapter;
