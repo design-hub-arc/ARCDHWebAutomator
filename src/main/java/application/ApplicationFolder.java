@@ -1,10 +1,15 @@
 package application;
 
+import io.FileSelector;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.Browser;
 
 /**
  * The ApplicationFolder class is used
@@ -22,12 +27,16 @@ public final class ApplicationFolder {
     private final String userHome = System.getProperty("user.home");
     private final String companyFolderName = userHome + File.separator + "ARCDH";
     private final String applicationFolderName = companyFolderName + File.separator + "WebAutomator";
+    private final String driverFolderName = applicationFolderName + File.separator + "webdrivers";
+    private final HashMap<Browser, String> driverPaths;
+    
     private static ApplicationFolder instance;
     
     private ApplicationFolder(){
         if(instance != null){
             throw new RuntimeException("Cannot instantiate more than one instance of singleton class, use getInstance() instead of constructor");
         }
+        driverPaths = new HashMap<>();
     }
     
     /**
@@ -59,6 +68,11 @@ public final class ApplicationFolder {
         return Files.exists(p) && Files.isDirectory(p);
     }
     
+    public boolean driverFolderExists(){
+        Path p = Paths.get(driverFolderName);
+        return Files.exists(p) && Files.isDirectory(p);
+    }
+    
     private void createFolder() throws IOException{
         if(!companyFolderExists()){
             System.out.println("Creating ARCDH folder at " + companyFolderName);
@@ -68,14 +82,64 @@ public final class ApplicationFolder {
             System.out.println("Creating folder at " + applicationFolderName);
             Files.createDirectory(Paths.get(applicationFolderName));
         }
+        if(!driverFolderExists()){
+            Files.createDirectory(Paths.get(driverFolderName));
+        }
     }
     
-    public static void main(String[] args){
-        try {
-            getInstance().createFolder();
+    private String copyWebDriver(Browser b, String path) throws IOException{
+        if(b == null){
+            throw new NullPointerException("Cannot load webdriver if browser is unknown");
+        }
+        if(path == null){
+            throw new NullPointerException("Cannot load webdriver from null path");
+        }
+        
+        if(!driverFolderExists()){
+            createFolder();
+        }
+        
+        Path origPath = Paths.get(path);
+        String newPath = driverFolderName + File.separator + origPath.getFileName().toString();
+        Files.copy(origPath, Paths.get(newPath));
+        
+        return newPath;
+    }
+    
+    /**
+     * Copies a WebDriver executable to this folder so
+     * it can be retrieved without user input in the future.
+     * 
+     * If that fails, the webdriver will have to be selected by
+     * the user again the next time they use the program.
+     * 
+     * @param b the Browser the given WebDriver is for
+     * @param path the path to a WebDriver
+     */
+    public void loadWebDriver(Browser b, String path){
+        if(b == null){
+            throw new NullPointerException("Cannot load webdriver if browser is unknown");
+        }
+        if(path == null){
+            throw new NullPointerException("Cannot load webdriver from null path");
+        }
+        Path p = Paths.get(path);
+        if(!(Files.exists(p) && !Files.isDirectory(p))){
+            throw new IllegalArgumentException("Path must be a path to a valid file, not a directory");
+        }
+        
+        try{
+            String newPath = copyWebDriver(b, path);
+            driverPaths.put(b, newPath);
         } catch (IOException ex) {
             ex.printStackTrace();
-            System.err.println("failed to create folder");
+            driverPaths.put(b, path);
         }
+    }   
+    
+    public static void main(String[] args){
+        FileSelector.chooseExeFile("choose chrome webdriver", (File f)->{
+            getInstance().loadWebDriver(Browser.CHROME, f.getAbsolutePath());
+        });
     }
 }
