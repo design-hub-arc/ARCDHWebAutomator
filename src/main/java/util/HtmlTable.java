@@ -1,5 +1,7 @@
 package util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -13,6 +15,47 @@ public class HtmlTable {
     
     public HtmlTable(WebElement t){
         table = t;
+    }
+    
+    public int getColumnIdx(String colName){
+        int ret = -1;
+        List<WebElement> columns = table.findElements(By.tagName("th"));
+        for(int i = 0; i < columns.size() && ret == -1; i++){
+            if(columns.get(i).getText().equals(colName)){
+                ret = i;
+            }
+        }
+        return ret;
+    }
+    
+    public String toCsv(String[] columns){
+        StringBuilder ret = new StringBuilder();
+        HashMap<String, Integer> cols = new HashMap<>();
+        ArrayList<String> validCols = new ArrayList<>();
+        int idx;
+        for(String column : columns){
+            idx = getColumnIdx(column);
+            if(idx != -1){
+                cols.put(column, idx);
+                validCols.add(column);
+            }
+        }
+        int numCols = validCols.size();
+        
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+        
+        rows.forEach((WebElement row)->{
+            WebElement cell;
+            for(int i = 0; i < numCols; i++){
+                cell = row.findElement(By.xpath(".//td[" + cols.get(validCols.get(i)) + "]"));
+                ret.append(cell.getText().replaceAll(",", ""));
+                if(i != numCols - 1){
+                    ret.append(",");
+                }
+            }
+            ret.append('\n');
+        });
+        return ret.toString();
     }
     
     /**

@@ -4,6 +4,7 @@ import automationSamples.TableTest;
 import automationSamples.PurchaseOrderAutomation;
 import automationSamples.RequisitionAutomation;
 import automationSamples.AccountBalanceAutomation;
+import automationSamples.BlanketPurchaseOrder;
 import automationSamples.PurchaseOrderInfoAutomation;
 import automationSamples.GoogleSearch;
 import automationTools.AbstractAutomation;
@@ -50,7 +51,8 @@ public class AutomationSelect extends Page{
             new AccountBalanceAutomation(),
             new RequisitionAutomation(),
             new PurchaseOrderAutomation(),
-            new PurchaseOrderInfoAutomation()
+            new PurchaseOrderInfoAutomation(),
+            new BlanketPurchaseOrder()
         };
         
         //pair buttons with automation info
