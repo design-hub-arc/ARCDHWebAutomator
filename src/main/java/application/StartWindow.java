@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 public class StartWindow extends JFrame{
     public StartWindow(){
         super();
-        setTitle("PeopleSoft Automation Utility");
+        setTitle("American River College Design Hub Web Automator");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500, 500);
         setVisible(true);

@@ -12,17 +12,17 @@ import java.util.logging.Logger;
 import util.Browser;
 
 /**
- * The ApplicationFolder class is used
- * to interface with the folder containing
- * resources utilized by the program, such as
- * webdrivers, plugins, and more.
+ * The ApplicationResources class is used
+ to interface with the folder containing
+ resources utilized by the program, such as
+ webdrivers, plugins, and more.
  * This provides a single location where the program
  * can find the resources it needs,
  * minimizing the need for users to select files.
  * 
  * @author Matt Crow
  */
-public final class ApplicationFolder {
+public final class ApplicationResources {
     
     private final String userHome = System.getProperty("user.home");
     private final String companyFolderName = userHome + File.separator + "ARCDH";
@@ -30,9 +30,9 @@ public final class ApplicationFolder {
     private final String driverFolderName = applicationFolderName + File.separator + "webdrivers";
     private final HashMap<Browser, String> driverPaths;
     
-    private static ApplicationFolder instance;
+    private static ApplicationResources instance;
     
-    private ApplicationFolder(){
+    private ApplicationResources(){
         if(instance != null){
             throw new RuntimeException("Cannot instantiate more than one instance of singleton class, use getInstance() instead of constructor");
         }
@@ -45,44 +45,40 @@ public final class ApplicationFolder {
      * 
      * @return the instance of this class
      */
-    public static ApplicationFolder getInstance(){
+    public static ApplicationResources getInstance(){
         if(instance == null){
-            instance = new ApplicationFolder();
+            instance = new ApplicationResources();
         }
         return instance;
     }
     
-    public boolean companyFolderExists(){
-        Path p = Paths.get(companyFolderName);
+    /**
+     * Returns whether or not the given directory exists.
+     * 
+     * @param dirPath the full path to the directory to check
+     * @return whether or not the given directory exists.
+     */
+    private boolean dirExists(String dirPath){
+        Path p = Paths.get(dirPath);
         return Files.exists(p) && Files.isDirectory(p);
     }
     
     /**
-     * Verifies that the folder used by
-     * this program exists.
+     * Creates the directories that this program needs
+     * that haven't been created yet.
      * 
-     * @return whether or not the folder exists
+     * @throws IOException if any of the directories cannot be created.
      */
-    public boolean folderExists(){
-        Path p = Paths.get(applicationFolderName);
-        return Files.exists(p) && Files.isDirectory(p);
-    }
-    
-    public boolean driverFolderExists(){
-        Path p = Paths.get(driverFolderName);
-        return Files.exists(p) && Files.isDirectory(p);
-    }
-    
-    private void createFolder() throws IOException{
-        if(!companyFolderExists()){
+    private void createFolders() throws IOException{
+        if(!dirExists(companyFolderName)){
             System.out.println("Creating ARCDH folder at " + companyFolderName);
             Files.createDirectory(Paths.get(companyFolderName));
         }
-        if(!folderExists()){
+        if(!dirExists(applicationFolderName)){
             System.out.println("Creating folder at " + applicationFolderName);
             Files.createDirectory(Paths.get(applicationFolderName));
         }
-        if(!driverFolderExists()){
+        if(!dirExists(driverFolderName)){
             Files.createDirectory(Paths.get(driverFolderName));
         }
     }
@@ -95,8 +91,8 @@ public final class ApplicationFolder {
             throw new NullPointerException("Cannot load webdriver from null path");
         }
         
-        if(!driverFolderExists()){
-            createFolder();
+        if(!dirExists(driverFolderName)){
+            createFolders();
         }
         
         Path origPath = Paths.get(path);
