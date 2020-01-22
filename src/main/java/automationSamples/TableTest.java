@@ -30,8 +30,11 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
     @Override
     public void doRun() {
         getDriver().get("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table");
-        HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//*[@id=\"wikiArticle\"]/dl[2]/dd/table")));
-        String text = table.toCsv();
+        ///html/body/table[3]
+        getDriver().switchTo().frame("frame_More_Examples"); 
+        //since the table is inside the IFrame, we need to switch to the frame before accessing the element
+        HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//html/body/table[3]")));
+        String text = table.toCsv(new String[]{"Capitals that don't exist"});
         r.append(text);
         r.saveToFile();
     }
