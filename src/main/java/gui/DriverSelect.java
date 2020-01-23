@@ -26,12 +26,12 @@ import util.Browser;
  */
 public class DriverSelect extends Page{
     private Browser currentBrowser;
-    private WebDriver driver;
+    private Class<? extends WebDriver> driverClass;
     private ScrollableTextDisplay text;
     
     public DriverSelect(Application app) {
         super(app);
-        driver = null;
+        driverClass = null;
         setLayout(new BorderLayout());
         
         //top
@@ -62,7 +62,7 @@ public class DriverSelect extends Page{
             b = new JRadioButton();
             b.addActionListener((e)->{
                 currentBrowser = browser;
-                driver = null;
+                driverClass = null;
             });
             bg.add(b);
             j.add(b, BorderLayout.LINE_START);
@@ -101,7 +101,7 @@ public class DriverSelect extends Page{
         
         JButton next = new JButton("Next");
         next.addActionListener((e)->{
-            if(driver == null){
+            if(driverClass == null){
                 JOptionPane.showMessageDialog(this, "Please select the WebDriver for your browser");
             } else {
                 next();
@@ -121,19 +121,17 @@ public class DriverSelect extends Page{
         try{
             switch(currentBrowser){
                 case CHROME:
-                    driver = new ChromeDriver();
+                    driverClass = ChromeDriver.class;
                     break;
                 case FIRE_FOX:
-                    driver = new FirefoxDriver();
+                    driverClass = FirefoxDriver.class;
                     break;
                 case EDGE:
-                    driver = new EdgeDriver();
+                    driverClass = EdgeDriver.class;
                     break;
                 default:
                     throw new UnsupportedOperationException("Invalid browser: " + currentBrowser.name());
             }
-            driver.manage().window().setSize(new Dimension(500, 500));
-            driver.manage().window().setPosition(new Point(getX() + getWidth(), getY()));
             JOptionPane.showMessageDialog(this, "Looks like that worked! Please don't close the browser window!");
         } catch(Exception e){
             text.appendText("Looks like something went wrong:\n");
@@ -143,7 +141,7 @@ public class DriverSelect extends Page{
         }
     }
     
-    public final WebDriver getDriver(){
-        return driver;
+    public final Class<? extends WebDriver> getDriverClass(){
+        return driverClass;
     }
 }

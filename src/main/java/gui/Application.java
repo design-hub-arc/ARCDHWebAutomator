@@ -19,7 +19,7 @@ public class Application extends JPanel{
     
     private AbstractAutomation selAuto;
     private String fileText;
-    private WebDriver driver;
+    private Class<? extends WebDriver> driverClass;
     
     public Application(){
         try {
@@ -46,8 +46,8 @@ public class Application extends JPanel{
         });
         driverSel.setOnDone(()->{
             l.show(this, RUN);
-            driver = driverSel.getDriver();
-            run.run(selAuto, fileText, driver);
+            driverClass = driverSel.getDriverClass();
+            run.run(selAuto, fileText, driverClass);
         });
         add(auto, AUTO);
         add(file, DATA);

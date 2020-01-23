@@ -58,7 +58,7 @@ public class RunWindow extends Page{
         });
     }
     
-    public final void run(AbstractAutomation aa, String fileText, WebDriver driver){
+    public final void run(AbstractAutomation aa, String fileText, Class<? extends WebDriver> driverClass){
         new Thread(){
             @Override
             public void run(){
@@ -73,7 +73,7 @@ public class RunWindow extends Page{
                         ((QueryingAutomation)aa).setInputFile(fileText);
                     }
                     
-                    aa.run(driver);
+                    aa.run(driverClass);
                 } catch (Exception ex){
                     errorLog.log(ex);
                 }

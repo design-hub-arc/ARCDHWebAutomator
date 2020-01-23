@@ -271,13 +271,15 @@ public abstract class AbstractAutomation {
      * This process handles both setup and
      * cleanup.
      * 
-     * @param d the WebDriver to use for running
+     * @param driverClass the class of the webdriver to run
      * @return this, for chaining purposes
+     * @throws java.lang.Exception if an error occurs during either launching the WebDriver or running the automation
      */
-    public final AbstractAutomation run(WebDriver d){
+    public final AbstractAutomation run(Class<? extends WebDriver> driverClass) throws Exception{
         writeOutput("Running " + getClass().getName());
-        setDriver(d);
         try{
+            WebDriver d = driverClass.newInstance();
+            setDriver(d);
             start();
             doRun();
             finish();
