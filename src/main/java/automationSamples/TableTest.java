@@ -34,7 +34,7 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
         getDriver().switchTo().frame("frame_More_Examples"); 
         //since the table is inside the IFrame, we need to switch to the frame before accessing the element
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//html/body/table[3]")));
-        String text = table.toCsv(new String[]{"Capitals that don't exist"});
+        String text = table.toCsv(new String[]{"Capitals"});
         r.append(text);
         r.saveToFile();
     }

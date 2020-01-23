@@ -28,53 +28,6 @@ public class User {
         webDrivers = new HashMap<>();
     }
     
-    /**
-     * Sets the system variable for the given browser,
-     * then saves the path in this so it can later be
-     * saved to a file.
-     * 
-     * @param b
-     * @param path
-     * @return 
-     */
-    public final User setDriverPath(Browser b, String path){
-        if(path == null){
-            throw new NullPointerException("No path specified");
-        }
-        
-        webDrivers.put(b, path);
-        System.setProperty(b.getDriverEnvVar(), path);
-        
-        return this;
-    }
-    
-    public final String getDriverPath(Browser b){
-        return webDrivers.get(b);
-    }
-    
-    /**
-     * Removes the given Browser's driver path from
-     * the system properties.
-     * This method should be used whenever an invalid driver path is entered.
-     * 
-     * @param b
-     * @return 
-     */
-    public final User clearDriverPath(Browser b){
-        webDrivers.remove(b);
-        System.clearProperty(b.getDriverEnvVar());
-        return this;
-    }
-    
-    public final User clearAllDriverPaths() {
-        webDrivers.keySet().forEach((browser)->{
-            //calling clearDriverPath(browser) would throw a concurrent modification exception
-            System.clearProperty(browser.getDriverEnvVar());
-        });
-        webDrivers.clear();
-        return this;
-    }
-    
     public final void load(InputStream is) throws IOException{
         String fileText = FileReaderUtil.readStream(is);
         System.out.println(fileText);
@@ -123,11 +76,5 @@ public class User {
             ret.append('\n').append('"').append(b.getDriverEnvVar()).append('"').append(": ").append('"').append(p).append('"');
         });
         return ret.toString();
-    }
-    
-    public static void main(String[] args) throws URISyntaxException, IOException{
-        User u = new User();
-        u.setDriverPath(Browser.EDGE, "C:\\users");
-        u.save();
     }
 }

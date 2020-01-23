@@ -6,9 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.Browser;
 
 /**
@@ -39,6 +38,10 @@ public final class ApplicationResources {
         driverPaths = new HashMap<>();
     }
     
+    public void init() throws IOException{
+        createAbsentFolders();
+    }
+    
     /**
      * Used to access the singleton instance of this class.
      * If the class has not yet been initialized, instantiates before returning.
@@ -64,25 +67,91 @@ public final class ApplicationResources {
     }
     
     /**
+     * Creates the given directory, if it does not yet exist.
+     * 
+     * @param dirPath the full filepath to the directory you wish to create.
+     * @throws IOException if the directory does not yet exist and cannot be created.
+     */
+    private void createIfAbsent(String dirPath) throws IOException{
+        if(!dirExists(dirPath)){
+            System.out.println("Creating directory " + dirPath);
+            Files.createDirectory(Paths.get(dirPath));
+        }
+    }
+    
+    /**
      * Creates the directories that this program needs
      * that haven't been created yet.
      * 
      * @throws IOException if any of the directories cannot be created.
      */
-    private void createFolders() throws IOException{
-        if(!dirExists(companyFolderName)){
-            System.out.println("Creating ARCDH folder at " + companyFolderName);
-            Files.createDirectory(Paths.get(companyFolderName));
-        }
-        if(!dirExists(applicationFolderName)){
-            System.out.println("Creating folder at " + applicationFolderName);
-            Files.createDirectory(Paths.get(applicationFolderName));
-        }
-        if(!dirExists(driverFolderName)){
-            Files.createDirectory(Paths.get(driverFolderName));
+    private void createAbsentFolders() throws IOException{
+        createIfAbsent(companyFolderName);
+        createIfAbsent(applicationFolderName);
+        createIfAbsent(driverFolderName);
+    }
+    
+    /**
+     * Sets the system variable for a webdriver executable, allowing
+     * the Selenium WebDriver subclasses to work.
+     * 
+     * @param b the browser the given webdriver is for
+     * @param path the full file path to a webdriver executable
+     */
+    private void putDriverPath(Browser b, String path){
+        driverPaths.put(b, path);
+        System.setProperty(b.getDriverEnvVar(), path);
+    }
+    
+    /**
+     * Removes the given Browser's driver path from
+     * the system properties.
+     * This method should be used whenever an invalid driver path is entered.
+     * If the webdriver for the given browser is stored in the driver folder,
+     * deletes that file.
+     * 
+     * @param b the browser whose webdriver should have its path cleared from the program's memory.
+     */
+    public void clearDriverPath(Browser b){
+        String path = driverPaths.get(b);
+        if(path != null){
+            driverPaths.remove(b);
+            System.clearProperty(b.getDriverEnvVar());
+            if(Paths.get(path).getParent().toString().equals(driverFolderName)){
+                new File(path).delete();
+            }
         }
     }
     
+    /**
+     * Removes all driver paths from both this class
+     * and the user's environment variables. Also deletes
+     * all webdrivers from the drivers folder.
+     */
+    public void clearAllDriverPaths(){
+        driverPaths.forEach((Browser b, String path)->{
+            //calling clearDriverPath(browser) would throw a concurrent modification exception
+            System.clearProperty(b.getDriverEnvVar());
+        });
+        driverPaths.clear();
+        Path driverFolder = Paths.get(driverFolderName);
+        Arrays.stream(driverFolder.toFile().listFiles()).forEach((File f)->{
+            f.delete();
+        });
+    }
+    
+    /**
+     * Copies and stores the given web driver executable to the driver folder
+     * if it is not yet present in that folder. This allows the program to
+     * more easily remember the location of the executable upon exiting and
+     * reloading the program.
+     * 
+     * @param b the browser associated with the webdriver executable given
+     * by path.
+     * @param path the full file path to a webdriver executable.
+     * @return the full file path leading to the new executable
+     * @throws IOException if the file cannot be copied.
+     */
     private String copyWebDriver(Browser b, String path) throws IOException{
         if(b == null){
             throw new NullPointerException("Cannot load webdriver if browser is unknown");
@@ -90,24 +159,29 @@ public final class ApplicationResources {
         if(path == null){
             throw new NullPointerException("Cannot load webdriver from null path");
         }
-        
-        if(!dirExists(driverFolderName)){
-            createFolders();
+        String driverPath = path;
+        Path origPath = Paths.get(path);
+        System.out.println(origPath.getParent().toString());
+        System.out.println(driverFolderName);
+        if(!origPath.getParent().toString().equals(driverFolderName)){
+            driverPath = driverFolderName + File.separator + origPath.getFileName().toString();
+            Files.copy(origPath, Paths.get(driverPath));
         }
         
-        Path origPath = Paths.get(path);
-        String newPath = driverFolderName + File.separator + origPath.getFileName().toString();
-        Files.copy(origPath, Paths.get(newPath));
-        
-        return newPath;
+        return driverPath;
     }
     
     /**
-     * Copies a WebDriver executable to this folder so
-     * it can be retrieved without user input in the future.
+     * Sets the path to a WebDriver executable so that
+     * the program can use the WebDriver associated with
+     * the given browser.
      * 
-     * If that fails, the webdriver will have to be selected by
-     * the user again the next time they use the program.
+     * The program will attempt to copy the driver to its
+     * resource folder so that it can "remember" the location
+     * of the driver after the user quits the program.
+     * 
+     * If this copying attempt fails, <b>the program will not crash</b>.
+     * Instead, the driver path will simply not be remembered.
      * 
      * @param b the Browser the given WebDriver is for
      * @param path the path to a WebDriver
@@ -126,12 +200,12 @@ public final class ApplicationResources {
         
         try{
             String newPath = copyWebDriver(b, path);
-            driverPaths.put(b, newPath);
+            putDriverPath(b, newPath);
         } catch (IOException ex) {
             ex.printStackTrace();
-            driverPaths.put(b, path);
+            putDriverPath(b, path);
         }
-    }   
+    }
     
     public static void main(String[] args){
         FileSelector.chooseExeFile("choose chrome webdriver", (File f)->{

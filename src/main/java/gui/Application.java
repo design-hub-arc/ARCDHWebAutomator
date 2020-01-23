@@ -1,5 +1,6 @@
 package gui;
 
+import application.ApplicationResources;
 import automationTools.AbstractAutomation;
 import java.awt.CardLayout;
 import java.io.IOException;
@@ -25,14 +26,12 @@ public class Application extends JPanel{
     
     public Application(){
         user = new User();
-        /*
+        
         try {
-            user.load();
-        } catch (URISyntaxException ex) {
-            ex.printStackTrace();
+            ApplicationResources.getInstance().init();
         } catch (IOException ex) {
             ex.printStackTrace();
-        }*/
+        }
         CardLayout l = new CardLayout();
         setLayout(l);
         

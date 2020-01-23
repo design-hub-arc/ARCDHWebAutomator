@@ -1,5 +1,6 @@
 package gui;
 
+import application.ApplicationResources;
 import io.FileSelector;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -94,7 +95,7 @@ public class DriverSelect extends Page{
         
         JButton clear = new JButton("Clear saved paths");
         clear.addActionListener((e)->{
-            getHost().getUser().clearAllDriverPaths();
+            ApplicationResources.getInstance().clearAllDriverPaths();
         });
         bottom.add(clear);
         
@@ -114,7 +115,7 @@ public class DriverSelect extends Page{
     private void selectDriver(){
         if(System.getProperty(currentBrowser.getDriverEnvVar()) == null){
             FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
-                getHost().getUser().setDriverPath(currentBrowser, file.getAbsolutePath());
+                ApplicationResources.getInstance().loadWebDriver(currentBrowser, file.getAbsolutePath());
             });
         }
         try{
@@ -138,7 +139,7 @@ public class DriverSelect extends Page{
             text.appendText("Looks like something went wrong:\n");
             text.appendText(e.toString());
             text.appendText("\n");
-            getHost().getUser().clearDriverPath(currentBrowser);
+            ApplicationResources.getInstance().clearDriverPath(currentBrowser);
         }
     }
     
