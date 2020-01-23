@@ -3,13 +3,12 @@ package application;
 import io.FileSelector;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.Browser;
 
 /**
@@ -128,7 +127,7 @@ public final class ApplicationResources {
     /**
      * Removes all driver paths from both this class
      * and the user's environment variables. Also deletes
-     * all webdrivers from the drivers folder.
+     * all webdrivers from the drivers folder
      */
     public void clearAllDriverPaths(){
         driverPaths.forEach((Browser b, String path)->{
@@ -137,11 +136,12 @@ public final class ApplicationResources {
         });
         driverPaths.clear();
         Path driverFolder = Paths.get(driverFolderName);
-        System.out.println(driverFolder);
         Arrays.stream(driverFolder.toFile().listFiles()).forEach((File f)->{
             System.out.println(f.getAbsolutePath());
             try {
                 Files.delete(Paths.get(f.getAbsolutePath()));
+            } catch (AccessDeniedException ex){
+                System.err.println("Unable to delete " + f.getAbsolutePath() + ". Please use your taks manager to verify that no instances of this executable are being run.");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
