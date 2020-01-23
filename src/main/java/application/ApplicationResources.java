@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.Browser;
 
 /**
@@ -135,8 +137,14 @@ public final class ApplicationResources {
         });
         driverPaths.clear();
         Path driverFolder = Paths.get(driverFolderName);
+        System.out.println(driverFolder);
         Arrays.stream(driverFolder.toFile().listFiles()).forEach((File f)->{
-            f.delete();
+            System.out.println(f.getAbsolutePath());
+            try {
+                Files.delete(Paths.get(f.getAbsolutePath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
     }
     
@@ -159,12 +167,10 @@ public final class ApplicationResources {
         if(path == null){
             throw new NullPointerException("Cannot load webdriver from null path");
         }
-        String driverPath = path;
+        
         Path origPath = Paths.get(path);
-        System.out.println(origPath.getParent().toString());
-        System.out.println(driverFolderName);
-        if(!origPath.getParent().toString().equals(driverFolderName)){
-            driverPath = driverFolderName + File.separator + origPath.getFileName().toString();
+        String driverPath = driverFolderName + File.separator + origPath.getFileName().toString();
+        if(!Files.exists(Paths.get(driverPath))){
             Files.copy(origPath, Paths.get(driverPath));
         }
         
