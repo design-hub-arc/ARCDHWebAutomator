@@ -41,6 +41,23 @@ public final class ApplicationResources {
     
     public void init() throws IOException{
         createAbsentFolders();
+        loadSavedWebDrivers();
+    }
+    
+    private void loadSavedWebDrivers(){
+        File driverFolder = new File(driverFolderName);
+        for(File savedDriver : driverFolder.listFiles()){
+            System.out.println(savedDriver.getName());
+            //                                           '.' has special meaning in regex, so we have to interprate it literally
+            String[] split = savedDriver.getName().split("\\.");
+            String fileName = split[0];
+            Browser b = Browser.getByDriverFileName(fileName);
+            if(b == null){
+                System.err.println("Cannot find browser with webdriver named " + fileName);
+            } else {
+                putDriverPath(b, savedDriver.getAbsolutePath());
+            }
+        }
     }
     
     /**
@@ -119,7 +136,13 @@ public final class ApplicationResources {
             driverPaths.remove(b);
             System.clearProperty(b.getDriverEnvVar());
             if(Paths.get(path).getParent().toString().equals(driverFolderName)){
-                new File(path).delete();
+                try {
+                    Files.delete(Paths.get(path));
+                } catch (AccessDeniedException ex){
+                    System.err.println("Unable to delete " + path + ". Please use your taks manager to verify that no instances of this executable are being run.");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
