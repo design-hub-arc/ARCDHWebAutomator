@@ -44,6 +44,7 @@ public class ScrollableTextDisplay extends JPanel implements Logger{
         this("");
     }
     
+    /*
     //https://stackoverflow.com/questions/1345902/jmenuitem-setminimumsize-doesnt-work
     @Override
     public Dimension getPreferredSize() {
@@ -55,7 +56,7 @@ public class ScrollableTextDisplay extends JPanel implements Logger{
         preferred.height = Math.min(Math.max(preferred.height, minimum.height), 
             maximum.height);
         return preferred;
-    }
+    }*/
     public void appendText(String newText){
         text.append(newText);
         textArea.setText(text.toString());

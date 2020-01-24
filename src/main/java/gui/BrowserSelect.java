@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -76,12 +77,14 @@ public class BrowserSelect extends Page{
             if(browser == Browser.CHROME){
                 b.setSelected(true);
                 currentBrowser = Browser.CHROME;
-                ApplicationResources resources = this.getHost().getHostingWindow().getRunningApplication().getResources();
+                ApplicationResources resources = getHost().getHostingWindow().getRunningApplication().getResources();
                 
                 driverClass = (resources.hasWebDriver(Browser.CHROME) ? ChromeDriver.class : null);
             }
         }
         JScrollPane scrolly = new JScrollPane(list);
+        scrolly.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        scrolly.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         middle.add(scrolly, gbc.clone());
         
         //bottom of middle

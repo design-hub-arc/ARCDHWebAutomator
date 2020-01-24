@@ -21,6 +21,8 @@ public class BrowserInfoBox extends JPanel{
         disp = new ScrollableTextDisplay();
         updateText();
         add(disp, BorderLayout.CENTER);
+        revalidate();
+        repaint();
     }
     
     public final void updateText(){
