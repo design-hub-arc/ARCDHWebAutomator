@@ -47,7 +47,7 @@ public final class ApplicationResources {
     private void loadSavedWebDrivers(){
         File driverFolder = new File(driverFolderName);
         for(File savedDriver : driverFolder.listFiles()){
-            System.out.println(savedDriver.getName());
+            //System.out.println(savedDriver.getName());
             //                                           '.' has special meaning in regex, so we have to interprate it literally
             String[] split = savedDriver.getName().split("\\.");
             String fileName = split[0];

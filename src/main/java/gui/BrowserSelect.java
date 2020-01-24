@@ -76,7 +76,9 @@ public class BrowserSelect extends Page{
             if(browser == Browser.CHROME){
                 b.setSelected(true);
                 currentBrowser = Browser.CHROME;
-                driverClass = null;
+                ApplicationResources resources = this.getHost().getHostingWindow().getRunningApplication().getResources();
+                
+                driverClass = (resources.hasWebDriver(Browser.CHROME) ? ChromeDriver.class : null);
             }
         }
         JScrollPane scrolly = new JScrollPane(list);

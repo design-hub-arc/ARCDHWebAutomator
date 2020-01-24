@@ -1,9 +1,10 @@
 package gui;
 
-import application.ApplicationResources;
 import automationTools.AbstractAutomation;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.io.IOException;
+import java.awt.FlowLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import org.openqa.selenium.WebDriver;
 
@@ -17,18 +18,23 @@ public class ApplicationPane extends JPanel{
     private static final String DRIVER = "DRIVER";
     private static final String RUN = "RUN"; //use this page to show program output
     
+    private final ApplicationWindow hostingWindow;
+    private final JPanel middle;
+    
     private AbstractAutomation selAuto;
     private String fileText;
     private Class<? extends WebDriver> driverClass;
     
-    public ApplicationPane(){
-        try {
-            ApplicationResources.getInstance().init();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+    public ApplicationPane(ApplicationWindow inWindow){
+        super();
+        hostingWindow = inWindow;
+        
+        setLayout(new BorderLayout());
+        
+        //middle
+        middle = new JPanel();
         CardLayout l = new CardLayout();
-        setLayout(l);
+        middle.setLayout(l);
         
         AutomationSelect auto = new AutomationSelect(this);
         InputFileSelect file = new InputFileSelect(this);
@@ -37,29 +43,41 @@ public class ApplicationPane extends JPanel{
         
         auto.setOnDone(()->{
             selAuto = auto.getSelected();
-            l.show(this, DATA);
+            l.show(middle, DATA);
             file.setAuto(selAuto);
         });
         file.setOnDone(()->{
-            l.show(this, DRIVER);
+            l.show(middle, DRIVER);
             fileText = file.getFileText();
         });
         driverSel.setOnDone(()->{
-            l.show(this, RUN);
+            l.show(middle, RUN);
             driverClass = driverSel.getDriverClass();
             run.run(selAuto, fileText, driverClass);
         });
-        add(auto, AUTO);
-        add(file, DATA);
-        add(driverSel, DRIVER);
-        add(run, RUN);
+        middle.add(auto, AUTO);
+        middle.add(file, DATA);
+        middle.add(driverSel, DRIVER);
+        middle.add(run, RUN);
+        
+        add(middle, BorderLayout.CENTER);
+        
+        //bottom
+        JPanel bottom = new JPanel();
+        bottom.setLayout(new FlowLayout());
+        bottom.add(new JButton("Error info will go here"));
+        add(bottom, BorderLayout.PAGE_END);
+    }
+    
+    public ApplicationWindow getHostingWindow(){
+        return hostingWindow;
     }
     
     public final void prev(){
-        ((CardLayout)getLayout()).previous(this);
+        ((CardLayout)middle.getLayout()).previous(middle);
     }
     
     public final void next(){
-        ((CardLayout)getLayout()).next(this);
+        ((CardLayout)middle.getLayout()).next(middle);
     }
 }

@@ -25,7 +25,7 @@ public final class ApplicationWindow extends JFrame{
         );
         setVisible(true);
         
-        ApplicationPane a = new ApplicationPane();
+        ApplicationPane a = new ApplicationPane(this);
         setContentPane(a);
         
         revalidate();
