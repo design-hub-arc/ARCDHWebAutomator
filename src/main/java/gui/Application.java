@@ -32,7 +32,7 @@ public class Application extends JPanel{
         
         AutomationSelect auto = new AutomationSelect(this);
         InputFileSelect file = new InputFileSelect(this);
-        DriverSelect driverSel = new DriverSelect(this);
+        BrowserSelect driverSel = new BrowserSelect(this);
         RunWindow run = new RunWindow(this);
         
         auto.setOnDone(()->{

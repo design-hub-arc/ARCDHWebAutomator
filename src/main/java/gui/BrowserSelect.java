@@ -5,6 +5,7 @@ import io.FileSelector;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.HashMap;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,18 +25,19 @@ import util.Browser;
  *
  * @author Matt
  */
-public class DriverSelect extends Page{
+public class BrowserSelect extends Page{
     private Browser currentBrowser;
     private Class<? extends WebDriver> driverClass;
+    private HashMap<Browser, BrowserInfoBox> browserInfo;
     private ScrollableTextDisplay text;
     
-    public DriverSelect(Application app) {
+    public BrowserSelect(Application app) {
         super(app);
         driverClass = null;
         setLayout(new BorderLayout());
         
         //top
-        add(new JLabel("Select which browser to use, and download its WebDriver"), BorderLayout.PAGE_START);
+        add(new JLabel("Select which browser to use"), BorderLayout.PAGE_START);
         
         //middle
         JPanel middle = new JPanel();
@@ -48,6 +50,7 @@ public class DriverSelect extends Page{
         gbc.weightx = 1;
         gbc.weighty = 1;
         
+        browserInfo = new HashMap<>();
         //top of middle
         //list browser options
         JPanel list = new JPanel();
@@ -56,6 +59,7 @@ public class DriverSelect extends Page{
         ButtonGroup bg = new ButtonGroup();
         JPanel j;
         JRadioButton b;
+        BrowserInfoBox box;
         for(Browser browser : Browser.values()){
             j = new JPanel();
             j.setLayout(new BorderLayout());
@@ -66,7 +70,9 @@ public class DriverSelect extends Page{
             });
             bg.add(b);
             j.add(b, BorderLayout.LINE_START);
-            j.add(new BrowserInfoBox(browser), BorderLayout.CENTER);
+            box = new BrowserInfoBox(browser);
+            browserInfo.put(browser, box);
+            j.add(box, BorderLayout.CENTER);
             list.add(j, gbc.clone());
         }
         JScrollPane scrolly = new JScrollPane(list);
@@ -133,6 +139,10 @@ public class DriverSelect extends Page{
                     throw new UnsupportedOperationException("Invalid browser: " + currentBrowser.name());
             }
             JOptionPane.showMessageDialog(this, "Looks like that worked! Please don't close the browser window!");
+            BrowserInfoBox box = browserInfo.get(currentBrowser);
+            if(box != null){
+                box.updateText();
+            }
         } catch(Exception e){
             text.appendText("Looks like something went wrong:\n");
             text.appendText(e.toString());

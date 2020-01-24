@@ -236,6 +236,26 @@ public final class ApplicationResources {
         }
     }
     
+    /**
+     * Returns whether or not the WebDriver for a browser
+     * has been loaded by the program.
+     * 
+     * @param forBrowser the browser to check if there is a WebDriver for.
+     * @return 
+     */
+    public boolean hasWebDriver(Browser forBrowser){
+        return driverPaths.containsKey(forBrowser);
+    }
+    
+    /**
+     * Returns the file path to the WebDriver for the given browser.
+     * @param forBrowser the browser to get the WebDriver path to
+     * @return the complete file path to the browser's webdriver, or null if its path isn't set.
+     */
+    public String getWebDriverPath(Browser forBrowser){
+        return driverPaths.get(forBrowser);
+    }
+    
     public static void main(String[] args){
         FileSelector.chooseExeFile("choose chrome webdriver", (File f)->{
             getInstance().loadWebDriver(Browser.CHROME, f.getAbsolutePath());
