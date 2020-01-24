@@ -13,8 +13,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -74,6 +72,12 @@ public class BrowserSelect extends Page{
             browserInfo.put(browser, box);
             j.add(box, BorderLayout.CENTER);
             list.add(j, gbc.clone());
+            
+            if(browser == Browser.CHROME){
+                b.setSelected(true);
+                currentBrowser = Browser.CHROME;
+                driverClass = null;
+            }
         }
         JScrollPane scrolly = new JScrollPane(list);
         middle.add(scrolly, gbc.clone());
@@ -99,16 +103,17 @@ public class BrowserSelect extends Page{
         });
         bottom.add(select);
         
-        JButton clear = new JButton("Clear saved paths");
+        JButton clear = new JButton("Clear saved WebDrivers");
         clear.addActionListener((e)->{
             ApplicationResources.getInstance().clearAllDriverPaths();
+            browserInfo.values().forEach((bi)->bi.updateText());
         });
         bottom.add(clear);
         
         JButton next = new JButton("Next");
         next.addActionListener((e)->{
             if(driverClass == null){
-                JOptionPane.showMessageDialog(this, "Please select the WebDriver for your browser");
+                JOptionPane.showMessageDialog(this, "Please select the WebDriver for your browser before continuing");
             } else {
                 next();
             }
@@ -148,6 +153,10 @@ public class BrowserSelect extends Page{
             text.appendText(e.toString());
             text.appendText("\n");
             ApplicationResources.getInstance().clearDriverPath(currentBrowser);
+            BrowserInfoBox box = browserInfo.get(currentBrowser);
+            if(box != null){
+                box.updateText();
+            }
         }
     }
     
