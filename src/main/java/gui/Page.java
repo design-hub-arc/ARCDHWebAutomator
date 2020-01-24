@@ -7,17 +7,17 @@ import javax.swing.JPanel;
  * @author Matt
  */
 public class Page extends JPanel{
-    private final Application host;
+    private final ApplicationPane host;
     private Runnable onDone;
     
-    public Page(Application app){
+    public Page(ApplicationPane app){
         host = app;
         onDone = ()->{
             throw new UnsupportedOperationException();
         };
     }
     
-    public Application getHost(){
+    public ApplicationPane getHost(){
         return host;
     }
     

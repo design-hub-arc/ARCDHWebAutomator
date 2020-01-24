@@ -23,7 +23,7 @@ public class InputFileSelect extends Page{
     private final ScrollableTextDisplay disp;
     private AbstractAutomation forAuto;
     
-    public InputFileSelect(Application app){
+    public InputFileSelect(ApplicationPane app){
         super(app);
         autoText = new JLabel("No Automation selected");
         forAuto = null;

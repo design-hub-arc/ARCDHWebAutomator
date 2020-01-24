@@ -1,6 +1,6 @@
 package application;
 
-import gui.Application;
+import gui.ApplicationPane;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -11,15 +11,15 @@ import javax.swing.JFrame;
  *
  * @author Matt
  */
-public class StartWindow extends JFrame{
-    public StartWindow(){
+public class ApplicationWindow extends JFrame{
+    public ApplicationWindow(){
         super();
         setTitle("American River College Design Hub Web Automator");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500, 500);
         setVisible(true);
         
-        Application a = new Application();
+        ApplicationPane a = new ApplicationPane();
         setContentPane(a);
         /*
         addWindowListener(new WindowAdapter(){
@@ -40,6 +40,6 @@ public class StartWindow extends JFrame{
     }
     
     public static void main(String[] args){
-        new StartWindow();
+        new ApplicationWindow();
     }
 }

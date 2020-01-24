@@ -18,7 +18,7 @@ public class RunWindow extends Page{
     private final ErrorLogger errorLog;
     private final JButton anyErrors;
     
-    public RunWindow(Application app) {
+    public RunWindow(ApplicationPane app) {
         super(app);
         
         errorLog = new ErrorLogger();

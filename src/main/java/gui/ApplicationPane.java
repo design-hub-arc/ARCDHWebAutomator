@@ -11,7 +11,7 @@ import org.openqa.selenium.WebDriver;
  *
  * @author Matt
  */
-public class Application extends JPanel{
+public class ApplicationPane extends JPanel{
     private static final String AUTO = "AUTO";
     private static final String DATA = "DATA";
     private static final String DRIVER = "DRIVER";
@@ -21,7 +21,7 @@ public class Application extends JPanel{
     private String fileText;
     private Class<? extends WebDriver> driverClass;
     
-    public Application(){
+    public ApplicationPane(){
         try {
             ApplicationResources.getInstance().init();
         } catch (IOException ex) {

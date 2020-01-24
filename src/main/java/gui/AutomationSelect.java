@@ -30,7 +30,7 @@ import javax.swing.JScrollPane;
 public class AutomationSelect extends Page{
     private AbstractAutomation selectedAutomation;
     
-    public AutomationSelect(Application app){
+    public AutomationSelect(ApplicationPane app){
         super(app);
         setLayout(new BorderLayout());
         add(new JLabel("Select an Automation to run"), BorderLayout.PAGE_START);

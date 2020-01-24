@@ -29,7 +29,7 @@ public class BrowserSelect extends Page{
     private HashMap<Browser, BrowserInfoBox> browserInfo;
     private ScrollableTextDisplay text;
     
-    public BrowserSelect(Application app) {
+    public BrowserSelect(ApplicationPane app) {
         super(app);
         driverClass = null;
         setLayout(new BorderLayout());
