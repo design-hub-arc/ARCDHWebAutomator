@@ -143,7 +143,6 @@ public class BrowserSelect extends Page{
                 default:
                     throw new UnsupportedOperationException("Invalid browser: " + currentBrowser.name());
             }
-            JOptionPane.showMessageDialog(this, "Looks like that worked! Please don't close the browser window!");
             BrowserInfoBox box = browserInfo.get(currentBrowser);
             if(box != null){
                 box.updateText();

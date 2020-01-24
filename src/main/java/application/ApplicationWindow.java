@@ -38,8 +38,4 @@ public class ApplicationWindow extends JFrame{
         revalidate();
         repaint();
     }
-    
-    public static void main(String[] args){
-        new ApplicationWindow();
-    }
 }
