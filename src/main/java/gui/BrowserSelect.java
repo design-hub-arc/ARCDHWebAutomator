@@ -27,8 +27,12 @@ import util.Browser;
 public class BrowserSelect extends Page{
     private Browser currentBrowser;
     private Class<? extends WebDriver> driverClass;
+    
     private HashMap<Browser, BrowserInfoBox> browserInfo;
-    private ScrollableTextDisplay text;
+    private final JPanel browserList;
+    private final ButtonGroup browserButtons;
+    
+    private final ScrollableTextDisplay text;
     
     public BrowserSelect(ApplicationPane app) {
         super(app);
@@ -52,37 +56,15 @@ public class BrowserSelect extends Page{
         browserInfo = new HashMap<>();
         //top of middle
         //list browser options
-        JPanel list = new JPanel();
-        list.setLayout(new GridBagLayout());
+        browserList = new JPanel();
+        browserList.setLayout(new GridBagLayout());
         //make sure the user can only select one browser
-        ButtonGroup bg = new ButtonGroup();
-        JPanel j;
-        JRadioButton b;
-        BrowserInfoBox box;
+        browserButtons = new ButtonGroup();
+        
         for(Browser browser : Browser.values()){
-            j = new JPanel();
-            j.setLayout(new BorderLayout());
-            b = new JRadioButton();
-            b.addActionListener((e)->{
-                currentBrowser = browser;
-                driverClass = null;
-            });
-            bg.add(b);
-            j.add(b, BorderLayout.LINE_START);
-            box = new BrowserInfoBox(browser);
-            browserInfo.put(browser, box);
-            j.add(box, BorderLayout.CENTER);
-            list.add(j, gbc.clone());
-            
-            if(browser == Browser.CHROME){
-                b.setSelected(true);
-                currentBrowser = Browser.CHROME;
-                ApplicationResources resources = getHost().getHostingWindow().getRunningApplication().getResources();
-                
-                driverClass = (resources.hasWebDriver(Browser.CHROME) ? ChromeDriver.class : null);
-            }
+            addBrowser(browser);
         }
-        JScrollPane scrolly = new JScrollPane(list);
+        JScrollPane scrolly = new JScrollPane(browserList);
         scrolly.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         scrolly.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         middle.add(scrolly, gbc.clone());
@@ -126,6 +108,40 @@ public class BrowserSelect extends Page{
         bottom.add(next);
         
         add(bottom, BorderLayout.PAGE_END);
+    }
+    
+    private void addBrowser(Browser b){
+        JPanel j = new JPanel();
+        j.setLayout(new BorderLayout());
+        
+        JRadioButton selectThisBrowser = new JRadioButton();
+        selectThisBrowser.addActionListener((e)->{
+            //change this to selectbrowser function
+            currentBrowser = b;
+            driverClass = null;
+        });
+        browserButtons.add(selectThisBrowser);
+        
+        j.add(selectThisBrowser, BorderLayout.LINE_START);
+        
+        BrowserInfoBox box = new BrowserInfoBox(b);
+        browserInfo.put(b, box);
+        j.add(box, BorderLayout.CENTER);
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        
+        browserList.add(j, gbc);
+        
+        if(b == Browser.CHROME){
+            selectThisBrowser.setSelected(true);
+            currentBrowser = Browser.CHROME;
+            ApplicationResources resources = getHost().getHostingWindow().getRunningApplication().getResources();
+            driverClass = (resources.hasWebDriver(Browser.CHROME) ? ChromeDriver.class : null);
+        }
     }
     
     private void selectDriver(){

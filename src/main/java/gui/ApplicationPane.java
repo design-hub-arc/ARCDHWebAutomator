@@ -65,7 +65,7 @@ public class ApplicationPane extends JPanel{
         //bottom
         JPanel bottom = new JPanel();
         bottom.setLayout(new FlowLayout());
-        bottom.add(new JButton("Error info will go here"));
+        bottom.add(new JButton("TODO: implement error logging into ApplicationPane"));
         add(bottom, BorderLayout.PAGE_END);
     }
     
