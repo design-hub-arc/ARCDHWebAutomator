@@ -4,6 +4,8 @@ import gui.ApplicationWindow;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import logging.ErrorLogger;
 
 /**
@@ -53,6 +55,7 @@ public class Application{
         }
         window = w;
         w.addWindowListener(closeListener);
+        errorLog.log(new Exception("bad news"));
     }
     
     public ApplicationResources getResources(){
@@ -79,7 +82,12 @@ public class Application{
      * resource folder.
      */
     public void writeErrorLog(){
-        System.out.println("write error log");
+        try {
+            resources.saveErrorLog(errorLog);
+        } catch (IOException ex) {
+            System.err.println("Unable to write error log:");
+            ex.printStackTrace();
+        }
     }
     
     

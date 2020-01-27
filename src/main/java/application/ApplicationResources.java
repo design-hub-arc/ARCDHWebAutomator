@@ -1,14 +1,18 @@
 package application;
 
 import io.FileSelector;
+import io.FileWriterUtil;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
+import logging.ErrorLogger;
 import util.Browser;
 
 /**
@@ -28,6 +32,8 @@ public final class ApplicationResources {
     private final String companyFolderName = userHome + File.separator + "ARCDH";
     private final String applicationFolderName = companyFolderName + File.separator + "WebAutomator";
     private final String driverFolderName = applicationFolderName + File.separator + "webdrivers";
+    private final String logFolderPath = applicationFolderName + File.separator + "logs";
+    
     private final HashMap<Browser, String> driverPaths;
     
     private static ApplicationResources instance;
@@ -107,6 +113,7 @@ public final class ApplicationResources {
         createIfAbsent(companyFolderName);
         createIfAbsent(applicationFolderName);
         createIfAbsent(driverFolderName);
+        createIfAbsent(logFolderPath);
     }
     
     /**
@@ -254,6 +261,12 @@ public final class ApplicationResources {
      */
     public String getWebDriverPath(Browser forBrowser){
         return driverPaths.get(forBrowser);
+    }
+    
+    public void saveErrorLog(ErrorLogger errorLog) throws IOException{
+        String fileName = logFolderPath + File.separator + "ErrorLog" + LocalDateTime.now() + ".txt";
+        File f = new File(fileName);
+        FileWriterUtil.writeToFile(f, errorLog.getLog());
     }
     
     public static void main(String[] args){
