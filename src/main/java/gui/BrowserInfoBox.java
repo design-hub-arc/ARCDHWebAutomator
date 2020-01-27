@@ -28,6 +28,7 @@ public class BrowserInfoBox extends JPanel{
     public final void updateText(){
         // set the text based on whether or not the user has the webdriver installed
         ApplicationResources resources = ApplicationResources.getInstance();
+        disp.clear();
         if(resources.hasWebDriver(forBrowser)){
             disp.appendText("This browser's WebDriver is currently saved to ");
             disp.appendText(resources.getWebDriverPath(forBrowser));

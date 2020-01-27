@@ -3,10 +3,10 @@ package gui;
 import application.ApplicationResources;
 import io.FileSelector;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.HashMap;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -45,20 +45,12 @@ public class BrowserSelect extends Page{
         
         //middle
         JPanel middle = new JPanel();
-        middle.setLayout(new GridBagLayout());
-        
-        //fill horizontally, arrange vertically
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
+        middle.setLayout(new BoxLayout(middle, BoxLayout.Y_AXIS));
         
         browserInfo = new HashMap<>();
         //top of middle
         //list browser options
         browserList = new JPanel();
-        browserList.setBackground(Color.yellow);
         browserList.setLayout(new GridBagLayout());
         //make sure the user can only select one browser
         browserButtons = new ButtonGroup();
@@ -67,14 +59,13 @@ public class BrowserSelect extends Page{
             addBrowser(browser);
         }
         JScrollPane scrolly = new JScrollPane(browserList);
-        scrolly.setBackground(Color.orange);
         scrolly.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         scrolly.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        middle.add(scrolly, gbc.clone());
+        middle.add(scrolly);
         
         //bottom of middle
         text = new ScrollableTextDisplay("***Program output will appear here***\n");
-        middle.add(text, gbc.clone());
+        middle.add(text);
         
         add(middle, BorderLayout.CENTER);
         
@@ -115,7 +106,6 @@ public class BrowserSelect extends Page{
     
     private void addBrowser(Browser b){
         JPanel j = new JPanel();
-        j.setBackground(Color.green);
         j.setLayout(new BorderLayout());
         
         JRadioButton selectThisBrowser = new JRadioButton();
