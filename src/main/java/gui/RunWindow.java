@@ -6,7 +6,6 @@ import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import logging.ErrorLogger;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -15,13 +14,9 @@ import org.openqa.selenium.WebDriver;
  */
 public class RunWindow extends Page{
     private final ScrollableTextDisplay text;
-    private final ErrorLogger errorLog;
-    private final JButton anyErrors;
     
     public RunWindow(ApplicationPane app) {
         super(app);
-        
-        errorLog = new ErrorLogger();
         
         setLayout(new BorderLayout());
         
@@ -45,29 +40,17 @@ public class RunWindow extends Page{
             //do nothing
         });
         bottom.add(finish);
-        anyErrors = new JButton("No errors to report");
-        anyErrors.addActionListener((e)->{
-            errorLog.showPopup();
-        });
-        bottom.add(anyErrors);
-        
-        add(bottom, BorderLayout.PAGE_END);
-        
-        errorLog.setOnEncounterError((errMsg)->{
-            anyErrors.setText("Encountered an error");
-        });
     }
     
     public final void run(AbstractAutomation aa, String fileText, Class<? extends WebDriver> driverClass){
+        Page p = this;
         new Thread(){
             @Override
             public void run(){
                 try{
-                    anyErrors.setText("No errors to report");
-                    errorLog.clear();
                     text.setText("***Program output will appear here***\n");
                     aa.setLogger(text);
-                    aa.setErrorLogger(errorLog);
+                    aa.setErrorLogger(p.getHost().getHostingWindow().getRunningApplication().getErrorLog());
                     
                     if(aa instanceof QueryingAutomation){
                         ((QueryingAutomation)aa).setInputFile(fileText);
@@ -75,7 +58,7 @@ public class RunWindow extends Page{
                     
                     aa.run(driverClass);
                 } catch (Exception ex){
-                    errorLog.log(ex);
+                    p.getHost().getHostingWindow().getRunningApplication().getErrorLog().log(ex);
                 }
             }
         }.start();

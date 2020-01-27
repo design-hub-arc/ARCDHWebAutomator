@@ -55,7 +55,6 @@ public class Application{
         }
         window = w;
         w.addWindowListener(closeListener);
-        errorLog.log(new Exception("bad news"));
     }
     
     public ApplicationResources getResources(){
@@ -72,10 +71,6 @@ public class Application{
         return errorLog;
     }
     
-    
-    
-    
-    
     /**
      * Dumps the contents of this'
      * error log to a file in the application
@@ -89,12 +84,6 @@ public class Application{
             ex.printStackTrace();
         }
     }
-    
-    
-    
-    
-    
-    
     
     public static void main(String[] args){
         Application app = getInstance();

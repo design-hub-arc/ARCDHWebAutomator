@@ -5,6 +5,7 @@ import io.FileSelector;
 import io.FileWriterUtil;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 import javax.swing.JOptionPane;
 
@@ -14,26 +15,27 @@ import javax.swing.JOptionPane;
  */
 public class ErrorLogger implements Logger{
     private final StringBuilder loggedErrors;
-    private Consumer<String> onEncounterError;
+    private final ArrayList<ErrorLogListener> errorLogListeners;
     
     public ErrorLogger(){
         loggedErrors = new StringBuilder();
-        onEncounterError = (s)->{
-            System.err.println(s);
-        };
+        errorLogListeners = new ArrayList<>();
+        addErrorLogListener((log, msg)->System.err.println(msg));
     }
     
     public void log(Exception ex){
-        log("Encountered the following error: " + ex.toString());
+        StringBuilder errMsg = new StringBuilder();
+        errMsg.append("Encountered the following error: ").append(ex.toString()).append('\n');
         for(StackTraceElement stack : ex.getStackTrace()){
-            log("- " + stack.toString());
+            errMsg.append("- ").append(stack.toString()).append('\n');
         }
+        log(errMsg.toString());
     }
     
     @Override
     public void log(String s) {
         loggedErrors.append(s).append('\n');
-        onEncounterError.accept(s);
+        errorLogListeners.forEach((listener)->listener.errorLogged(this, s));
     }
 
     @Override
@@ -49,8 +51,14 @@ public class ErrorLogger implements Logger{
         return getLog().length() != 0;
     }
     
-    public void setOnEncounterError(Consumer<String> nomNom){
-        onEncounterError = nomNom;
+    /**
+     * Adds a listener to this log. The listener will be notified
+     * whenever this logs an error.
+     * 
+     * @param listener 
+     */
+    public void addErrorLogListener(ErrorLogListener listener){
+        errorLogListeners.add(listener);
     }
     
     public void clear(){
