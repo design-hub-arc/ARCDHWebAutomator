@@ -41,6 +41,7 @@ public class RunWindow extends Page{
             //do nothing
         });
         bottom.add(finish);
+        add(bottom);
     }
     
     public final void run(AbstractAutomation aa, String fileText, Class<? extends WebDriver> driverClass){

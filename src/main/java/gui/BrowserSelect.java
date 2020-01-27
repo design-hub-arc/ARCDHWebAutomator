@@ -3,6 +3,7 @@ package gui;
 import application.ApplicationResources;
 import io.FileSelector;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.HashMap;
@@ -57,6 +58,7 @@ public class BrowserSelect extends Page{
         //top of middle
         //list browser options
         browserList = new JPanel();
+        browserList.setBackground(Color.yellow);
         browserList.setLayout(new GridBagLayout());
         //make sure the user can only select one browser
         browserButtons = new ButtonGroup();
@@ -65,6 +67,7 @@ public class BrowserSelect extends Page{
             addBrowser(browser);
         }
         JScrollPane scrolly = new JScrollPane(browserList);
+        scrolly.setBackground(Color.orange);
         scrolly.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         scrolly.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         middle.add(scrolly, gbc.clone());
@@ -112,6 +115,7 @@ public class BrowserSelect extends Page{
     
     private void addBrowser(Browser b){
         JPanel j = new JPanel();
+        j.setBackground(Color.green);
         j.setLayout(new BorderLayout());
         
         JRadioButton selectThisBrowser = new JRadioButton();
