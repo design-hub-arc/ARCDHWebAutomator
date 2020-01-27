@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import logging.ErrorLogger;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -43,14 +44,15 @@ public class RunWindow extends Page{
     }
     
     public final void run(AbstractAutomation aa, String fileText, Class<? extends WebDriver> driverClass){
-        Page p = this;
+        ErrorLogger log = getHost().getHostingWindow().getRunningApplication().getErrorLog();
         new Thread(){
             @Override
             public void run(){
+                
                 try{
                     text.setText("***Program output will appear here***\n");
                     aa.setLogger(text);
-                    aa.setErrorLogger(p.getHost().getHostingWindow().getRunningApplication().getErrorLog());
+                    aa.setErrorLogger(log);
                     
                     if(aa instanceof QueryingAutomation){
                         ((QueryingAutomation)aa).setInputFile(fileText);
@@ -58,7 +60,7 @@ public class RunWindow extends Page{
                     
                     aa.run(driverClass);
                 } catch (Exception ex){
-                    p.getHost().getHostingWindow().getRunningApplication().getErrorLog().log(ex);
+                    log.log(ex);
                 }
             }
         }.start();

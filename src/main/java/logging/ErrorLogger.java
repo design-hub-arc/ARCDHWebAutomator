@@ -6,7 +6,6 @@ import io.FileWriterUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,7 +19,15 @@ public class ErrorLogger implements Logger{
     public ErrorLogger(){
         loggedErrors = new StringBuilder();
         errorLogListeners = new ArrayList<>();
-        addErrorLogListener((log, msg)->System.err.println(msg));
+        addErrorLogListener(new ErrorLogListener(){
+            @Override
+            public void errorLogged(ErrorLogger log, String msg){
+                System.err.println(msg);
+            }
+            
+            @Override
+            public void logCleared(ErrorLogger log){};
+        });
     }
     
     public void log(Exception ex){
@@ -63,6 +70,7 @@ public class ErrorLogger implements Logger{
     
     public void clear(){
         loggedErrors.delete(0, loggedErrors.length());
+        errorLogListeners.forEach((listener)->listener.logCleared(this));
     }
     
     public void showPopup(){

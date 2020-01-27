@@ -6,6 +6,7 @@ import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import logging.ErrorLogListener;
 import logging.ErrorLogger;
 import org.openqa.selenium.WebDriver;
 
@@ -68,8 +69,16 @@ public class ApplicationPane extends JPanel{
         bottom.setLayout(new FlowLayout());
         JButton errorLogButton = new JButton("No errors to report");
         ErrorLogger log = inWindow.getRunningApplication().getErrorLog();
-        log.addErrorLogListener((ErrorLogger logger, String err)->{
-            errorLogButton.setText("Encountered an error");
+        log.addErrorLogListener(new ErrorLogListener(){
+            @Override
+            public void errorLogged(ErrorLogger log, String msg){
+                errorLogButton.setText("Encountered an error");
+            }
+            
+            @Override
+            public void logCleared(ErrorLogger log){
+                errorLogButton.setText("No errors to report");
+            };
         });
         errorLogButton.addActionListener((e)->{
             log.showPopup();

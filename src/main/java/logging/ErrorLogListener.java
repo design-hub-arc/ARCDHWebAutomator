@@ -8,7 +8,7 @@ package logging;
  * 
  * @author matt Crow
  */
-@FunctionalInterface
+
 public interface ErrorLogListener {
     /**
      * Fires whenever the given log logs an error message.
@@ -16,4 +16,10 @@ public interface ErrorLogListener {
      * @param msg the error message which was logged.
      */
     public void errorLogged(ErrorLogger log, String msg);
+    
+    /**
+     * Fired whenever the given ErrorLogger has its error log cleared
+     * @param log 
+     */
+    public void logCleared(ErrorLogger log);
 }
