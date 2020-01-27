@@ -22,6 +22,8 @@ public class RunWindow extends Page{
         setLayout(new BorderLayout());
         
         add(new JLabel("Please wait while the automation runs..."), BorderLayout.PAGE_START);
+        
+        //this may be disappearing, but this laptop doesn't work
         text = new ScrollableTextDisplay("***Program output will appear here***\n");
         add(text, BorderLayout.CENTER);
         
