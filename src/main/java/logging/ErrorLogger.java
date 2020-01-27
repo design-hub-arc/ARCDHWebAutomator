@@ -3,9 +3,9 @@ package logging;
 import gui.ErrorPopup;
 import io.FileSelector;
 import io.FileWriterUtil;
+import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
@@ -41,6 +41,14 @@ public class ErrorLogger implements Logger{
         return loggedErrors.toString();
     }
     
+    /**
+     * 
+     * @return whether or not an error has been logged in this. 
+     */
+    public boolean hasLoggedError(){
+        return getLog().length() != 0;
+    }
+    
     public void setOnEncounterError(Consumer<String> nomNom){
         onEncounterError = nomNom;
     }
@@ -50,8 +58,7 @@ public class ErrorLogger implements Logger{
     }
     
     public void showPopup(){
-        boolean errors = getLog().length() != 0;
-        if(errors){
+        if(hasLoggedError()){
             String msg = 
                 "Encountered the following errors:\n" 
                 + getLog();
@@ -62,10 +69,20 @@ public class ErrorLogger implements Logger{
         }
     }
     
+    /**
+     * Writes the content of this error log to the given file
+     * @param f the file to write to.
+     * @throws IOException if FileWriterUtil cannot write to the
+     * given file
+     */
+    public void saveToFile(File f) throws IOException{
+        FileWriterUtil.writeToFile(f, getLog());
+    }
+    
     public void saveToFile(){
         FileSelector.createNewFile("Where do you want to save the error log?", (newFile)->{
             try {
-                FileWriterUtil.writeToFile(newFile, getLog());
+                saveToFile(newFile);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
