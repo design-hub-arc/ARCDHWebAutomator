@@ -264,7 +264,7 @@ public final class ApplicationResources {
     }
     
     public void saveErrorLog(ErrorLogger errorLog) throws IOException{
-        String fileName = logFolderPath + File.separator + "ErrorLog" + LocalDateTime.now() + ".txt";
+        String fileName = logFolderPath + File.separator + "ErrorLog" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".txt";
         File f = new File(fileName);
         FileWriterUtil.writeToFile(f, errorLog.getLog());
     }

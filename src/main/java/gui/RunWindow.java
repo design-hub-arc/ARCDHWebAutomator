@@ -3,6 +3,7 @@ package gui;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,8 +24,8 @@ public class RunWindow extends Page{
         
         add(new JLabel("Please wait while the automation runs..."), BorderLayout.PAGE_START);
         
-        //this may be disappearing, but this laptop doesn't work
         text = new ScrollableTextDisplay("***Program output will appear here***\n");
+        text.setBackground(Color.red);
         add(text, BorderLayout.CENTER);
         
         JPanel bottom = new JPanel();
@@ -43,7 +44,7 @@ public class RunWindow extends Page{
             //do nothing
         });
         bottom.add(finish);
-        add(bottom);
+        add(bottom, BorderLayout.PAGE_END);
     }
     
     public final void run(AbstractAutomation aa, String fileText, Class<? extends WebDriver> driverClass){
