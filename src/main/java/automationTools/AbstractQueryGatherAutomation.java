@@ -24,7 +24,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     
     public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
         super(autoName, description);
-        queryManager = new QueryManager(inputUrl, reqs);
+        queryManager = new QueryManager(this, inputUrl, reqs);
         resultManager = new ResultManager(this, resultUrl);
     }
     
@@ -49,23 +49,6 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     @Override
     public final ResultManager getResultManager(){
         return resultManager;
-    }
-    
-    /**
-     * Sets the object which should receive output
-     * from this class, its query manager, and its 
-     * result manager.
-     * 
-     * @param l the object with which this should log messages
-     * @return this, for chaining purposes
-     */
-    @Override
-    public AbstractAutomation addLogger(Logger l){
-        //need null safety, otherwise, the superconstructor throws an exception
-        if(queryManager != null){
-            queryManager.setLogger(l);
-        }
-        return super.addLogger(l);
     }
     
     @Override
