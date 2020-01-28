@@ -37,6 +37,7 @@ public final class ApplicationResources {
     
     private final HashMap<Browser, String> driverPaths;
     
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-DD-uuuu_hh_mm_a");
     private static ApplicationResources instance;
     
     private ApplicationResources(){
@@ -279,11 +280,11 @@ public final class ApplicationResources {
     }
     
     public void saveLog(Logger log) throws IOException{
-        saveToFile(logFolderPath, "Log" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".txt", log.getLog());
+        saveToFile(logFolderPath, "Log" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", log.getLog());
     }
     
     public void saveErrorLog(ErrorLogger errorLog) throws IOException{
-        saveToFile(logFolderPath, "ErrorLog" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".txt", errorLog.getLog());
+        saveToFile(logFolderPath, "ErrorLog" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", errorLog.getLog());
     }
     
     public static void main(String[] args){
