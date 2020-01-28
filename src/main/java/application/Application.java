@@ -5,6 +5,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import logging.ErrorLogger;
+import logging.Logger;
 
 /**
  * Application serves as the entry point for
@@ -12,9 +13,10 @@ import logging.ErrorLogger;
  * 
  * @author Matt Crow
  */
-public class Application{
+public class Application implements Logger{
     private final ApplicationResources resources;
     private ApplicationWindow window;
+    private final StringBuilder log;
     private final ErrorLogger errorLog;
     private final WindowAdapter closeListener;
     
@@ -26,12 +28,16 @@ public class Application{
         }
         window = null;
         resources = ApplicationResources.getInstance();
+        log = new StringBuilder();
         errorLog = new ErrorLogger();
         
         closeListener = new WindowAdapter(){
             // for some reason, windowClosed doesn't fire.
             @Override
             public void windowClosing(WindowEvent e){
+                if(log.length() >= 0){
+                    writeLog();
+                }
                 if(errorLog.hasLoggedError()){
                     writeErrorLog();
                 }
@@ -70,6 +76,19 @@ public class Application{
     }
     
     /**
+     * Saves the log of this application
+     * to the application resource folder.
+     */
+    public void writeLog(){
+        try {
+            resources.saveLog(this);
+        } catch (IOException ex) {
+            System.err.println("Unable to write application log:");
+            ex.printStackTrace();
+        }
+    }
+    
+    /**
      * Dumps the contents of this'
      * error log to a file in the application
      * resource folder.
@@ -92,5 +111,15 @@ public class Application{
         }
         ApplicationWindow w = new ApplicationWindow(app);
         app.setWindow(w);
+    }
+
+    @Override
+    public void log(String s) {
+        log.append(s);
+    }
+
+    @Override
+    public String getLog() {
+        return log.toString();
     }
 }

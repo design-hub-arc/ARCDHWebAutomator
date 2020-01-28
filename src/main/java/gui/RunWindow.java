@@ -1,5 +1,6 @@
 package gui;
 
+import application.Application;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
 import java.awt.BorderLayout;
@@ -48,15 +49,16 @@ public class RunWindow extends Page{
     }
     
     public final void run(AbstractAutomation aa, String fileText, Class<? extends WebDriver> driverClass){
-        ErrorLogger log = getHost().getHostingWindow().getRunningApplication().getErrorLog();
+        Application app = getHost().getHostingWindow().getRunningApplication();
+        ErrorLogger errLog = app.getErrorLog();
         new Thread(){
             @Override
             public void run(){
-                
                 try{
                     text.setText("***Program output will appear here***\n");
-                    aa.setLogger(text);
-                    aa.setErrorLogger(log);
+                    aa.addLogger(text);
+                    aa.addLogger(app);
+                    aa.setErrorLogger(errLog);
                     
                     if(aa instanceof QueryingAutomation){
                         ((QueryingAutomation)aa).setInputFile(fileText);
@@ -64,7 +66,7 @@ public class RunWindow extends Page{
                     
                     aa.run(driverClass);
                 } catch (Exception ex){
-                    log.log(ex);
+                    errLog.log(ex);
                 }
             }
         }.start();

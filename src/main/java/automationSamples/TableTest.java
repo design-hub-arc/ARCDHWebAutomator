@@ -22,9 +22,12 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
     }
 
     @Override
-    public AbstractAutomation setLogger(Logger l){
-        r.setLogger(l);
-        return super.setLogger(l);
+    public AbstractAutomation addLogger(Logger l){
+        if(r != null){
+            //otherwise, superconstructor throws an exception
+            r.setLogger(l);
+        }
+        return super.addLogger(l);
     }
     
     @Override

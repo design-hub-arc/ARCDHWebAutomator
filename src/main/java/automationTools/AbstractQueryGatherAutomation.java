@@ -69,10 +69,15 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
      * @return this, for chaining purposes
      */
     @Override
-    public AbstractAutomation setLogger(Logger l){
-        queryManager.setLogger(l);
-        resultManager.setLogger(l);
-        return super.setLogger(l);
+    public AbstractAutomation addLogger(Logger l){
+        //need null safety, otherwise, the superconstructor throws an exception
+        if(queryManager != null){
+            queryManager.setLogger(l);
+        }
+        if(resultManager != null){
+            resultManager.setLogger(l);
+        }
+        return super.addLogger(l);
     }
     
     @Override

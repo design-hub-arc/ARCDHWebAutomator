@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import logging.ErrorLogger;
+import logging.Logger;
 import util.Browser;
 
 /**
@@ -263,10 +264,26 @@ public final class ApplicationResources {
         return driverPaths.get(forBrowser);
     }
     
+    /**
+     * Used to create files, usually in the application resource folder.
+     * 
+     * @param parentFolder the folder to save the new file to
+     * @param fileName the name of the file. This should include the file extension, but not the entire file path
+     * @param contents the text contents to write to the newly created file.
+     * @throws IOException if any mishaps occur when creating or writing to the new file.
+     */
+    private void saveToFile(String parentFolder, String fileName, String contents) throws IOException{
+        createIfAbsent(parentFolder);
+        File newFile = new File(parentFolder + File.separator + fileName);
+        FileWriterUtil.writeToFile(newFile, contents);
+    }
+    
+    public void saveLog(Logger log) throws IOException{
+        saveToFile(logFolderPath, "Log" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".txt", log.getLog());
+    }
+    
     public void saveErrorLog(ErrorLogger errorLog) throws IOException{
-        String fileName = logFolderPath + File.separator + "ErrorLog" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".txt";
-        File f = new File(fileName);
-        FileWriterUtil.writeToFile(f, errorLog.getLog());
+        saveToFile(logFolderPath, "ErrorLog" + LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".txt", errorLog.getLog());
     }
     
     public static void main(String[] args){

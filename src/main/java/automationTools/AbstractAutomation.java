@@ -1,5 +1,6 @@
 package automationTools;
 
+import java.util.ArrayList;
 import java.util.List;
 import logging.ErrorLogger;
 import logging.Logger;
@@ -29,7 +30,7 @@ public abstract class AbstractAutomation {
     private boolean running;
     
     private final StringBuilder outputLog;
-    private Logger logger;
+    private final ArrayList<Logger> loggers;
     private ErrorLogger errorLogger;
     
     /**
@@ -45,9 +46,10 @@ public abstract class AbstractAutomation {
         wait = null;
         running = false;
         outputLog = new StringBuilder();
+        loggers = new ArrayList<>();
         
         //default output log
-        logger = new Logger() {
+        addLogger(new Logger() {
             @Override
             public void log(String s) {
                 outputLog.append(s).append('\n');
@@ -58,7 +60,7 @@ public abstract class AbstractAutomation {
             public String getLog() {
                 return outputLog.toString();
             }
-        };
+        });
         
         errorLogger = new ErrorLogger();
     }
@@ -100,14 +102,14 @@ public abstract class AbstractAutomation {
     }
     
     /**
-     * Sets the object which should receive output from the automation.
+     * Adds an object which should receive output from the automation.
      * This defaults to sending output to System.out, but RunWindow calls this method,
      * passing in its ScrollableTextDisplay.
      * @param l an object implementing the logging.Logger interface
      * @return this, for chaining purposes
      */
-    public AbstractAutomation setLogger(Logger l){
-        logger = l;
+    public AbstractAutomation addLogger(Logger l){
+        loggers.add(l);
         return this;
     }
     
@@ -209,13 +211,13 @@ public abstract class AbstractAutomation {
     }
     
     /**
-     * Sends a string to the current logger.
+     * Sends a string to the current loggers.
      * 
      * @param output the text to write to output, with a newline appended to the end.
      * @return this, for chaining purposes
      */
     public final AbstractAutomation writeOutput(String output){
-        logger.log(output + "\n");
+        loggers.forEach((logger)->logger.log(output + '\n'));
         return this;
     }
     
