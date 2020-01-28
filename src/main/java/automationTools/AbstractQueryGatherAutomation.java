@@ -85,7 +85,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
         WebDriver driver = getDriver();
         resultManager.clear();
         String q;
-        while(isRunning()){
+        while(!queryManager.isEmpty()){
             driver.get(queryManager.getInputUrl());
             ExpectedCondition<Boolean> e  = ExpectedConditions.urlMatches(queryManager.getInputUrl());
             getWait().until(e);
@@ -101,13 +101,8 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
                 reportError("Did not transition to result page after inputting query: [" + q + "]");
                 reportError(timeOut);
             }
-            
-            if(queryManager.isEmpty()){
-                writeOutput("Done running, quitting browser.");
-                quit();
-            }
         }
-        
+        writeOutput("Done running, quitting browser.");
         resultManager.saveToFile();
         writeOutput("Automation completed successfully");
     }
