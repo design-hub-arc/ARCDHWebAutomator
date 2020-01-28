@@ -22,19 +22,10 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     private final QueryManager queryManager;
     private final ResultManager resultManager;
     
-    public AbstractQueryGatherAutomation(String autoName, String description, QueryManager q, ResultManager r){
-        super(autoName, description);
-        queryManager = q;
-        resultManager = r;
-    }
-    public AbstractQueryGatherAutomation(String autoName, String description, QueryManager q, String resultUrl){
-        this(autoName, description, q, new ResultManager(resultUrl));
-    }
-    public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, ResultManager r){
-        this(autoName, description, new QueryManager(inputUrl, reqs), r);
-    }
     public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
-        this(autoName, description, new QueryManager(inputUrl, reqs), new ResultManager(resultUrl));
+        super(autoName, description);
+        queryManager = new QueryManager(inputUrl, reqs);
+        resultManager = new ResultManager(this, resultUrl);
     }
     
     /**
@@ -73,9 +64,6 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
         //need null safety, otherwise, the superconstructor throws an exception
         if(queryManager != null){
             queryManager.setLogger(l);
-        }
-        if(resultManager != null){
-            resultManager.setLogger(l);
         }
         return super.addLogger(l);
     }

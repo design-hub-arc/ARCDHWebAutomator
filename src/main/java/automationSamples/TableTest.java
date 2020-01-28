@@ -3,7 +3,6 @@ package automationSamples;
 import automationTools.ResultManager;
 import automationTools.ReadingAutomation;
 import automationTools.AbstractAutomation;
-import logging.Logger;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -18,16 +17,7 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
     
     public TableTest() {
         super("Table test", DESC);
-        r = new ResultManager("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table");
-    }
-
-    @Override
-    public AbstractAutomation addLogger(Logger l){
-        if(r != null){
-            //otherwise, superconstructor throws an exception
-            r.setLogger(l);
-        }
-        return super.addLogger(l);
+        r = new ResultManager(this, "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table");
     }
     
     @Override

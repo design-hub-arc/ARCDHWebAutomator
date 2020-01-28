@@ -4,34 +4,20 @@ import io.FileSelector;
 import io.FileWriterUtil;
 import java.io.File;
 import java.io.IOException;
-import logging.Logger;
 
 /**
  *
  * @author Matt
  */
-public class ResultManager implements Logger{
+public class ResultManager{
+    private final AbstractAutomation hostingAutomation;
     private final String resultUrl;
     private final StringBuilder result;
-    private final StringBuilder log;
-    private Logger logger;
     
-    public ResultManager(String resultURL){
+    public ResultManager(AbstractAutomation forAutomation, String resultURL){
+        hostingAutomation = forAutomation;
         resultUrl = resultURL;
         result = new StringBuilder();
-        log = new StringBuilder();
-        logger = new Logger() {
-            @Override
-            public void log(String s) {
-                System.out.println(s);
-                log.append(s).append('\n');
-            }
-
-            @Override
-            public String getLog() {
-                return log.toString();
-            }
-        };
     }
     
     public final String getResultUrl(){
@@ -52,10 +38,6 @@ public class ResultManager implements Logger{
         log("Result is now ");
         log(toString());
     }
-
-    public void setLogger(Logger l){
-        logger = l;
-    }
     
     public void saveToFile(){
         log("Saving file");
@@ -71,18 +53,12 @@ public class ResultManager implements Logger{
         });
     }
     
+    public void log(String s) {
+        hostingAutomation.writeOutput(s);
+    }
+    
     @Override
     public String toString(){
         return result.toString();
-    }
-
-    @Override
-    public void log(String s) {
-        logger.log(s);
-    }
-
-    @Override
-    public String getLog() {
-        return logger.getLog();
     }
 }

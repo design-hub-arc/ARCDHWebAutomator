@@ -1,8 +1,6 @@
 package automationSamples;
 
-import automationTools.QueryManager;
 import automationTools.AbstractPeopleSoftAutomation;
-import automationTools.ResultManager;
 import io.CsvFileRequirements;
 import java.util.Arrays;
 import org.openqa.selenium.By;
@@ -34,8 +32,9 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
         super(
             "PSReports Account Balance",
             DESC,
-            new QueryManager("https://psreports.losrios.edu/AccountBalanceSumDescr.asp", FILE_REQ),
-            new ResultManager("https://psreports.losrios.edu/AccountBalanceSumDescrQ.asp")
+            "https://psreports.losrios.edu/AccountBalanceSumDescr.asp", 
+            FILE_REQ,
+            "https://psreports.losrios.edu/AccountBalanceSumDescrQ.asp"
         );
     }
     @Override
