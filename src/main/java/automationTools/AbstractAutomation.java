@@ -201,6 +201,7 @@ public abstract class AbstractAutomation {
      * @return this, for chaining purposes. 
      */
     private AbstractAutomation finish(){
+        writeOutput("Done running, quitting browser.");
         if(driver != null){
             driver.quit();
             driver = null;
@@ -234,6 +235,7 @@ public abstract class AbstractAutomation {
             writeOutput("Driver created successfully.");
             doRun();
             finish();
+            writeOutput("Automation completed successfully");
         } catch(IllegalAccessException | InstantiationException e){
             writeOutput("Unable to create instance of dirver. Please see error log for details. Terminating process.");
             finish(); //make sure we finish

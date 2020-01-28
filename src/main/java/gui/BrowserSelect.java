@@ -58,6 +58,8 @@ public class BrowserSelect extends Page{
         for(Browser browser : Browser.values()){
             addBrowser(browser);
         }
+        selectBrowser(Browser.CHROME);
+        
         JScrollPane scrolly = new JScrollPane(browserList);
         scrolly.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         scrolly.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -78,13 +80,13 @@ public class BrowserSelect extends Page{
         });
         bottom.add(back);
         
-        JButton select = new JButton("Select WebDriver");
+        JButton select = new JButton("Select WebDriver file");
         select.addActionListener((e)->{
             selectDriver();
         });
         bottom.add(select);
         
-        JButton clear = new JButton("Clear saved WebDrivers");
+        JButton clear = new JButton("Clear saved WebDriver files");
         clear.addActionListener((e)->{
             ApplicationResources.getInstance().clearAllDriverPaths();
             browserInfo.values().forEach((bi)->bi.updateText());
@@ -93,7 +95,7 @@ public class BrowserSelect extends Page{
         
         JButton next = new JButton("Next");
         next.addActionListener((e)->{
-            if(driverClass == null){
+            if(!getHost().getHostingWindow().getRunningApplication().getResources().hasWebDriver(currentBrowser)){
                 JOptionPane.showMessageDialog(this, "Please select the WebDriver for your browser before continuing");
             } else {
                 next();
@@ -110,9 +112,7 @@ public class BrowserSelect extends Page{
         
         JRadioButton selectThisBrowser = new JRadioButton();
         selectThisBrowser.addActionListener((e)->{
-            //change this to selectbrowser function
-            currentBrowser = b;
-            driverClass = null;
+            selectBrowser(b);
         });
         browserButtons.add(selectThisBrowser);
         
@@ -129,35 +129,30 @@ public class BrowserSelect extends Page{
         gbc.weighty = 1;
         
         browserList.add(j, gbc);
-        
-        if(b == Browser.CHROME){
-            selectThisBrowser.setSelected(true);
-            currentBrowser = Browser.CHROME;
-            ApplicationResources resources = getHost().getHostingWindow().getRunningApplication().getResources();
-            driverClass = (resources.hasWebDriver(Browser.CHROME) ? ChromeDriver.class : null);
+    }
+    
+    private void selectBrowser(Browser b){
+        currentBrowser = b;
+        switch(currentBrowser){
+            case CHROME:
+                driverClass = ChromeDriver.class;
+                break;
+            case FIRE_FOX:
+                driverClass = FirefoxDriver.class;
+                break;
+            case EDGE:
+                driverClass = EdgeDriver.class;
+                break;
+            default:
+                throw new UnsupportedOperationException("Invalid browser: " + currentBrowser.name());
         }
     }
     
     private void selectDriver(){
-        if(System.getProperty(currentBrowser.getDriverEnvVar()) == null){
-            FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
-                ApplicationResources.getInstance().loadWebDriver(currentBrowser, file.getAbsolutePath());
-            });
-        }
+        FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
+            ApplicationResources.getInstance().loadWebDriver(currentBrowser, file.getAbsolutePath());
+        });
         try{
-            switch(currentBrowser){
-                case CHROME:
-                    driverClass = ChromeDriver.class;
-                    break;
-                case FIRE_FOX:
-                    driverClass = FirefoxDriver.class;
-                    break;
-                case EDGE:
-                    driverClass = EdgeDriver.class;
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Invalid browser: " + currentBrowser.name());
-            }
             BrowserInfoBox box = browserInfo.get(currentBrowser);
             if(box != null){
                 box.updateText();

@@ -102,9 +102,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
                 reportError(timeOut);
             }
         }
-        writeOutput("Done running, quitting browser.");
         resultManager.saveToFile();
-        writeOutput("Automation completed successfully");
     }
     
     /**
