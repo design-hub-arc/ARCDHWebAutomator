@@ -12,14 +12,14 @@ package logging;
 public interface ErrorLogListener {
     /**
      * Fires whenever the given log logs an error message.
-     * @param log the Logger which logged an error.
+     * @param log the ErrorLogger which logged an error.
      * @param msg the error message which was logged.
      */
-    public void errorLogged(Logger log, String msg);
+    public void errorLogged(ErrorLogger log, String msg);
     
     /**
-     * Fired whenever the given Logger has its error log cleared
+     * Fired whenever the given ErrorLogger has its error log cleared
      * @param log 
      */
-    public void logCleared(Logger log);
+    public void logCleared(ErrorLogger log);
 }

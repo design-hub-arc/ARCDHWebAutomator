@@ -9,6 +9,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import logging.ErrorLogger;
 
 /**
  *
@@ -46,6 +47,10 @@ public class ErrorPopup extends JDialog{
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
         setVisible(true);
+    }
+    
+    public ErrorPopup(ErrorLogger l){
+        this((l.hasLoggedError()) ? "No errors to report" : l.getLog());
     }
     
     private void save(){

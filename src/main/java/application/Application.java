@@ -26,7 +26,7 @@ public class Application {
         }
         window = null;
         resources = ApplicationResources.getInstance();
-        log = new ApplicationLog(this);
+        log = new ApplicationLog();
         
         closeListener = new WindowAdapter(){
             // for some reason, windowClosed doesn't fire.

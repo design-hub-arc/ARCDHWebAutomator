@@ -1,107 +1,56 @@
 package logging;
 
-import gui.ErrorPopup;
-import io.FileSelector;
-import io.FileWriterUtil;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
 /**
- *
- * @author Matt
+ * The ErrorLogger class is used to allow Loggers
+ * to log Exceptions, differentiating them from
+ * regular logs.
+ * 
+ * @author Matt Crow
  */
-public class ErrorLogger implements Logger{
-    private final StringBuilder loggedErrors;
-    private final ArrayList<ErrorLogListener> errorLogListeners;
+public interface ErrorLogger extends Logger{
+    /**
+     * This method should add a detailed description
+     * of the given Exception to the text log.
+     * Generally speaking, this method should forward
+     * an error message to this class' logError(String)
+     * method.
+     * 
+     * @param ex the Exception to log. 
+     */
+    public abstract void logError(Exception ex);
     
-    public ErrorLogger(){
-        loggedErrors = new StringBuilder();
-        errorLogListeners = new ArrayList<>();
-        addErrorLogListener(new ErrorLogListener(){
-            @Override
-            public void errorLogged(Logger log, String msg){
-                System.err.println(msg);
-            }
-            
-            @Override
-            public void logCleared(Logger log){};
-        });
-    }
-    
-    public void log(Exception ex){
-        StringBuilder errMsg = new StringBuilder();
-        errMsg.append("Encountered the following error: ").append(ex.toString()).append('\n');
-        for(StackTraceElement stack : ex.getStackTrace()){
-            errMsg.append("- ").append(stack.toString()).append('\n');
-        }
-        log(errMsg.toString());
-    }
-    
-    @Override
-    public void log(String s) {
-        loggedErrors.append(s).append('\n');
-        errorLogListeners.forEach((listener)->listener.errorLogged(this, s));
-    }
+    /**
+     * This method should add the given message
+     * to its log, as well as performing any procedures
+     * needed for encountering an error, such as
+     * firing any attached ErrorListeners.
+     * 
+     * @param errMsg the textual representation of an error,
+     * or just a warning message.
+     */
+    public abstract void logError(String errMsg);
 
+    /**
+     * Logs a non-error message. 
+     * @param msg the message to log.
+     */
     @Override
-    public String getLog() {
-        return loggedErrors.toString();
-    }
+    public abstract void log(String msg);
     
     /**
+     * Used to obtain a detailed log
+     * of errors recorded by this log.
      * 
-     * @return whether or not an error has been logged in this. 
+     * @return 
      */
-    public boolean hasLoggedError(){
-        return getLog().length() != 0;
-    }
+    @Override
+    public abstract String getLog();
     
     /**
-     * Adds a listener to this log. The listener will be notified
-     * whenever this logs an error.
+     * Used to obtain whether or not this log
+     * has logged an error.
      * 
-     * @param listener 
+     * @return whether or not an error has been encountered
      */
-    public void addErrorLogListener(ErrorLogListener listener){
-        errorLogListeners.add(listener);
-    }
-    
-    public void clear(){
-        loggedErrors.delete(0, loggedErrors.length());
-        errorLogListeners.forEach((listener)->listener.logCleared(this));
-    }
-    
-    public void showPopup(){
-        if(hasLoggedError()){
-            String msg = 
-                "Encountered the following errors:\n" 
-                + getLog();
-                
-            new ErrorPopup(msg);
-        } else {
-            JOptionPane.showMessageDialog(null, "No errors to report");
-        }
-    }
-    
-    /**
-     * Writes the content of this error log to the given file
-     * @param f the file to write to.
-     * @throws IOException if FileWriterUtil cannot write to the
-     * given file
-     */
-    public void saveToFile(File f) throws IOException{
-        FileWriterUtil.writeToFile(f, getLog());
-    }
-    
-    public void saveToFile(){
-        FileSelector.createNewFile("Where do you want to save the error log?", (newFile)->{
-            try {
-                saveToFile(newFile);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
+    public abstract boolean hasLoggedError();
 }

@@ -1,6 +1,5 @@
 package logging;
 
-import application.Application;
 import java.util.ArrayList;
 
 /**
@@ -9,15 +8,15 @@ import java.util.ArrayList;
  * create log files, which greatly ease debugging
  * @author Matt
  */
-public class ApplicationLog implements Logger{
-    private final Application forApp;
+public class ApplicationLog implements ErrorLogger{
     private final StringBuilder log;
     private final ArrayList<ErrorLogListener> errorListeners;
+    private boolean hasLoggedError;
     
-    public ApplicationLog(Application app){
-        forApp = app;
+    public ApplicationLog(){
         log = new StringBuilder();
         errorListeners = new ArrayList<>();
+        hasLoggedError = false;
     }
     
     public void addErrorListener(ErrorLogListener listener){
@@ -29,11 +28,14 @@ public class ApplicationLog implements Logger{
         log.append(s).append('\n');
     }
     
+    @Override
     public void logError(String errMsg){
         log.append(errMsg).append('\n');
+        hasLoggedError = true;
         errorListeners.forEach((listener)->listener.errorLogged(this, errMsg));
     }
     
+    @Override
     public void logError(Exception ex){
         StringBuilder errMsg = new StringBuilder();
         errMsg
@@ -46,11 +48,15 @@ public class ApplicationLog implements Logger{
         logError(errMsg.toString());
     }
     
-    /*
-    public void clear(){
-        log.delete(0, log.length());
+    
+    public void clearFlags(){
+        hasLoggedError = false;
         errorListeners.forEach((listener)->listener.logCleared(this));
-    }*/
+    }
+    
+    public boolean hasLoggedError(){
+        return hasLoggedError;
+    }
 
     @Override
     public String getLog() {

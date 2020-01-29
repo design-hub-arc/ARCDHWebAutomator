@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import logging.ApplicationLog;
 import logging.ErrorLogListener;
+import logging.ErrorLogger;
 import logging.Logger;
 import org.openqa.selenium.WebDriver;
 
@@ -73,12 +74,12 @@ public class ApplicationPane extends JPanel{
         ApplicationLog log = inWindow.getRunningApplication().getLog();
         log.addErrorListener(new ErrorLogListener(){
             @Override
-            public void errorLogged(Logger log, String msg){
+            public void errorLogged(ErrorLogger log, String msg){
                 errorLogButton.setText("Encountered an error");
             }
             
             @Override
-            public void logCleared(Logger log){
+            public void logCleared(ErrorLogger log){
                 errorLogButton.setText("No errors to report");
             };
         });
