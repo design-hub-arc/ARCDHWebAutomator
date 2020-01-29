@@ -41,7 +41,7 @@ public class ApplicationPane extends JPanel{
         
         AutomationSelect auto = new AutomationSelect(this);
         InputFileSelect file = new InputFileSelect(this);
-        BrowserSelect driverSel = new BrowserSelect(this);
+        BrowserSelectionPage driverSel = new BrowserSelectionPage(this);
         RunWindow run = new RunWindow(this);
         
         auto.setOnDone(()->{

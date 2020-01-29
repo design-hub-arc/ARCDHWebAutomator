@@ -25,17 +25,17 @@ import util.Browser;
  *
  * @author Matt
  */
-public class BrowserSelect extends Page{
+public class BrowserSelectionPage extends Page{
     private Browser currentBrowser;
     private Class<? extends WebDriver> driverClass;
     
-    private HashMap<Browser, BrowserInfoBox> browserInfo;
+    private HashMap<Browser, BrowserSelectBox> browserOptions;
     private final JPanel browserList;
     private final ButtonGroup browserButtons;
     
     private final ScrollableTextDisplay text;
     
-    public BrowserSelect(ApplicationPane app) {
+    public BrowserSelectionPage(ApplicationPane app) {
         super(app);
         driverClass = null;
         setLayout(new BorderLayout());
@@ -47,7 +47,7 @@ public class BrowserSelect extends Page{
         JPanel middle = new JPanel();
         middle.setLayout(new BoxLayout(middle, BoxLayout.Y_AXIS));
         
-        browserInfo = new HashMap<>();
+        browserOptions = new HashMap<>();
         //top of middle
         //list browser options
         browserList = new JPanel();
@@ -58,7 +58,7 @@ public class BrowserSelect extends Page{
         for(Browser browser : Browser.values()){
             addBrowser(browser);
         }
-        selectBrowser(Browser.CHROME);
+        browserOptions.get(Browser.CHROME).select();
         
         JScrollPane scrolly = new JScrollPane(browserList);
         scrolly.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -89,7 +89,7 @@ public class BrowserSelect extends Page{
         JButton clear = new JButton("Clear saved WebDriver files");
         clear.addActionListener((e)->{
             ApplicationResources.getInstance().clearAllDriverPaths();
-            browserInfo.values().forEach((bi)->bi.updateText());
+            browserOptions.values().forEach((bi)->bi.updateText());
         });
         bottom.add(clear);
         
@@ -107,20 +107,12 @@ public class BrowserSelect extends Page{
     }
     
     private void addBrowser(Browser b){
-        JPanel j = new JPanel();
-        j.setLayout(new BorderLayout());
-        
-        JRadioButton selectThisBrowser = new JRadioButton();
-        selectThisBrowser.addActionListener((e)->{
+        BrowserSelectBox box = new BrowserSelectBox(b);
+        box.addSelectionListener(()->{
             selectBrowser(b);
         });
-        browserButtons.add(selectThisBrowser);
-        
-        j.add(selectThisBrowser, BorderLayout.LINE_START);
-        
-        BrowserInfoBox box = new BrowserInfoBox(b);
-        browserInfo.put(b, box);
-        j.add(box, BorderLayout.CENTER);
+        browserButtons.add(box.getSelectionButton());
+        browserOptions.put(b, box);
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -128,7 +120,7 @@ public class BrowserSelect extends Page{
         gbc.weightx = 1;
         gbc.weighty = 1;
         
-        browserList.add(j, gbc);
+        browserList.add(box, gbc);
     }
     
     private void selectBrowser(Browser b){
@@ -153,7 +145,7 @@ public class BrowserSelect extends Page{
             ApplicationResources.getInstance().loadWebDriver(currentBrowser, file.getAbsolutePath());
         });
         try{
-            BrowserInfoBox box = browserInfo.get(currentBrowser);
+            BrowserSelectBox box = browserOptions.get(currentBrowser);
             if(box != null){
                 box.updateText();
             }
@@ -162,7 +154,7 @@ public class BrowserSelect extends Page{
             text.appendText(e.toString());
             text.appendText("\n");
             ApplicationResources.getInstance().clearDriverPath(currentBrowser);
-            BrowserInfoBox box = browserInfo.get(currentBrowser);
+            BrowserSelectBox box = browserOptions.get(currentBrowser);
             if(box != null){
                 box.updateText();
             }

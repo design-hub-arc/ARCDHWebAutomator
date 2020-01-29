@@ -2,27 +2,56 @@ package gui;
 
 import application.ApplicationResources;
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import util.Browser;
 
 /**
- *
- * @author Matt
+ * The BrowserSelectBox is used by BrowserSelectionPage
+ * to allow the user to select a browser from a list of
+ * browsers.
+ * 
+ * @author Matt Crow
  */
-public class BrowserInfoBox extends JPanel{
+public class BrowserSelectBox extends JPanel{
     private final Browser forBrowser;
     private final ScrollableTextDisplay disp;
+    private final JRadioButton selectThisBrowser;
+    private final ArrayList<Runnable> selectionListeners;
     
-    public BrowserInfoBox(Browser b){
+    public BrowserSelectBox(Browser b){
         forBrowser = b;
         setLayout(new BorderLayout());
+        
         add(new JLabel(b.getName()), BorderLayout.PAGE_START);
+        
         disp = new ScrollableTextDisplay();
         updateText();
         add(disp, BorderLayout.CENTER);
+        
+        selectThisBrowser = new JRadioButton();
+        selectThisBrowser.addActionListener((e)->select());
+        add(selectThisBrowser, BorderLayout.LINE_START);
+        
         revalidate();
         repaint();
+        
+        selectionListeners = new ArrayList<>();
+    }
+    
+    public JRadioButton getSelectionButton(){
+        return selectThisBrowser;
+    }
+    
+    public void select(){
+        selectThisBrowser.setSelected(true);
+        selectionListeners.forEach((r)->r.run());
+    }
+    
+    public void addSelectionListener(Runnable r){
+        selectionListeners.add(r);
     }
     
     public final void updateText(){

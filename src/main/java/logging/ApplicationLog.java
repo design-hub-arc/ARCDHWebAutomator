@@ -54,6 +54,7 @@ public class ApplicationLog implements ErrorLogger{
         errorListeners.forEach((listener)->listener.logCleared(this));
     }
     
+    @Override
     public boolean hasLoggedError(){
         return hasLoggedError;
     }
