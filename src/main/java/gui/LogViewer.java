@@ -9,24 +9,24 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import logging.ErrorLogger;
+import logging.Logger;
 
 /**
  *
- * @author Matt
+ * @author Matt Crow
  */
-public class ErrorPopup extends JDialog{
+public class LogViewer extends JDialog{
     private final String msg;
     
-    public ErrorPopup(String errMsg){
+    public LogViewer(Logger log){
         super();
-        msg = errMsg;
+        msg = log.getLog();
         
         JPanel content = new JPanel();
         content.setLayout(new BorderLayout());
         setContentPane(content);
         
-        content.add(new JLabel("Error message"), BorderLayout.PAGE_START);
+        content.add(new JLabel("Contents of log"), BorderLayout.PAGE_START);
         
         ScrollableTextDisplay text = new ScrollableTextDisplay(msg);
         content.add(text, BorderLayout.CENTER);
@@ -49,21 +49,13 @@ public class ErrorPopup extends JDialog{
         setVisible(true);
     }
     
-    public ErrorPopup(ErrorLogger l){
-        this((l.hasLoggedError()) ? l.getLog() : "No errors to report");
-    }
-    
     private void save(){
-        FileSelector.createNewFile("Where do you want to save the error log?", (newFile)->{
+        FileSelector.createNewFile("Where do you want to save the log?", (newFile)->{
             try {
                 FileWriterUtil.writeToFile(newFile, msg);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
-    }
-    
-    public static void main(String[] args){
-        new ErrorPopup("Ahhhhhhhhhh");
     }
 }

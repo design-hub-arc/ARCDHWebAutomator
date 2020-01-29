@@ -68,24 +68,24 @@ public class ApplicationPane extends JPanel{
         //bottom
         JPanel bottom = new JPanel();
         bottom.setLayout(new FlowLayout());
-        JButton errorLogButton = new JButton("No errors to report");
+        JButton viewLogButton = new JButton("View Log");
         
         ApplicationLog log = inWindow.getRunningApplication().getLog();
         log.addErrorListener(new ErrorLogListener(){
             @Override
             public void errorLogged(ErrorLogger log, String msg){
-                errorLogButton.setText("Encountered an error");
+                viewLogButton.setText("Encountered an error");
             }
             
             @Override
             public void logCleared(ErrorLogger log){
-                errorLogButton.setText("No errors to report");
+                viewLogButton.setText("View Log");
             };
         });
-        errorLogButton.addActionListener((e)->{
-            new ErrorPopup(log);
+        viewLogButton.addActionListener((e)->{
+            new LogViewer(log);
         });
-        bottom.add(errorLogButton);
+        bottom.add(viewLogButton);
         add(bottom, BorderLayout.PAGE_END);
     }
     
