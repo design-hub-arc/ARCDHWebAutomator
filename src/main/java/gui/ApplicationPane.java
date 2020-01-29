@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import logging.ApplicationLog;
 import logging.ErrorLogListener;
 import logging.ErrorLogger;
-import logging.Logger;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -84,7 +83,7 @@ public class ApplicationPane extends JPanel{
             };
         });
         errorLogButton.addActionListener((e)->{
-            //log.showPopup();
+            new ErrorPopup(log);
         });
         bottom.add(errorLogButton);
         add(bottom, BorderLayout.PAGE_END);

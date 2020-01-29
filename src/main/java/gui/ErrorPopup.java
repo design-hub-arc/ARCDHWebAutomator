@@ -50,7 +50,7 @@ public class ErrorPopup extends JDialog{
     }
     
     public ErrorPopup(ErrorLogger l){
-        this((l.hasLoggedError()) ? "No errors to report" : l.getLog());
+        this((l.hasLoggedError()) ? l.getLog() : "No errors to report");
     }
     
     private void save(){

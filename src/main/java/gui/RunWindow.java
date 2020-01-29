@@ -56,6 +56,7 @@ public class RunWindow extends Page{
             @Override
             public void run(){
                 try{
+                    log.clearFlags();
                     text.setText("***Program output will appear here***\n");
                     aa.addLogger(text);
                     aa.addLogger(log);

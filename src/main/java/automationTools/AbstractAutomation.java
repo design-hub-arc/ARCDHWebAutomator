@@ -155,7 +155,7 @@ public abstract class AbstractAutomation {
     }
     
     /**
-     * Sends an error message to the error log.
+     * Sends an error message to the error logs.
      * 
      * @param msg the error text to write.
      * @return this, for chaining purposes
@@ -164,20 +164,35 @@ public abstract class AbstractAutomation {
         if(loggers.isEmpty()){
             System.err.println(msg + '\n');
         } else {
-            //needs to be logError
-            loggers.forEach((logger)->logger.log(msg));
+            loggers.forEach((logger)->{
+                if(logger instanceof ErrorLogger){
+                    ((ErrorLogger)logger).logError(msg);
+                } else {
+                    logger.log(msg);
+                }
+            });
         }
         return this;
     }
     
     /**
-     * Sends an error message to the error log.
+     * Sends an error message to the error logs.
      * 
      * @param ex the exception to send to the error logger
      * @return this, for chaining purposes
      */
     public final AbstractAutomation reportError(Exception ex){
-        System.out.println("Still need to implement reportError(Exception) in AbstractAutomation");
+        if(loggers.isEmpty()){
+            ex.printStackTrace();
+        } else {
+            loggers.forEach((logger)->{
+                if(logger instanceof ErrorLogger){
+                    ((ErrorLogger)logger).logError(ex);
+                } else {
+                    logger.log(ex.toString());
+                }
+            });
+        }
         return this;
     }
     
