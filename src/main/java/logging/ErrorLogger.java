@@ -21,12 +21,12 @@ public class ErrorLogger implements Logger{
         errorLogListeners = new ArrayList<>();
         addErrorLogListener(new ErrorLogListener(){
             @Override
-            public void errorLogged(ErrorLogger log, String msg){
+            public void errorLogged(Logger log, String msg){
                 System.err.println(msg);
             }
             
             @Override
-            public void logCleared(ErrorLogger log){};
+            public void logCleared(Logger log){};
         });
     }
     

@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
-import logging.ErrorLogger;
 import logging.Logger;
 import util.Browser;
 
@@ -281,10 +280,6 @@ public final class ApplicationResources {
     
     public void saveLog(Logger log) throws IOException{
         saveToFile(logFolderPath, "Log" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", log.getLog());
-    }
-    
-    public void saveErrorLog(ErrorLogger errorLog) throws IOException{
-        saveToFile(logFolderPath, "ErrorLog" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", errorLog.getLog());
     }
     
     public static void main(String[] args){

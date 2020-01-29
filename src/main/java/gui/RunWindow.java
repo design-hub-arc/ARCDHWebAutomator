@@ -8,6 +8,7 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import logging.ApplicationLog;
 import logging.ErrorLogger;
 import org.openqa.selenium.WebDriver;
 
@@ -50,15 +51,14 @@ public class RunWindow extends Page{
     
     public final void run(AbstractAutomation aa, String fileText, Class<? extends WebDriver> driverClass){
         Application app = getHost().getHostingWindow().getRunningApplication();
-        ErrorLogger errLog = app.getErrorLog();
+        ApplicationLog log = app.getLog();
         new Thread(){
             @Override
             public void run(){
                 try{
                     text.setText("***Program output will appear here***\n");
                     aa.addLogger(text);
-                    aa.addLogger(app);
-                    aa.setErrorLogger(errLog);
+                    aa.addLogger(log);
                     
                     if(aa instanceof QueryingAutomation){
                         ((QueryingAutomation)aa).setInputFile(fileText);
@@ -66,7 +66,7 @@ public class RunWindow extends Page{
                     
                     aa.run(driverClass);
                 } catch (Exception ex){
-                    errLog.log(ex);
+                    log.logError(ex);
                 }
             }
         }.start();

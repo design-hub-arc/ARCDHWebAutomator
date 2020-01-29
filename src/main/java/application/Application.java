@@ -4,8 +4,7 @@ import gui.ApplicationWindow;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import logging.ErrorLogger;
-import logging.Logger;
+import logging.ApplicationLog;
 
 /**
  * Application serves as the entry point for
@@ -13,11 +12,10 @@ import logging.Logger;
  * 
  * @author Matt Crow
  */
-public class Application implements Logger{
+public class Application {
     private final ApplicationResources resources;
     private ApplicationWindow window;
-    private final StringBuilder log;
-    private final ErrorLogger errorLog;
+    private final ApplicationLog log;
     private final WindowAdapter closeListener;
     
     private static Application instance;
@@ -28,18 +26,14 @@ public class Application implements Logger{
         }
         window = null;
         resources = ApplicationResources.getInstance();
-        log = new StringBuilder();
-        errorLog = new ErrorLogger();
+        log = new ApplicationLog(this);
         
         closeListener = new WindowAdapter(){
             // for some reason, windowClosed doesn't fire.
             @Override
             public void windowClosing(WindowEvent e){
-                if(log.length() >= 0){
+                if(log.getLog().length() >= 0){
                     writeLog();
-                }
-                if(errorLog.hasLoggedError()){
-                    writeErrorLog();
                 }
             }
         };
@@ -65,15 +59,6 @@ public class Application implements Logger{
         return resources;
     }
     
-    /**
-     * Used to get the error log for the application,
-     * where you should report errors.
-     * 
-     * @return the ErrorLogger used by the application 
-     */
-    public ErrorLogger getErrorLog(){
-        return errorLog;
-    }
     
     /**
      * Saves the log of this application
@@ -81,23 +66,9 @@ public class Application implements Logger{
      */
     public void writeLog(){
         try {
-            resources.saveLog(this);
+            resources.saveLog(log);
         } catch (IOException ex) {
             System.err.println("Unable to write application log:");
-            ex.printStackTrace();
-        }
-    }
-    
-    /**
-     * Dumps the contents of this'
-     * error log to a file in the application
-     * resource folder.
-     */
-    public void writeErrorLog(){
-        try {
-            resources.saveErrorLog(errorLog);
-        } catch (IOException ex) {
-            System.err.println("Unable to write error log:");
             ex.printStackTrace();
         }
     }
@@ -112,14 +83,8 @@ public class Application implements Logger{
         ApplicationWindow w = new ApplicationWindow(app);
         app.setWindow(w);
     }
-
-    @Override
-    public void log(String s) {
-        log.append(s);
-    }
-
-    @Override
-    public String getLog() {
-        return log.toString();
+    
+    public ApplicationLog getLog(){
+        return log;
     }
 }

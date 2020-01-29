@@ -30,7 +30,6 @@ public abstract class AbstractAutomation {
     private boolean running;
     
     private final ArrayList<Logger> loggers;
-    private ErrorLogger errorLogger;
     
     /**
      * 
@@ -45,8 +44,6 @@ public abstract class AbstractAutomation {
         wait = null;
         running = false;
         loggers = new ArrayList<>();
-        
-        errorLogger = new ErrorLogger();
     }
     
     public final String getName(){
@@ -71,18 +68,6 @@ public abstract class AbstractAutomation {
      */
     public AbstractAutomation addLogger(Logger l){
         loggers.add(l);
-        return this;
-    }
-    
-    /**
-     * Sets the ErrorLogger which should receive any error messages
-     * this automation produces.
-     * 
-     * @param l the ErrorLogger which should receive error messages from this
-     * @return this, for chaining purposes
-     */
-    public AbstractAutomation setErrorLogger(ErrorLogger l){
-        errorLogger = l;
         return this;
     }
     
@@ -176,7 +161,12 @@ public abstract class AbstractAutomation {
      * @return this, for chaining purposes
      */
     public final AbstractAutomation reportError(String msg){
-        errorLogger.log(msg + "\n");
+        if(loggers.isEmpty()){
+            System.err.println(msg + '\n');
+        } else {
+            //needs to be logError
+            loggers.forEach((logger)->logger.log(msg));
+        }
         return this;
     }
     
@@ -187,7 +177,7 @@ public abstract class AbstractAutomation {
      * @return this, for chaining purposes
      */
     public final AbstractAutomation reportError(Exception ex){
-        errorLogger.log(ex);
+        System.out.println("Still need to implement reportError(Exception) in AbstractAutomation");
         return this;
     }
     
