@@ -28,7 +28,7 @@ import javax.swing.JScrollPane;
  * @author Matt Crow
  */
 public class AutomationSelect extends Page{
-    private AbstractAutomation selectedAutomation;
+    private Class<? extends AbstractAutomation> selectedAutomation;
     
     public AutomationSelect(ApplicationPane app){
         super(app);
@@ -64,7 +64,7 @@ public class AutomationSelect extends Page{
             j.setLayout(new BorderLayout());
             b = new JRadioButton();
             b.addActionListener((e)->{
-                selectedAutomation = aa;
+                selectedAutomation = aa.getClass();
             });
             bg.add(b);
             j.add(b, BorderLayout.LINE_START);
@@ -89,7 +89,7 @@ public class AutomationSelect extends Page{
         repaint();
     }
     
-    public final AbstractAutomation getSelected(){
+    public final Class<? extends AbstractAutomation> getSelected(){
         return selectedAutomation;
     }
 }

@@ -147,9 +147,9 @@ public abstract class AbstractAutomation {
      */
     public final AbstractAutomation writeOutput(String output){
         if(loggers.isEmpty()){
-            System.out.println(output + '\n');
+            System.out.println(output);
         } else {
-            loggers.forEach((logger)->logger.log(output + '\n'));
+            loggers.forEach((logger)->logger.log(output));
         }
         return this;
     }
@@ -162,7 +162,7 @@ public abstract class AbstractAutomation {
      */
     public final AbstractAutomation reportError(String msg){
         if(loggers.isEmpty()){
-            System.err.println(msg + '\n');
+            System.err.println(msg);
         } else {
             loggers.forEach((logger)->{
                 if(logger instanceof ErrorLogger){

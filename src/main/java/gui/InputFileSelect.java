@@ -64,19 +64,23 @@ public class InputFileSelect extends Page{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public final void setAuto(AbstractAutomation aa){
-        forAuto = aa;
-        disp.clear();
-        if(!(aa instanceof QueryingAutomation)){
-            autoText.setText(aa.getName() + " doesn't need a query file to run");
-            disp.appendText("No need to select a file.");
-            fileText = "";
-            accepted = true;
-            next();
-        } else {
-            autoText.setText("Select source file for " + aa.getName());
-            disp.appendText(((QueryingAutomation)aa).getQueryManager().getQueryFileReqs().getReqDesc() + "\n"); 
-            accepted = false;
+    public final void setAuto(Class<? extends AbstractAutomation> aClass){
+        try {
+            forAuto = aClass.newInstance();
+            disp.clear();
+            if(!(forAuto instanceof QueryingAutomation)){
+                autoText.setText(forAuto.getName() + " doesn't need a query file to run");
+                disp.appendText("No need to select a file.");
+                fileText = "";
+                accepted = true;
+                next();
+            } else {
+                autoText.setText("Select source file for " + forAuto.getName());
+                disp.appendText(((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().getReqDesc() + "\n"); 
+                accepted = false;
+            }
+        } catch (Exception ex) {
+            getHost().getHostingWindow().getRunningApplication().getLog().logError(ex);
         }
     }
     

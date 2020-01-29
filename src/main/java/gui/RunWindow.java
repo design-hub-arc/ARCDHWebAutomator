@@ -48,7 +48,7 @@ public class RunWindow extends Page{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public final void run(AbstractAutomation aa, String fileText, Class<? extends WebDriver> driverClass){
+    public final void run(Class<? extends AbstractAutomation> aClass, String fileText, Class<? extends WebDriver> driverClass){
         Application app = getHost().getHostingWindow().getRunningApplication();
         ApplicationLog log = app.getLog();
         new Thread(){
@@ -56,6 +56,7 @@ public class RunWindow extends Page{
             public void run(){
                 try{
                     log.clearFlags();
+                    AbstractAutomation aa = aClass.newInstance();
                     text.setText("***Program output will appear here***\n");
                     aa.addLogger(text);
                     aa.addLogger(log);

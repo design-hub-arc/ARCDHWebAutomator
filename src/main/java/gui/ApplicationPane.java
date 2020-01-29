@@ -24,7 +24,7 @@ public class ApplicationPane extends JPanel{
     private final ApplicationWindow hostingWindow;
     private final JPanel middle;
     
-    private AbstractAutomation selAuto;
+    private Class<? extends AbstractAutomation> selAuto;
     private String fileText;
     private Class<? extends WebDriver> driverClass;
     
