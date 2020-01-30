@@ -16,12 +16,14 @@ import util.Browser;
  * @author Matt Crow
  */
 public class BrowserSelectBox extends JPanel{
+    private final BrowserSelectionPage parent;
     private final Browser forBrowser;
     private final ScrollableTextDisplay disp;
     private final JRadioButton selectThisBrowser;
     private final ArrayList<Runnable> selectionListeners;
     
-    public BrowserSelectBox(Browser b){
+    public BrowserSelectBox(BrowserSelectionPage inPage, Browser b){
+        parent = inPage;
         forBrowser = b;
         setLayout(new BorderLayout());
         
@@ -56,7 +58,7 @@ public class BrowserSelectBox extends JPanel{
     
     public final void updateText(){
         // set the text based on whether or not the user has the webdriver installed
-        ApplicationResources resources = ApplicationResources.getInstance();
+        ApplicationResources resources = parent.getHost().getHostingWindow().getRunningApplication().getResources();
         disp.clear();
         if(resources.hasWebDriver(forBrowser)){
             disp.appendText("This browser's WebDriver is currently saved to ");

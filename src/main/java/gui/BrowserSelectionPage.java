@@ -32,8 +32,6 @@ public class BrowserSelectionPage extends Page{
     private final JPanel browserList;
     private final ButtonGroup browserButtons;
     
-    private final ScrollableTextDisplay text;
-    
     public BrowserSelectionPage(ApplicationPane app) {
         super(app);
         driverClass = null;
@@ -43,11 +41,8 @@ public class BrowserSelectionPage extends Page{
         add(new JLabel("Select which browser to use"), BorderLayout.PAGE_START);
         
         //middle
-        JPanel middle = new JPanel();
-        middle.setLayout(new BoxLayout(middle, BoxLayout.Y_AXIS));
         
         browserOptions = new HashMap<>();
-        //top of middle
         //list browser options
         browserList = new JPanel();
         browserList.setLayout(new GridBagLayout());
@@ -60,15 +55,10 @@ public class BrowserSelectionPage extends Page{
         browserOptions.get(Browser.CHROME).select();
         
         JScrollPane scrolly = new JScrollPane(browserList);
-        scrolly.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        scrolly.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrolly.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        middle.add(scrolly);
         
-        //bottom of middle
-        text = new ScrollableTextDisplay("***Program output will appear here***\n");
-        middle.add(text);
-        
-        add(middle, BorderLayout.CENTER);
+        add(scrolly, BorderLayout.CENTER);
         
         //bottom
         JPanel bottom = new JPanel();
@@ -87,7 +77,7 @@ public class BrowserSelectionPage extends Page{
         
         JButton clear = new JButton("Clear saved WebDriver files");
         clear.addActionListener((e)->{
-            ApplicationResources.getInstance().clearAllDriverPaths();
+            getHost().getHostingWindow().getRunningApplication().getResources().clearAllDriverPaths();
             browserOptions.values().forEach((bi)->bi.updateText());
         });
         bottom.add(clear);
@@ -106,7 +96,7 @@ public class BrowserSelectionPage extends Page{
     }
     
     private void addBrowser(Browser b){
-        BrowserSelectBox box = new BrowserSelectBox(b);
+        BrowserSelectBox box = new BrowserSelectBox(this, b);
         box.addSelectionListener(()->{
             selectBrowser(b);
         });
@@ -141,22 +131,11 @@ public class BrowserSelectionPage extends Page{
     
     private void selectDriver(){
         FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
-            ApplicationResources.getInstance().loadWebDriver(currentBrowser, file.getAbsolutePath());
+            getHost().getHostingWindow().getRunningApplication().getResources().loadWebDriver(currentBrowser, file.getAbsolutePath());
         });
-        try{
-            BrowserSelectBox box = browserOptions.get(currentBrowser);
-            if(box != null){
-                box.updateText();
-            }
-        } catch(Exception e){
-            text.appendText("Looks like something went wrong:\n");
-            text.appendText(e.toString());
-            text.appendText("\n");
-            ApplicationResources.getInstance().clearDriverPath(currentBrowser);
-            BrowserSelectBox box = browserOptions.get(currentBrowser);
-            if(box != null){
-                box.updateText();
-            }
+        BrowserSelectBox box = browserOptions.get(currentBrowser);
+        if(box != null){
+            box.updateText();
         }
     }
     

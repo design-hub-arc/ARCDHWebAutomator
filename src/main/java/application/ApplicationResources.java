@@ -1,6 +1,5 @@
 package application;
 
-import io.FileSelector;
 import io.FileWriterUtil;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +26,7 @@ import util.Browser;
  * @author Matt Crow
  */
 public final class ApplicationResources {
-    
+    private final Application forApp;
     private final String userHome = System.getProperty("user.home");
     private final String companyFolderName = userHome + File.separator + "ARCDH";
     private final String applicationFolderName = companyFolderName + File.separator + "WebAutomator";
@@ -39,10 +38,8 @@ public final class ApplicationResources {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-DD-uuuu_hh_mm_a");
     private static ApplicationResources instance;
     
-    private ApplicationResources(){
-        if(instance != null){
-            throw new RuntimeException("Cannot instantiate more than one instance of singleton class, use getInstance() instead of constructor");
-        }
+    public ApplicationResources(Application app){
+        forApp = app;
         driverPaths = new HashMap<>();
     }
     
@@ -60,24 +57,11 @@ public final class ApplicationResources {
             String fileName = split[0];
             Browser b = Browser.getByDriverFileName(fileName);
             if(b == null){
-                System.err.println("Cannot find browser with webdriver named " + fileName);
+                forApp.getLog().logError("Cannot find browser with webdriver named " + fileName);
             } else {
                 putDriverPath(b, savedDriver.getAbsolutePath());
             }
         }
-    }
-    
-    /**
-     * Used to access the singleton instance of this class.
-     * If the class has not yet been initialized, instantiates before returning.
-     * 
-     * @return the instance of this class
-     */
-    public static ApplicationResources getInstance(){
-        if(instance == null){
-            instance = new ApplicationResources();
-        }
-        return instance;
     }
     
     /**
@@ -99,7 +83,7 @@ public final class ApplicationResources {
      */
     private void createIfAbsent(String dirPath) throws IOException{
         if(!dirExists(dirPath)){
-            System.out.println("Creating directory " + dirPath);
+            forApp.getLog().log("Creating directory " + dirPath);
             Files.createDirectory(Paths.get(dirPath));
         }
     }
@@ -147,9 +131,10 @@ public final class ApplicationResources {
                 try {
                     Files.delete(Paths.get(path));
                 } catch (AccessDeniedException ex){
-                    System.err.println("Unable to delete " + path + ". Please use your taks manager to verify that no instances of this executable are being run.");
+                    forApp.getLog().logError("Unable to delete " + path + ". Please use your task manager to verify that no instances of this executable are being run.");
+                    forApp.getLog().logError(ex);
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    forApp.getLog().logError(ex);
                 }
             }
         }
@@ -168,13 +153,13 @@ public final class ApplicationResources {
         driverPaths.clear();
         Path driverFolder = Paths.get(driverFolderName);
         Arrays.stream(driverFolder.toFile().listFiles()).forEach((File f)->{
-            System.out.println(f.getAbsolutePath());
             try {
                 Files.delete(Paths.get(f.getAbsolutePath()));
             } catch (AccessDeniedException ex){
-                System.err.println("Unable to delete " + f.getAbsolutePath() + ". Please use your taks manager to verify that no instances of this executable are being run.");
+                forApp.getLog().logError("Unable to delete " + f.getAbsolutePath() + ". Please use your task manager to verify that no instances of this executable are being run.");
+                forApp.getLog().logError(ex);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                forApp.getLog().logError(ex);
             }
         });
     }
@@ -280,11 +265,5 @@ public final class ApplicationResources {
     
     public void saveLog(Logger log) throws IOException{
         saveToFile(logFolderPath, "Log" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", log.getLog());
-    }
-    
-    public static void main(String[] args){
-        FileSelector.chooseExeFile("choose chrome webdriver", (File f)->{
-            getInstance().loadWebDriver(Browser.CHROME, f.getAbsolutePath());
-        });
     }
 }

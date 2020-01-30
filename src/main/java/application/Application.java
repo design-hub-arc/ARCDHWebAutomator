@@ -25,7 +25,7 @@ public class Application {
             throw new RuntimeException("Cannot instantiate more than one instance of Application. Use Application.getInstance() instead");
         }
         window = null;
-        resources = ApplicationResources.getInstance();
+        resources = new ApplicationResources(this);
         log = new ApplicationLog();
         
         closeListener = new WindowAdapter(){
