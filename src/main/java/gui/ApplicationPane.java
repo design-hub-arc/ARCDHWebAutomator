@@ -7,9 +7,9 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import logging.ApplicationLog;
-import logging.ErrorLogListener;
 import logging.ErrorLogger;
 import org.openqa.selenium.WebDriver;
+import logging.ErrorListener;
 
 /**
  *
@@ -71,7 +71,7 @@ public class ApplicationPane extends JPanel{
         JButton viewLogButton = new JButton("View Log");
         
         ApplicationLog log = inWindow.getRunningApplication().getLog();
-        log.addErrorListener(new ErrorLogListener(){
+        log.addErrorListener(new ErrorListener(){
             @Override
             public void errorLogged(ErrorLogger log, String msg){
                 viewLogButton.setText("Encountered an error");

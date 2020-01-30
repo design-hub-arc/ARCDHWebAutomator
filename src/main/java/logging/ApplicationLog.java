@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class ApplicationLog implements ErrorLogger{
     private final StringBuilder log;
-    private final ArrayList<ErrorLogListener> errorListeners;
+    private final ArrayList<ErrorListener> errorListeners;
     private boolean hasLoggedError;
     
     public ApplicationLog(){
@@ -19,7 +19,7 @@ public class ApplicationLog implements ErrorLogger{
         hasLoggedError = false;
     }
     
-    public void addErrorListener(ErrorLogListener listener){
+    public void addErrorListener(ErrorListener listener){
         errorListeners.add(listener);
     }
 

@@ -9,7 +9,7 @@ package logging;
  * @author matt Crow
  */
 
-public interface ErrorLogListener {
+public interface ErrorListener {
     /**
      * Fires whenever the given log logs an error message.
      * @param log the ErrorLogger which logged an error.
