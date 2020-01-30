@@ -1,12 +1,10 @@
 package gui;
 
-import application.ApplicationResources;
 import io.FileSelector;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.HashMap;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -77,17 +75,17 @@ public class BrowserSelectionPage extends Page{
         
         JButton clear = new JButton("Clear saved WebDriver files");
         clear.addActionListener((e)->{
-            getHost().getHostingWindow().getRunningApplication().getResources().clearAllDriverPaths();
+            getApp().getResources().clearAllDriverPaths();
             browserOptions.values().forEach((bi)->bi.updateText());
         });
         bottom.add(clear);
         
         JButton next = new JButton("Next");
         next.addActionListener((e)->{
-            if(!getHost().getHostingWindow().getRunningApplication().getResources().hasWebDriver(currentBrowser)){
-                JOptionPane.showMessageDialog(this, "Please select the WebDriver for your browser before continuing");
-            } else {
+            if(getApp().getResources().hasWebDriver(currentBrowser)){
                 next();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select the WebDriver for your browser before continuing");
             }
         });
         bottom.add(next);
@@ -131,7 +129,7 @@ public class BrowserSelectionPage extends Page{
     
     private void selectDriver(){
         FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
-            getHost().getHostingWindow().getRunningApplication().getResources().loadWebDriver(currentBrowser, file.getAbsolutePath());
+            getApp().getResources().loadWebDriver(currentBrowser, file.getAbsolutePath());
         });
         BrowserSelectBox box = browserOptions.get(currentBrowser);
         if(box != null){

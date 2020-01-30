@@ -1,5 +1,6 @@
 package gui;
 
+import application.Application;
 import automationTools.AbstractAutomation;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -21,7 +22,7 @@ public class ApplicationPane extends JPanel{
     private static final String DRIVER = "DRIVER";
     private static final String RUN = "RUN"; //use this page to show program output
     
-    private final ApplicationWindow hostingWindow;
+    private final Application forApp;
     private final JPanel middle;
     
     private Class<? extends AbstractAutomation> selAuto;
@@ -30,7 +31,7 @@ public class ApplicationPane extends JPanel{
     
     public ApplicationPane(ApplicationWindow inWindow){
         super();
-        hostingWindow = inWindow;
+        forApp = inWindow.getApp();
         
         setLayout(new BorderLayout());
         
@@ -70,7 +71,7 @@ public class ApplicationPane extends JPanel{
         bottom.setLayout(new FlowLayout());
         JButton viewLogButton = new JButton("View Log");
         
-        ApplicationLog log = inWindow.getRunningApplication().getLog();
+        ApplicationLog log = inWindow.getApp().getLog();
         log.addErrorListener(new ErrorListener(){
             @Override
             public void errorLogged(ErrorLogger log, String msg){
@@ -89,15 +90,17 @@ public class ApplicationPane extends JPanel{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public ApplicationWindow getHostingWindow(){
-        return hostingWindow;
+    public Application getApp(){
+        return forApp;
     }
     
     public final void prev(){
+        forApp.getLog().clearFlags();
         ((CardLayout)middle.getLayout()).previous(middle);
     }
     
     public final void next(){
+        forApp.getLog().clearFlags();
         ((CardLayout)middle.getLayout()).next(middle);
     }
 }

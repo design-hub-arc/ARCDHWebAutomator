@@ -5,7 +5,8 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 
 /**
- *
+ * Serves as the frame for the application.
+ * 
  * @author Matt Crow
  */
 public final class ApplicationWindow extends JFrame{
@@ -14,6 +15,7 @@ public final class ApplicationWindow extends JFrame{
     public ApplicationWindow(Application runningApp){
         super();
         forApp = runningApp;
+        forApp.listenToWindow(this);
         
         setTitle("American River College Design Hub Web Automator");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -32,7 +34,11 @@ public final class ApplicationWindow extends JFrame{
         repaint();
     }
     
-    public Application getRunningApplication(){
+    /**
+     * 
+     * @return the Application which has opened this window. 
+     */
+    public Application getApp(){
         return forApp;
     }
 }

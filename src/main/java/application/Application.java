@@ -4,6 +4,7 @@ import gui.ApplicationWindow;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import javax.swing.JFrame;
 import logging.ApplicationLog;
 
 /**
@@ -14,7 +15,6 @@ import logging.ApplicationLog;
  */
 public class Application {
     private final ApplicationResources resources;
-    private ApplicationWindow window;
     private final ApplicationLog log;
     private final WindowAdapter closeListener;
     
@@ -24,7 +24,6 @@ public class Application {
         if(instance != null){
             throw new RuntimeException("Cannot instantiate more than one instance of Application. Use Application.getInstance() instead");
         }
-        window = null;
         resources = new ApplicationResources(this);
         log = new ApplicationLog();
         
@@ -46,12 +45,13 @@ public class Application {
         return instance;
     }
     
-    public void setWindow(ApplicationWindow w){
-        if(window != null){
-            // stop listening to old window
-            window.removeWindowListener(closeListener);
-        }
-        window = w;
+    /**
+     * Once the given JFrame closes, this will
+     * automatically save its log.
+     * 
+     * @param w the JFrame to listen to 
+     */
+    public void listenToWindow(JFrame w){
         w.addWindowListener(closeListener);
     }
     
@@ -73,15 +73,18 @@ public class Application {
         }
     }
     
-    public static void main(String[] args){
-        Application app = getInstance();
+    public void start(){
         try {
-            app.getResources().init();
+            getResources().init();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        ApplicationWindow w = new ApplicationWindow(app);
-        app.setWindow(w);
+        ApplicationWindow w = new ApplicationWindow(this); //automatically listens to window
+    }
+    
+    public static void main(String[] args){
+        Application app = getInstance();
+        app.start();
     }
     
     public ApplicationLog getLog(){

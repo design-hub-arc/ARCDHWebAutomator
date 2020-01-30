@@ -49,8 +49,7 @@ public class RunWindow extends Page{
     }
     
     public final void run(Class<? extends AbstractAutomation> aClass, String fileText, Class<? extends WebDriver> driverClass){
-        Application app = getHost().getHostingWindow().getRunningApplication();
-        ApplicationLog log = app.getLog();
+        ApplicationLog log = getLog();
         new Thread(){
             @Override
             public void run(){
