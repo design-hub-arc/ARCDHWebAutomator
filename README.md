@@ -32,6 +32,26 @@ ARCDHWebAutomator-master/build/libs
 , and you will find the project JAR file, ARCDHWebAutomator.jar. Feel free to move this to anywhere on your computer, as it is completely self-contained. Double click the JAR file to run it, and the program should launch.
 
 ### Troubleshooting
+The program writes log files to a folder it creates,
+```
+USER_HOME/ARCDH/WebAutomator/logs
+```
+Where USER_HOME is the user's home folder which is usually
+```
+C:\Users\NAME
+```
+for Windows,
+```
+/Users/NAME
+```
+for Mac,
+```
+/usr/NAME
+```
+for Linux.
+
+Note that the program will automatically regenerate these folders under ARCDH if they are absent, so you needn't worry if they are deleted.
+
 If the JAR file doesn't open when you double-click it, you can can see what's going wrong by opening up your terminal (Command Prompt for Windows, or Terminal for Mac), and type
 ```
 java -jar
