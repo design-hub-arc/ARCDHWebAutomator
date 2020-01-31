@@ -5,7 +5,6 @@ import io.FileRequirements;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import logging.Logger;
 
 /**
  * The QueryManager is used by automations implementing
@@ -21,36 +20,24 @@ import logging.Logger;
  * 
  * @author Matt Crow
  */
-public class QueryManager implements Logger{
+public class QueryManager {
+    private final AbstractAutomation hostingAutomation;
     private final FileRequirements fileReqs;
     private final LinkedList<String> queryFile;
-    private final StringBuilder queryLog;
-    private Logger log;
     private final String queryUrl;
     
     /**
      * 
+     * @param forAutomation the automation this is saving queries for
      * @param inputUrl the URL this QueryManager should input queries into
      * @param reqs the requirements that query 
      * files fed into this must adhere to.
      */
-    public QueryManager(String inputUrl, FileRequirements reqs){
+    public QueryManager(AbstractAutomation forAutomation, String inputUrl, FileRequirements reqs){
+        hostingAutomation = forAutomation;
         fileReqs = reqs;
         queryFile = new LinkedList<>();
-        queryLog = new StringBuilder();
         queryUrl = inputUrl;
-        log = new Logger() {
-            @Override
-            public void log(String s) {
-                queryLog.append(s).append('\n');
-                System.out.println(s);
-            }
-
-            @Override
-            public String getLog() {
-                return queryLog.toString();
-            }
-        };
     }
     
     /**
@@ -105,17 +92,7 @@ public class QueryManager implements Logger{
         return nextQuery;
     }
     
-    public void setLogger(Logger l){
-        log = l;
-    }
-
-    @Override
     public void log(String s) {
-        log.log(s);
-    }
-
-    @Override
-    public String getLog() {
-        return log.getLog();
+        hostingAutomation.writeOutput(s);
     }
 }

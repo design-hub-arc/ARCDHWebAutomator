@@ -22,19 +22,10 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     private final QueryManager queryManager;
     private final ResultManager resultManager;
     
-    public AbstractQueryGatherAutomation(String autoName, String description, QueryManager q, ResultManager r){
-        super(autoName, description);
-        queryManager = q;
-        resultManager = r;
-    }
-    public AbstractQueryGatherAutomation(String autoName, String description, QueryManager q, String resultUrl){
-        this(autoName, description, q, new ResultManager(resultUrl));
-    }
-    public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, ResultManager r){
-        this(autoName, description, new QueryManager(inputUrl, reqs), r);
-    }
     public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
-        this(autoName, description, new QueryManager(inputUrl, reqs), new ResultManager(resultUrl));
+        super(autoName, description);
+        queryManager = new QueryManager(this, inputUrl, reqs);
+        resultManager = new ResultManager(this, resultUrl);
     }
     
     /**
@@ -60,27 +51,12 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
         return resultManager;
     }
     
-    /**
-     * Sets the object which should receive output
-     * from this class, its query manager, and its 
-     * result manager.
-     * 
-     * @param l the object with which this should log messages
-     * @return this, for chaining purposes
-     */
-    @Override
-    public AbstractAutomation setLogger(Logger l){
-        queryManager.setLogger(l);
-        resultManager.setLogger(l);
-        return super.setLogger(l);
-    }
-    
     @Override
     public void doRun() {
         WebDriver driver = getDriver();
         resultManager.clear();
         String q;
-        while(isRunning()){
+        while(!queryManager.isEmpty()){
             driver.get(queryManager.getInputUrl());
             ExpectedCondition<Boolean> e  = ExpectedConditions.urlMatches(queryManager.getInputUrl());
             getWait().until(e);
@@ -96,15 +72,8 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
                 reportError("Did not transition to result page after inputting query: [" + q + "]");
                 reportError(timeOut);
             }
-            
-            if(queryManager.isEmpty()){
-                writeOutput("Done running, quitting browser.");
-                quit();
-            }
         }
-        
         resultManager.saveToFile();
-        writeOutput("Automation completed successfully");
     }
     
     /**

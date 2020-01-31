@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -11,8 +10,10 @@ import javax.swing.SwingUtilities;
 import logging.Logger;
 
 /**
- *
- * @author Matt
+ * Not sure if I want this to implement Logger,
+ * since while is does need to report messages, it needn't store them.
+ * 
+ * @author Matt Crow
  */
 public class ScrollableTextDisplay extends JPanel implements Logger{
     private final JTextArea textArea;
@@ -44,18 +45,6 @@ public class ScrollableTextDisplay extends JPanel implements Logger{
         this("");
     }
     
-    //https://stackoverflow.com/questions/1345902/jmenuitem-setminimumsize-doesnt-work
-    @Override
-    public Dimension getPreferredSize() {
-        Dimension preferred = super.getPreferredSize();
-        Dimension minimum = getMinimumSize();
-        Dimension maximum = getMaximumSize();
-        preferred.width = Math.min(Math.max(preferred.width, minimum.width), 
-            maximum.width);
-        preferred.height = Math.min(Math.max(preferred.height, minimum.height), 
-            maximum.height);
-        return preferred;
-    }
     public void appendText(String newText){
         text.append(newText);
         textArea.setText(text.toString());

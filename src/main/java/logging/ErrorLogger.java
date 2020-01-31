@@ -1,74 +1,56 @@
 package logging;
 
-import gui.ErrorPopup;
-import io.FileSelector;
-import io.FileWriterUtil;
-import java.io.IOException;
-import java.util.function.Consumer;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
 /**
- *
- * @author Matt
+ * The ErrorLogger class is used to allow Loggers
+ * to log Exceptions, differentiating them from
+ * regular logs.
+ * 
+ * @author Matt Crow
  */
-public class ErrorLogger implements Logger{
-    private final StringBuilder loggedErrors;
-    private Consumer<String> onEncounterError;
+public interface ErrorLogger extends Logger{
+    /**
+     * This method should add a detailed description
+     * of the given Exception to the text log.
+     * Generally speaking, this method should forward
+     * an error message to this class' logError(String)
+     * method.
+     * 
+     * @param ex the Exception to log. 
+     */
+    public abstract void logError(Exception ex);
     
-    public ErrorLogger(){
-        loggedErrors = new StringBuilder();
-        onEncounterError = (s)->{
-            System.err.println(s);
-        };
-    }
-    
-    public void log(Exception ex){
-        log("Encountered the following error: " + ex.toString());
-        for(StackTraceElement stack : ex.getStackTrace()){
-            log("- " + stack.toString());
-        }
-    }
-    
-    @Override
-    public void log(String s) {
-        loggedErrors.append(s).append('\n');
-        onEncounterError.accept(s);
-    }
+    /**
+     * This method should add the given message
+     * to its log, as well as performing any procedures
+     * needed for encountering an error, such as
+     * firing any attached ErrorListeners.
+     * 
+     * @param errMsg the textual representation of an error,
+     * or just a warning message.
+     */
+    public abstract void logError(String errMsg);
 
+    /**
+     * Logs a non-error message. 
+     * @param msg the message to log.
+     */
     @Override
-    public String getLog() {
-        return loggedErrors.toString();
-    }
+    public abstract void log(String msg);
     
-    public void setOnEncounterError(Consumer<String> nomNom){
-        onEncounterError = nomNom;
-    }
+    /**
+     * Used to obtain a detailed log
+     * of errors recorded by this log.
+     * 
+     * @return 
+     */
+    @Override
+    public abstract String getLog();
     
-    public void clear(){
-        loggedErrors.delete(0, loggedErrors.length());
-    }
-    
-    public void showPopup(){
-        boolean errors = getLog().length() != 0;
-        if(errors){
-            String msg = 
-                "Encountered the following errors:\n" 
-                + getLog();
-                
-            new ErrorPopup(msg);
-        } else {
-            JOptionPane.showMessageDialog(null, "No errors to report");
-        }
-    }
-    
-    public void saveToFile(){
-        FileSelector.createNewFile("Where do you want to save the error log?", (newFile)->{
-            try {
-                FileWriterUtil.writeToFile(newFile, getLog());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
+    /**
+     * Used to obtain whether or not this log
+     * has logged an error.
+     * 
+     * @return whether or not an error has been encountered
+     */
+    public abstract boolean hasLoggedError();
 }

@@ -1,24 +1,34 @@
 package gui;
 
+import application.Application;
 import javax.swing.JPanel;
+import logging.ApplicationLog;
 
 /**
  *
  * @author Matt
  */
 public class Page extends JPanel{
-    private final Application host;
+    private final Application forApp;
+    private final ApplicationPane host;
+    private final ApplicationLog log;
     private Runnable onDone;
     
-    public Page(Application app){
-        host = app;
+    public Page(ApplicationPane pane){
+        forApp = pane.getApp();
+        host = pane;
+        log = forApp.getLog();
         onDone = ()->{
             throw new UnsupportedOperationException();
         };
     }
     
-    public Application getHost(){
-        return host;
+    public Application getApp(){
+        return forApp;
+    }
+    
+    public final ApplicationLog getLog(){
+        return log;
     }
     
     public final void setOnDone(Runnable r){

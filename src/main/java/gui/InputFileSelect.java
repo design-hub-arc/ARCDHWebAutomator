@@ -23,7 +23,7 @@ public class InputFileSelect extends Page{
     private final ScrollableTextDisplay disp;
     private AbstractAutomation forAuto;
     
-    public InputFileSelect(Application app){
+    public InputFileSelect(ApplicationPane app){
         super(app);
         autoText = new JLabel("No Automation selected");
         forAuto = null;
@@ -64,19 +64,24 @@ public class InputFileSelect extends Page{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public final void setAuto(AbstractAutomation aa){
-        forAuto = aa;
-        disp.clear();
-        if(!(aa instanceof QueryingAutomation)){
-            autoText.setText(aa.getName() + " doesn't need a query file to run");
-            disp.appendText("No need to select a file.");
-            fileText = "";
-            accepted = true;
-            next();
-        } else {
-            autoText.setText("Select source file for " + aa.getName());
-            disp.appendText(((QueryingAutomation)aa).getQueryManager().getQueryFileReqs().getReqDesc() + "\n"); 
-            accepted = false;
+    public final void setAuto(Class<? extends AbstractAutomation> aClass){
+        try {
+            forAuto = aClass.newInstance();
+            disp.clear();
+            addText("Set automation to " + aClass.getName() + '\n');
+            if(forAuto instanceof QueryingAutomation){
+                autoText.setText("Select source file for " + forAuto.getName());
+                disp.appendText(((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().getReqDesc() + "\n"); 
+                accepted = false;
+            } else {
+                autoText.setText(forAuto.getName() + " doesn't need a query file to run");
+                disp.appendText("No need to select a file.");
+                fileText = "";
+                accepted = true;
+                next();
+            }
+        } catch (Exception ex) {
+            getLog().logError(ex);
         }
     }
     
@@ -89,14 +94,17 @@ public class InputFileSelect extends Page{
                 fileText = FileReaderUtil.readFile(f);
                 disp.clear();
                 disp.appendText(f.getName() + " was accepted! \n");
-                disp.appendText(((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().reformatFile(fileText));
+                String reformatted = ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().reformatFile(fileText); 
+                addText(reformatted);
+                getLog().clearFlags();
             } catch (CsvFileException ex){
                 disp.appendText("The file was not accepted for the following reasons:\n");
-                disp.appendText(ex.getMessage());
+                disp.appendText(ex.getMessage() + '\n');
+                getLog().logError(ex);
             } catch (Exception ex) {
-                disp.appendText("Encountered this error: ");
-                disp.appendText(ex.getMessage());
-                ex.printStackTrace();
+                disp.appendText("Encountered this error: \n");
+                disp.appendText(ex.getMessage() + '\n');
+                getLog().logError(ex);
             }    
         } else {
             accepted = true;
@@ -104,6 +112,11 @@ public class InputFileSelect extends Page{
             disp.appendText("No need to select a file.");
             fileText = "";
         }
+    }
+    
+    private void addText(String text){
+        getLog().log(text);
+        disp.appendText(text);
     }
     
     public final String getFileText(){

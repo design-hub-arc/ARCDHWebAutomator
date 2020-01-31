@@ -1,8 +1,6 @@
 package automationSamples;
 
-import automationTools.QueryManager;
 import automationTools.AbstractPeopleSoftAutomation;
-import automationTools.ResultManager;
 import io.CsvFileRequirements;
 import java.util.Arrays;
 import org.openqa.selenium.By;
@@ -29,8 +27,9 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
         super(
             "PSReports Requisitions",
             DESC,
-            new QueryManager("https://psreports.losrios.edu/REQ_History.asp", FILE_REQ),
-            new ResultManager("https://psreports.losrios.edu/REQ_HistoryQ.asp")
+            "https://psreports.losrios.edu/REQ_History.asp", 
+            FILE_REQ,
+            "https://psreports.losrios.edu/REQ_HistoryQ.asp"
         );
     }
 

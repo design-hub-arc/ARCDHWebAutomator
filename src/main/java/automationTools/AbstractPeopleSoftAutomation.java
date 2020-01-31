@@ -1,5 +1,7 @@
 package automationTools;
 
+import io.FileRequirements;
+
 /**
  * This class currently serves no purpose,
  * as all the functionality is handled in
@@ -12,14 +14,14 @@ package automationTools;
  * @author Matt Crow
  */
 public abstract class AbstractPeopleSoftAutomation extends AbstractQueryGatherAutomation{
-    /**
-     * 
-     * @param autoName the name to display for this automation.
-     * @param description the description of what this automation does
-     * @param q the QueryManager which manages all the input data used by this object
-     * @param r the ResultManager which handles the results of the automation's queries
-     */
-    public AbstractPeopleSoftAutomation(String autoName, String description, QueryManager q, ResultManager r) {
-        super(autoName, description + " (notice: this automation only works for American River College staff with access to https://psreports.losrios.edu)", q, r);
+    
+    public AbstractPeopleSoftAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
+        super(
+            autoName, 
+            description + " (notice: this automation only works for American River College staff with access to https://psreports.losrios.edu)", 
+            inputUrl, 
+            reqs,
+            resultUrl
+        );
     }
 }
