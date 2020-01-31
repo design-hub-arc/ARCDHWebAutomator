@@ -77,7 +77,7 @@ public class Application {
         try {
             getResources().init();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            getLog().logError(ex);
         }
         ApplicationWindow w = new ApplicationWindow(this); //automatically listens to window
     }

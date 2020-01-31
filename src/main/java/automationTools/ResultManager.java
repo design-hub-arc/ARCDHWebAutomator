@@ -47,7 +47,7 @@ public class ResultManager{
                 FileWriterUtil.writeToFile(f, toString());
                 log("file successfully written");
             } catch (IOException ex) {
-                ex.printStackTrace();
+                hostingAutomation.reportError(ex);
                 log("failed to write to file");
             }
         });

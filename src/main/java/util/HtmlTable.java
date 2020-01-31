@@ -90,14 +90,21 @@ public class HtmlTable {
      * @return 
      */
     public String toCsv(){
+        boolean debug = false;
         StringBuilder ret = new StringBuilder();
-        System.out.println("Table is " + table.toString());
+        if(debug){
+            System.out.println("Table is " + table.toString());
+        }
         List<WebElement> rows = table.findElements(By.tagName("tr"));
-        System.out.println(rows.size() + " rows");
+        if(debug){
+            System.out.println(rows.size() + " rows");
+        }
         rows.forEach((WebElement row)->{
             //                                                  in the row, th or td
             List<WebElement> cells = row.findElements(By.xpath(".//th|.//td"));
-            System.out.println(cells.size() + " cells");
+            if(debug){
+                System.out.println(cells.size() + " cells");
+            }
             for(int i = 0; i < cells.size(); i++){
                 ret.append(cells.get(i).getText().replaceAll(",", ""));
                 if(i != cells.size() - 1){
@@ -106,7 +113,9 @@ public class HtmlTable {
             }
             ret.append('\n');
         });
-        System.out.println("Ret is \n" + ret);
+        if(debug){
+            System.out.println("Ret is \n" + ret);
+        }
         return ret.toString();
     }
 }

@@ -27,11 +27,11 @@ import util.Browser;
  */
 public final class ApplicationResources {
     private final Application forApp;
-    private final String userHome = System.getProperty("user.home");
-    private final String companyFolderName = userHome + File.separator + "ARCDH";
-    private final String applicationFolderName = companyFolderName + File.separator + "WebAutomator";
-    private final String driverFolderName = applicationFolderName + File.separator + "webdrivers";
-    private final String logFolderPath = applicationFolderName + File.separator + "logs";
+    public static final String USER_HOME = System.getProperty("user.home");
+    public static final String ARCDH_FOLDER_PATH = USER_HOME + File.separator + "ARCDH";
+    public static final String APP_FOLDER_PATH = ARCDH_FOLDER_PATH + File.separator + "WebAutomator";
+    public static final String DRIVER_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "webdrivers";
+    public static final String LOG_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "logs";
     
     private final HashMap<Browser, String> driverPaths;
     
@@ -49,9 +49,15 @@ public final class ApplicationResources {
     }
     
     private void loadSavedWebDrivers(){
-        File driverFolder = new File(driverFolderName);
+        boolean debug = false;
+        File driverFolder = new File(DRIVER_FOLDER_PATH);
+        if(debug){
+            System.out.println("Contents of driver folder:");
+        }
         for(File savedDriver : driverFolder.listFiles()){
-            //System.out.println(savedDriver.getName());
+            if(debug){
+                System.out.println("* " + savedDriver.getName());
+            }
             //                                           '.' has special meaning in regex, so we have to interprate it literally
             String[] split = savedDriver.getName().split("\\.");
             String fileName = split[0];
@@ -61,6 +67,9 @@ public final class ApplicationResources {
             } else {
                 putDriverPath(b, savedDriver.getAbsolutePath());
             }
+        }
+        if(debug){
+            System.out.println("End of driver folder.");
         }
     }
     
@@ -95,10 +104,10 @@ public final class ApplicationResources {
      * @throws IOException if any of the directories cannot be created.
      */
     private void createAbsentFolders() throws IOException{
-        createIfAbsent(companyFolderName);
-        createIfAbsent(applicationFolderName);
-        createIfAbsent(driverFolderName);
-        createIfAbsent(logFolderPath);
+        createIfAbsent(ARCDH_FOLDER_PATH);
+        createIfAbsent(APP_FOLDER_PATH);
+        createIfAbsent(DRIVER_FOLDER_PATH);
+        createIfAbsent(LOG_FOLDER_PATH);
     }
     
     /**
@@ -127,7 +136,7 @@ public final class ApplicationResources {
         if(path != null){
             driverPaths.remove(b);
             System.clearProperty(b.getDriverEnvVar());
-            if(Paths.get(path).getParent().toString().equals(driverFolderName)){
+            if(Paths.get(path).getParent().toString().equals(DRIVER_FOLDER_PATH)){
                 try {
                     Files.delete(Paths.get(path));
                 } catch (AccessDeniedException ex){
@@ -151,7 +160,7 @@ public final class ApplicationResources {
             System.clearProperty(b.getDriverEnvVar());
         });
         driverPaths.clear();
-        Path driverFolder = Paths.get(driverFolderName);
+        Path driverFolder = Paths.get(DRIVER_FOLDER_PATH);
         Arrays.stream(driverFolder.toFile().listFiles()).forEach((File f)->{
             try {
                 Files.delete(Paths.get(f.getAbsolutePath()));
@@ -185,7 +194,7 @@ public final class ApplicationResources {
         }
         
         Path origPath = Paths.get(path);
-        String driverPath = driverFolderName + File.separator + origPath.getFileName().toString();
+        String driverPath = DRIVER_FOLDER_PATH + File.separator + origPath.getFileName().toString();
         if(!Files.exists(Paths.get(driverPath))){
             Files.copy(origPath, Paths.get(driverPath));
         }
@@ -224,7 +233,7 @@ public final class ApplicationResources {
             String newPath = copyWebDriver(b, path);
             putDriverPath(b, newPath);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            forApp.getLog().logError(ex);
             putDriverPath(b, path);
         }
     }
@@ -264,6 +273,6 @@ public final class ApplicationResources {
     }
     
     public void saveLog(Logger log) throws IOException{
-        saveToFile(logFolderPath, "Log" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", log.getLog());
+        saveToFile(LOG_FOLDER_PATH, "Log" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", log.getLog());
     }
 }
