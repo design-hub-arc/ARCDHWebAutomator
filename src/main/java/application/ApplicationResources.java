@@ -33,6 +33,8 @@ public final class ApplicationResources {
     public static final String DRIVER_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "webdrivers";
     public static final String LOG_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "logs";
     
+    private final WebDriverLoader drivers;
+    //todo: move functionality from this class to WebDriverLoader
     private final HashMap<Browser, String> driverPaths;
     
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-DD-uuuu_hh_mm_a");
@@ -40,6 +42,7 @@ public final class ApplicationResources {
     
     public ApplicationResources(Application app){
         forApp = app;
+        drivers = new WebDriverLoader(app);
         driverPaths = new HashMap<>();
     }
     
