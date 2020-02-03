@@ -44,6 +44,8 @@ public class FileSelector{
             chooser.setFileFilter(new FileNameExtensionFilter(type.getName(), type.getExtensions()));
         }
         action = act;
+        chooser.setOpaque(true);
+        chooser.setVisible(true);
     }
     
     public void chooseFile(){

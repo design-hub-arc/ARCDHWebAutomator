@@ -55,6 +55,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     public void doRun() {
         WebDriver driver = getDriver();
         resultManager.clear();
+        initResult();
         String q;
         while(!queryManager.isEmpty()){
             driver.get(queryManager.getInputUrl());
@@ -74,6 +75,18 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
             }
         }
         resultManager.saveToFile();
+    }
+    
+    /**
+     * Called prior to running the automation,
+     * after clearing the result of previous runs.
+     * 
+     * Subclasses should override this method if
+     * they need to perform any tasks prior to 
+     * running the automation.
+     */
+    public void initResult(){
+        
     }
     
     /**

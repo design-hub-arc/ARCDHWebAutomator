@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFileRequirements;
+import java.util.HashMap;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -26,6 +22,8 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
         HEADERS
     );
     
+    private final HashMap<String, String> bpoIdToFunds;
+    
     public BlanketPurchaseOrder(){
         super(
             "Blanket Purchase Order Balance",
@@ -34,6 +32,13 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
             FILE_REQ,
             "https://psreports.losrios.edu/PurchaseOrderInformationQ.asp"
         );
+        
+        bpoIdToFunds = new HashMap<>();
+    }
+    
+    @Override
+    public void initResult(){
+        bpoIdToFunds.clear();
     }
     
     @Override
