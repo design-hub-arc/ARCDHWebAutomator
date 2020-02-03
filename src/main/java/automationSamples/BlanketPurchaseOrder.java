@@ -4,8 +4,6 @@ import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFileRequirements;
 import io.FileReaderUtil;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -54,15 +52,24 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
 
     @Override
     public String readQueryResult() {
+        /*
+        
+        The table contains the following columns:
+        BUDG PER,      PO Number, Requisition Number, Requestor, Vendor, Pre Encumbrances, Encumbrances, YTD Payments, PO Total, PO Balance
+        budget period, id,        number not Id,      
+        
+        
+        since it doesn't contain Blanket Purchase order, we will need some way of converting PO Number to the BPO name
+        */
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         String resultText = "";
         // Blanket purchase order, Funds Remaining (From PS Purchase Order Balance Information ), BPO ID, Cust Number, Web Order Address, Account Log-In
-        String tableCsv = t.toCsv(new String[]{"PO Balance"});
-        //will need to add columns for other pieces of data
+        String tableCsv = t.toCsv(new String[]{"PO Balance", "PO Number"});
+        
         
         String[] tableRows = tableCsv.split("\\n");
         for(String row : tableRows){
-            resultText += ("," + row + ",,,,\n"); //everything is empty right now except for Funds remaining.
+            resultText += ("," + row + ",,,\n"); //everything is empty right now except for Funds remaining and PO Number.
         }
         return resultText;
     }
