@@ -2,7 +2,10 @@ package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFileRequirements;
-import java.util.HashMap;
+import io.FileReaderUtil;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -22,8 +25,6 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
         HEADERS
     );
     
-    private final HashMap<String, String> bpoIdToFunds;
-    
     public BlanketPurchaseOrder(){
         super(
             "Blanket Purchase Order Balance",
@@ -32,13 +33,16 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
             FILE_REQ,
             "https://psreports.losrios.edu/PurchaseOrderInformationQ.asp"
         );
-        
-        bpoIdToFunds = new HashMap<>();
     }
     
     @Override
     public void initResult(){
-        bpoIdToFunds.clear();
+        try {
+            String template = FileReaderUtil.readStream(BlanketPurchaseOrder.class.getResourceAsStream("bpoTemplate.csv"));
+            getResultManager().append(template);
+        } catch (IOException ex) {
+            reportError(ex);
+        }
     }
     
     @Override
@@ -51,6 +55,15 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
     @Override
     public String readQueryResult() {
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
-        return t.toCsv(new String[]{"PO Balance"});
+        String resultText = "";
+        // Blanket purchase order, Funds Remaining (From PS Purchase Order Balance Information ), BPO ID, Cust Number, Web Order Address, Account Log-In
+        String tableCsv = t.toCsv(new String[]{"PO Balance"});
+        //will need to add columns for other pieces of data
+        
+        String[] tableRows = tableCsv.split("\\n");
+        for(String row : tableRows){
+            resultText += ("," + row + ",,,,\n"); //everything is empty right now except for Funds remaining.
+        }
+        return resultText;
     }
 }
