@@ -11,10 +11,12 @@ import java.util.stream.Collectors;
 public class CsvFile {
     private final ArrayList<String> headers;
     private final HashMap<String, Integer> headerCols;
+    private final ArrayList<CsvRow> rows;
     
     public CsvFile(){
         headers = new ArrayList<>();
         headerCols = new HashMap<>();
+        rows = new ArrayList<>();
     }
     public CsvFile(String[] h){
         this();
@@ -29,6 +31,34 @@ public class CsvFile {
         }
         headerCols.put(header, headers.size());
         headers.add(header);
+        rows.forEach((row)->row.padValues());
+    }
+    
+    /**
+     * Returns the index of the given header
+     * in this file's header row. If the header
+     * is not present, returns -1.
+     * 
+     * @param header the header to find the column of
+     * @return the index of the given header.
+     */
+    public int getHeaderCol(String header){
+        return headerCols.getOrDefault(header, -1);
+    }
+    
+    public int getHeaderCount(){
+        return headers.size();
+    }
+    
+    public void addRow(CsvRow row){
+        rows.add(row);
+    }
+    
+    public CsvRow getRow(int idx){
+        if(idx > 0 || idx <= rows.size()){
+            throw new IllegalArgumentException("Cannot access row #" + idx);
+        }
+        return rows.get(idx);
     }
     
     @Override
@@ -36,9 +66,9 @@ public class CsvFile {
         StringBuilder b = new StringBuilder();
         String headerString = headers.stream().collect(Collectors.joining(","));
         b.append(headerString);
-        
-        //todo: append each row, with newline at the beginning
-        
+        rows.forEach((row)->{
+            b.append('\n').append(row.toString());
+        });
         return b.toString();
     }
     
@@ -47,6 +77,9 @@ public class CsvFile {
         f.addHeader("a");
         f.addHeader("b");
         f.addHeader("c");
+        CsvRow r = new CsvRow(f);
+        r.set("b", "\"value\", and more");
+        f.addRow(r);
         System.out.println(f.toString());
     }
 }
