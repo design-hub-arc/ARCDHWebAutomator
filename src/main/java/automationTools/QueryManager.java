@@ -66,7 +66,6 @@ public class QueryManager {
     
     public final void setQueryFile(String fileText){
         queryFile.clear();
-        fileText = fileReqs.reformatFile(fileText);
         Arrays.stream(fileText.split(NEW_LINE)).forEach((s)->{
             queryFile.add(s);
         });

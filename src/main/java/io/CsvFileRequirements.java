@@ -12,8 +12,7 @@ import java.util.Arrays;
  */
 public final class CsvFileRequirements {
     private final String reqDesc;
-    private final String[] headers;
-    private final CsvParser parser;
+    private final String[] reqHeaders;
     
     /**
      * Defines the requirements for a file that this class should
@@ -22,12 +21,11 @@ public final class CsvFileRequirements {
      * @param desc a textual description of the requirements
      * files should meet. It should provide a clear description
      * to the user of how the file should be formatted.
-     * @param reqHeaders the column headers that input files must have 
+     * @param reqHeaders the column reqHeaders that input files must have 
      */
     public CsvFileRequirements(String desc, String[] reqHeaders) {
         reqDesc = desc;
-        headers = reqHeaders.clone();
-        parser = new CsvParser(headers);
+        this.reqHeaders = reqHeaders.clone();
     }
     
     /**
@@ -41,7 +39,7 @@ public final class CsvFileRequirements {
     }
     
     public String[] getReqHeaders(){
-        return headers.clone();
+        return reqHeaders.clone();
     }
     
     public boolean validateFile(File f) throws Exception {
@@ -51,23 +49,27 @@ public final class CsvFileRequirements {
         if(!Arrays.stream(FileType.CSV.getExtensions()).anyMatch((ex)->ex.equalsIgnoreCase(ext))){
             throw new Exception("Wrong file type: " + ext + ". File must be one of the following: " + Arrays.toString(FileType.CSV.getExtensions()));
         }
-        //String fileText = FileReaderUtil.readFile(f);
         
-        //CsvFile csv = parser.reformat(fileText, true);
-        parser.reformat(FileReaderUtil.readFile(f)); //throws CsvFileException if it can't be reformatted
+        //see if it has the required headers
+        String fileText = FileReaderUtil.readFile(f);
+        int newlineIdx = fileText.indexOf(CsvParser.NEW_LINE);
+        if(newlineIdx == -1){
+            throw new IllegalArgumentException("The file provided has no body content, just headers");
+        }
+        String[] headers = fileText.substring(0, newlineIdx).split(",");
+        boolean found;
+        for(String reqHeader : reqHeaders){
+            found = false;
+            for(int i = 0; i < headers.length && !found; i++){
+                if(reqHeader.equals(headers[i])){
+                    found = true;
+                }
+            }
+            if(!found){
+                throw new MissingHeaderException(reqHeader, headers);
+            }
+        }
+        
         return true;
-    }
-    
-    /**
-     * Converts the fileText given from a File approved by
-     * the validateFile method into a specific format needed
-     * by the program, then returns the reformatted file
-     * text as a String.
-     * 
-     * @param fileText the unformatted text contents of a file
-     * @return the reformatted file text
-     */
-    public final String reformatFile(String fileText){
-        return new CsvParser(headers).reformat(fileText, false);
     }
 }

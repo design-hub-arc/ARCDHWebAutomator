@@ -3,6 +3,7 @@ package gui;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
 import io.CsvFileException;
+import io.CsvParser;
 import io.FileSelector;
 import io.FileReaderUtil;
 import java.awt.BorderLayout;
@@ -94,7 +95,7 @@ public class InputFileSelect extends Page{
                 fileText = FileReaderUtil.readFile(f);
                 disp.clear();
                 disp.appendText(f.getName() + " was accepted! \n");
-                String reformatted = ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().reformatFile(fileText); 
+                String reformatted = CsvParser.toCsvFile(fileText).toString();
                 addText(reformatted);
                 getLog().clearFlags();
             } catch (CsvFileException ex){
