@@ -1,7 +1,7 @@
 package automationTools;
 
+import io.CsvFileRequirements;
 import static io.CsvParser.NEW_LINE;
-import io.FileRequirements;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
  */
 public class QueryManager {
     private final AbstractAutomation hostingAutomation;
-    private final FileRequirements fileReqs;
+    private final CsvFileRequirements fileReqs;
     private final LinkedList<String> queryFile;
     private final String queryUrl;
     
@@ -33,7 +33,7 @@ public class QueryManager {
      * @param reqs the requirements that query 
      * files fed into this must adhere to.
      */
-    public QueryManager(AbstractAutomation forAutomation, String inputUrl, FileRequirements reqs){
+    public QueryManager(AbstractAutomation forAutomation, String inputUrl, CsvFileRequirements reqs){
         hostingAutomation = forAutomation;
         fileReqs = reqs;
         queryFile = new LinkedList<>();
@@ -46,7 +46,7 @@ public class QueryManager {
      * 
      * @return 
      */
-    public final FileRequirements getQueryFileReqs(){
+    public final CsvFileRequirements getQueryFileReqs(){
         return fileReqs;
     }
     

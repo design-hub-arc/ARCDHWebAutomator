@@ -1,6 +1,6 @@
 package automationTools;
 
-import io.FileRequirements;
+import io.CsvFileRequirements;
 
 /**
  * This class currently serves no purpose,
@@ -15,7 +15,7 @@ import io.FileRequirements;
  */
 public abstract class AbstractPeopleSoftAutomation extends AbstractQueryGatherAutomation{
     
-    public AbstractPeopleSoftAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
+    public AbstractPeopleSoftAutomation(String autoName, String description, String inputUrl, CsvFileRequirements reqs, String resultUrl) {
         super(
             autoName, 
             description + " (notice: this automation only works for American River College staff with access to https://psreports.losrios.edu)", 

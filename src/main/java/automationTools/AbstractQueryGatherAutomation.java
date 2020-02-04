@@ -1,7 +1,6 @@
 package automationTools;
 
-import io.FileRequirements;
-import logging.Logger;
+import io.CsvFileRequirements;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -22,7 +21,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     private final QueryManager queryManager;
     private final ResultManager resultManager;
     
-    public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, FileRequirements reqs, String resultUrl) {
+    public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, CsvFileRequirements reqs, String resultUrl) {
         super(autoName, description);
         queryManager = new QueryManager(this, inputUrl, reqs);
         resultManager = new ResultManager(this, resultUrl);
