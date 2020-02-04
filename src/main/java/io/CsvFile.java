@@ -61,6 +61,15 @@ public class CsvFile {
         return rows.get(idx);
     }
     
+    /**
+     * Clears the contents
+     * and headers of this
+     */
+    public void clear(){
+        headers.clear();
+        rows.clear();
+    }
+    
     @Override
     public String toString(){
         StringBuilder b = new StringBuilder();
