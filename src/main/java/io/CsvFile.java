@@ -61,6 +61,10 @@ public class CsvFile {
         return rows.get(idx);
     }
     
+    public ArrayList<CsvRow> getBody(){
+        return (ArrayList<CsvRow>) rows.clone();
+    }
+    
     /**
      * Clears the contents
      * and headers of this

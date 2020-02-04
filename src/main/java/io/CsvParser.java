@@ -39,6 +39,34 @@ public class CsvParser {
         this.reqHeaders = reqHeaders.clone();
     }
     
+    public static CsvFile toCsvFile(String fileText){
+        CsvFile ret = new CsvFile();
+        boolean debug = false;
+        
+        String[] lines = fileText.split(NEW_LINE);
+        //first line is headers
+        if(lines.length >= 1){
+            String[] headers = lines[0].split(",");
+            for(String header : headers){
+                ret.addHeader(header);
+            }
+        }
+        
+        //now build the body
+        CsvRow row;
+        for(int i = 1; i < lines.length; i++){
+            row = new CsvRow(ret, lines[i]);
+            ret.addRow(row);
+        }
+        
+        if(debug){
+            System.out.println("Created new CsvFile:");
+            System.out.println(ret.toString());
+        }
+        
+        return ret;
+    }
+    
     /**
      * Converts the given fileText into the format specified by the
      * required headers passed to this' constructor. It also removes quote marks from the resulting string.
@@ -137,5 +165,7 @@ public class CsvParser {
             e.printStackTrace();
             System.err.println(e.getMessage());
         }
+        
+        CsvFile f = CsvParser.toCsvFile(s);
     }
 }

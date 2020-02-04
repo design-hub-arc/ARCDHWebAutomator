@@ -51,6 +51,9 @@ public final class CsvFileRequirements {
         if(!Arrays.stream(FileType.CSV.getExtensions()).anyMatch((ex)->ex.equalsIgnoreCase(ext))){
             throw new Exception("Wrong file type: " + ext + ". File must be one of the following: " + Arrays.toString(FileType.CSV.getExtensions()));
         }
+        //String fileText = FileReaderUtil.readFile(f);
+        
+        //CsvFile csv = parser.reformat(fileText, true);
         parser.reformat(FileReaderUtil.readFile(f)); //throws CsvFileException if it can't be reformatted
         return true;
     }

@@ -17,6 +17,17 @@ public class CsvRow {
         padValues();
     }
     
+    public CsvRow(CsvFile inFile, String[] cells){
+        this(inFile);
+        for(int i = 0; i < cells.length; i++){
+            values.set(i, cells[i]);
+        }
+    }
+    
+    public CsvRow(CsvFile inFile, String row){
+        this(inFile, row.split(","));
+    }
+    
     /**
      * Adds blank cells to this row
      * until it is as wide as its parent.
