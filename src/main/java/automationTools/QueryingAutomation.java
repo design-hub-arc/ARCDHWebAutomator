@@ -1,9 +1,11 @@
 package automationTools;
 
+import io.CsvFile;
+
 /**
  * The QueryingAutomation interface should
  * be implemented by automations that require
- * a user-submitted file to specify what 
+ * a user-submitted CsvFile to specify what 
  * queries to perform.
  * 
  * @see AbstractQueryGatherAutomation
@@ -13,10 +15,10 @@ package automationTools;
 public interface QueryingAutomation {
     /**
      * 
-     * @param fileText the text to feed to this' QueryManager
+     * @param file the CsvFile to feed to this' QueryManager
      */
-    public default void setInputFile(String fileText){
-        getQueryManager().setQueryFile(fileText);
+    public default void setInputFile(CsvFile file){
+        getQueryManager().setQueryFile(file);
     }
     
     public QueryManager getQueryManager();

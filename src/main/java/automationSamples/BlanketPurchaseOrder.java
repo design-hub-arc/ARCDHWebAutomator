@@ -2,6 +2,7 @@ package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFileRequirements;
+import io.CsvRow;
 import io.FileReaderUtil;
 import java.io.IOException;
 import org.openqa.selenium.By;
@@ -13,8 +14,9 @@ import util.HtmlTable;
  */
 public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
     private static final String DESC = "Queries the PeopleSoft Purchase Order Balance Information page to extract funds remaining in blanket purchase order accounts";
+    private static final String BPO_HEADER = "BPO ID";
     private static final String[] HEADERS = new String[]{
-        "BPO ID"
+        BPO_HEADER
     };
     
     private static final CsvFileRequirements FILE_REQ = new CsvFileRequirements(
@@ -44,9 +46,8 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
     }
     
     @Override
-    public void inputQuery(String query) {
-        String[] params = query.split(",");
-        awaitFindElement(By.xpath("//input[@name='PurchaseOrderNumber']")).sendKeys(params[0]);
+    public void inputQuery(CsvRow query) {
+        awaitFindElement(By.xpath("//input[@name='PurchaseOrderNumber']")).sendKeys(query.get(BPO_HEADER));
         awaitFindElement(By.name("B1")).click();
     }
 

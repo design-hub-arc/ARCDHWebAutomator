@@ -2,6 +2,7 @@ package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFileRequirements;
+import io.CsvRow;
 import java.util.Arrays;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -14,9 +15,11 @@ import util.HtmlTable;
  */
 public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
     private static final String DESC = "Queries the PeopleSoft requistion history page.";
+    private static final String REQUESTOR_HEADER = "requestor ID";
+    private static final String REQUISITION_HEADER = "requisition number";
     private static final String[] HEADERS = new String[]{
-        "requestor ID",
-        "requisition number"
+        REQUESTOR_HEADER,
+        REQUISITION_HEADER
     };
     
     private static final CsvFileRequirements FILE_REQ = new CsvFileRequirements(
@@ -34,10 +37,9 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
     }
 
     @Override
-    public void inputQuery(String query) {
-        String[] params = query.split(",");
-        awaitFindElement(By.name("REQUESTOR_ID")).sendKeys(params[0]);
-        awaitFindElement(By.name("REQ_NO")).sendKeys(params[1]);
+    public void inputQuery(CsvRow query) {
+        awaitFindElement(By.name("REQUESTOR_ID")).sendKeys(query.get(REQUESTOR_HEADER));
+        awaitFindElement(By.name("REQ_NO")).sendKeys(query.get(REQUISITION_HEADER));
         awaitFindElement(By.name("Query")).click();
     }
 

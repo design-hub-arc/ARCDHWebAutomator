@@ -1,6 +1,7 @@
 package automationTools;
 
 import io.CsvFileRequirements;
+import io.CsvRow;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -55,7 +56,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
         WebDriver driver = getDriver();
         resultManager.clear();
         initResult();
-        String q;
+        CsvRow q;
         while(!queryManager.isEmpty()){
             driver.get(queryManager.getInputUrl());
             ExpectedCondition<Boolean> e  = ExpectedConditions.urlMatches(queryManager.getInputUrl());
@@ -93,9 +94,9 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
      * elements on the page specified by this' input URL.
      * After filling out the page, click any 'submit' buttons.
      * 
-     * @param query the next line of text from the data source file 
+     * @param query the next row from the CSV data source file 
      */
-    public abstract void inputQuery(String query);
+    public abstract void inputQuery(CsvRow query);
     
     /**
      * Parse the web page specified by this' result URL.

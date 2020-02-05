@@ -2,7 +2,9 @@ package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFileRequirements;
+import io.CsvRow;
 import java.util.Arrays;
+import java.util.HashMap;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -12,14 +14,22 @@ import util.HtmlTable;
  */
 public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
     private static final String DESC = "Queries the PeopleSoft account balance summary page.";
+    private static final String BU_HEADER = "Business Unit";
+    private static final String ACCT_HEADER = "Account";
+    private static final String FND_HEADER = "Fund";
+    private static final String ORG_HEADER = "Org/DeptID";
+    private static final String PROG_HEADER = "Program";
+    private static final String SUBCLS_HEADER = "Sub-Class";
+    private static final String PROJ_HEADER = "Project/Grant";
+    
     private static final String[] HEADERS = new String[]{
-        "Business Unit",
-        "Account",
-        "Fund",
-        "Org/DeptID",
-        "Program",
-        "Sub-Class",
-        "Project/Grant"
+        BU_HEADER,
+        ACCT_HEADER,
+        FND_HEADER,
+        ORG_HEADER,
+        PROG_HEADER,
+        SUBCLS_HEADER,
+        PROJ_HEADER
     };
     
     private static final CsvFileRequirements FILE_REQ = new CsvFileRequirements(
@@ -38,29 +48,25 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
         );
     }
     @Override
-    public void inputQuery(String query) {
-        String[] params = query.split(",");
-        String[] names = new String[]{
-            "BusinessUnit",
-            "Account",
-            "Fund",
-            "ORG",
-            "Program",
-            "SubClass",
-            //"BudgetYear",
-            "ProjectGrant"
-        };
-        for(int i = 0; i < params.length; i++){
-            awaitFindElement(By.name(names[i])).sendKeys(params[i]);
-        }
+    public void inputQuery(CsvRow query) {
+        HashMap<String, String> nameToHeader = new HashMap<>();
+        nameToHeader.put("BusinessUnit", BU_HEADER);
+        nameToHeader.put("Account", ACCT_HEADER);
+        nameToHeader.put("Fund", FND_HEADER);
+        nameToHeader.put("ORG", ORG_HEADER);
+        nameToHeader.put("Program", PROG_HEADER);
+        nameToHeader.put("SubClass", SUBCLS_HEADER);
+        nameToHeader.put("ProjectGrant", PROJ_HEADER);
         
-        //do I want autoclick to be optional?
+        nameToHeader.forEach((name, header)->{
+            awaitFindElement(By.name(name)).sendKeys(query.get(header));
+        });
+        
         awaitFindElement(By.name("Query")).click();
     }
 
     @Override
     public String readQueryResult() {
-        //todo: remove the headers if this is not the first result
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         String text = table.toCsv();
         if(!getResultManager().getResult().equals("")){

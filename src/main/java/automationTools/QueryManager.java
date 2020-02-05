@@ -2,8 +2,7 @@ package automationTools;
 
 import io.CsvFile;
 import io.CsvFileRequirements;
-import static io.CsvParser.NEW_LINE;
-import java.util.Arrays;
+import io.CsvRow;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
@@ -24,7 +23,7 @@ import java.util.NoSuchElementException;
 public class QueryManager {
     private final AbstractAutomation hostingAutomation;
     private final CsvFileRequirements fileReqs;
-    private final LinkedList<String> queryFile;
+    private final LinkedList<CsvRow> queryFile;
     private final String queryUrl;
     
     /**
@@ -64,30 +63,30 @@ public class QueryManager {
         return queryFile.isEmpty();
     }
     
-    public final void setQueryFile(String fileText){
+    public final void setQueryFile(CsvFile file){
         queryFile.clear();
-        Arrays.stream(fileText.split(NEW_LINE)).forEach((s)->{
-            queryFile.add(s);
+        file.getBody().forEach((line)->{
+            queryFile.add(line);
         });
     }
     
-    public final String getNextQuery(){
+    public final CsvRow getNextQuery(){
         if(queryFile.isEmpty()){
             throw new NoSuchElementException("Query file is empty.");
         }
         
         log("Before Dequeing:");
         queryFile.forEach((query)->{
-            log(query);
+            log(query.toString());
         });
         
-        String nextQuery = queryFile.removeFirst();
+        CsvRow nextQuery = queryFile.removeFirst();
         
         log("After Dequeing:");
         queryFile.forEach((query)->{
-            log("* " + query);
+            log("* " + query.toString());
         });
-        log("Dequed query:\n" + nextQuery);
+        log("Dequed query:\n" + nextQuery.toString());
         
         return nextQuery;
     }

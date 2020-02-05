@@ -3,6 +3,7 @@ package gui;
 import application.Application;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
+import io.CsvParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JButton;
@@ -61,7 +62,7 @@ public class RunWindow extends Page{
                     aa.addLogger(log);
                     
                     if(aa instanceof QueryingAutomation){
-                        ((QueryingAutomation)aa).setInputFile(fileText);
+                        ((QueryingAutomation)aa).setInputFile(CsvParser.toCsvFile(fileText));
                     }
                     
                     aa.run(driverClass);

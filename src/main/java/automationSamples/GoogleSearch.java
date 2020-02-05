@@ -2,6 +2,7 @@ package automationSamples;
 
 import automationTools.AbstractQueryGatherAutomation;
 import io.CsvFileRequirements;
+import io.CsvRow;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -11,8 +12,9 @@ import org.openqa.selenium.WebElement;
  */
 public class GoogleSearch extends AbstractQueryGatherAutomation{
     private static final String DESC = "Performs the Google searches contained in a file, then gives the number of results.";
+    private static final String Q_HEADER = "Query";
     private static final String[] HEADERS = new String[]{
-        "Query"
+        Q_HEADER
     };
     private static final CsvFileRequirements FILE_REQ = new CsvFileRequirements(
         "Input files must be in CSV format, "
@@ -30,9 +32,9 @@ public class GoogleSearch extends AbstractQueryGatherAutomation{
         );
     }
     @Override
-    public void inputQuery(String query) {
+    public void inputQuery(CsvRow query) {
         WebElement queryBox = awaitFindElement(By.name("q"));
-        queryBox.sendKeys(query);
+        queryBox.sendKeys(query.get(Q_HEADER));
         queryBox.submit();
     }
 
