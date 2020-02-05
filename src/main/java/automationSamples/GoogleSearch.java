@@ -3,6 +3,7 @@ package automationSamples;
 import automationTools.AbstractQueryGatherAutomation;
 import io.CsvFileRequirements;
 import io.CsvRow;
+import java.util.ArrayList;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -21,6 +22,7 @@ public class GoogleSearch extends AbstractQueryGatherAutomation{
         + "and should contain at least one column, "
         + "labeled 'Query'.", HEADERS
     );
+    private static final String RESULT_HEADER = "Result count";
     
     public GoogleSearch(){
         super(
@@ -31,6 +33,12 @@ public class GoogleSearch extends AbstractQueryGatherAutomation{
             "https://www.google.com/search"
         );
     }
+    
+    @Override
+    public void initResult(){
+        getResultManager().getCsvFile().addHeader(RESULT_HEADER);
+    }
+    
     @Override
     public void inputQuery(CsvRow query) {
         WebElement queryBox = awaitFindElement(By.name("q"));
@@ -39,10 +47,12 @@ public class GoogleSearch extends AbstractQueryGatherAutomation{
     }
 
     @Override
-    public String readQueryResult() {
+    public ArrayList<CsvRow> readQueryResult() {
         WebElement numResultBox = awaitFindElement(By.id("resultStats"));
-        String ret = numResultBox.getText() + '\n';
-        
+        ArrayList<CsvRow> ret = new ArrayList<>();
+        CsvRow r = new CsvRow(getResultManager().getCsvFile());
+        r.set(RESULT_HEADER, numResultBox.getText());
+        ret.add(r);
         return ret;
     }
 }

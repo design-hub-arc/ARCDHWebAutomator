@@ -3,6 +3,8 @@ package automationSamples;
 import automationTools.ResultManager;
 import automationTools.ReadingAutomation;
 import automationTools.AbstractAutomation;
+import io.CsvFile;
+import io.CsvParser;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -28,7 +30,12 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
         //since the table is inside the IFrame, we need to switch to the frame before accessing the element
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//html/body/table[3]")));
         String text = table.toCsv(new String[]{"Capitals"});
-        r.append(text);
+        CsvFile tableCsv = CsvParser.toCsvFile(text);
+        CsvFile result = getResultManager().getCsvFile();
+        result.addHeader("Capitals");
+        tableCsv.getBody().forEach((row)->{
+            result.addRow(row);
+        });
         r.saveToFile();
     }
 

@@ -1,6 +1,7 @@
 package util;
 
 import io.CsvFileException;
+import io.CsvParser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,7 @@ public class HtmlTable {
                     ret.append(",");
                 }
             }
-            ret.append('\n');
+            ret.append(CsvParser.NEW_LINE);
         });
         return ret.toString();
     }
@@ -111,7 +112,7 @@ public class HtmlTable {
                     ret.append(", ");
                 }
             }
-            ret.append('\n');
+            ret.append(CsvParser.NEW_LINE);
         });
         if(debug){
             System.out.println("Ret is \n" + ret);

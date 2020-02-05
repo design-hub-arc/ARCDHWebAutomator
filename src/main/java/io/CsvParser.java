@@ -1,6 +1,7 @@
 package io;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * The CsvParser is used to convert CSV strings to a CsvFile object.
@@ -15,6 +16,9 @@ public class CsvParser {
         boolean debug = false;
         
         String[] lines = fileText.split(NEW_LINE);
+        if(debug){
+            Arrays.stream(lines).forEach((line)->System.out.println("Line: " + line));
+        }
         //first line is headers
         if(lines.length >= 1){
             String[] headers = lines[0].split(",");

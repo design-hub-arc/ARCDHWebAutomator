@@ -91,7 +91,7 @@ public class CsvFile {
     }
     
     public ArrayList<CsvRow> getBody(){
-        return (ArrayList<CsvRow>) rows.clone();
+        return (ArrayList<CsvRow>)rows.clone();
     }
     
     /**

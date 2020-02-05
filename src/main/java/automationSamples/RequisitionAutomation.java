@@ -1,8 +1,11 @@
 package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
+import io.CsvFile;
 import io.CsvFileRequirements;
+import io.CsvParser;
 import io.CsvRow;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -44,7 +47,7 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
     }
 
     @Override
-    public String readQueryResult() {
+    public ArrayList<CsvRow> readQueryResult() {
         WebDriver d = getDriver();
         String url = d.getCurrentUrl();
         writeOutput("URL is " + url);
@@ -68,6 +71,11 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
         
         WebElement e = awaitFindElement(By.xpath("//table[@border=1]"));
         HtmlTable t = new HtmlTable(e);
-        return t.toCsv();
+        CsvFile tableCsv = CsvParser.toCsvFile(t.toCsv());
+        CsvFile result = getResultManager().getCsvFile();
+        if(result.getHeaderCount() == 0){
+            tableCsv.getHeaders().forEach((header)->result.addHeader(header));
+        }
+        return result.getBody();
     }
 }
