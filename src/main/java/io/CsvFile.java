@@ -25,13 +25,30 @@ public class CsvFile {
         }
     }
     
-    public void addHeader(String header){
+    public CsvFile addHeader(String header){
         if(headerCols.containsKey(header)){
             throw new IllegalArgumentException("This already has header " + header + ". Cannot duplicate headers");
         }
         headerCols.put(header, headers.size());
         headers.add(header);
         rows.forEach((row)->row.padValues());
+        return this;
+    }
+    
+    public CsvFile renameColumn(String oldHeader, String newHeader){
+        if(!headerCols.containsKey(oldHeader)){
+            throw new IllegalArgumentException("Cannot rename column " + oldHeader + ", as it does not exists in the CsvFile");
+        }
+        if(headerCols.containsKey(newHeader)){
+            throw new IllegalArgumentException("CsvFile already has a column named " + newHeader);
+        }
+        headers.set(headerCols.get(oldHeader), newHeader);
+        headerCols.put(newHeader, headerCols.get(oldHeader));
+        return this;
+    }
+    
+    public ArrayList<String> getHeaders(){
+        return headers;
     }
     
     /**
@@ -50,8 +67,20 @@ public class CsvFile {
         return headers.size();
     }
     
+    /**
+     * Creates a copy of the given row,
+     * and adds it to this CsvFile.
+     * The columns of the row are rearranged
+     * to match those of this.
+     * 
+     * @param row 
+     */
     public void addRow(CsvRow row){
-        rows.add(row);
+        CsvRow newRow = new CsvRow(this);
+        headers.forEach((header)->{
+            newRow.set(header, row.get(header));
+        });
+        rows.add(newRow);
     }
     
     public CsvRow getRow(int idx){
@@ -93,6 +122,17 @@ public class CsvFile {
         CsvRow r = new CsvRow(f);
         r.set("b", "\"value\", and more");
         f.addRow(r);
+        
+        CsvFile otherFile = new CsvFile();
+        otherFile.addHeader("a").addHeader("d").addHeader("c").addHeader("b");
+        r = new CsvRow(otherFile);
+        r.set("a", "a column");
+        r.set("b", "second");
+        r.set("c", "third");
+        r.set("d", "don't include this");
+        
+        f.addRow(r);
+        
         System.out.println(f.toString());
     }
 }

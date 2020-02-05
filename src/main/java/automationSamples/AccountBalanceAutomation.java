@@ -1,8 +1,11 @@
 package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
+import io.CsvFile;
 import io.CsvFileRequirements;
+import io.CsvParser;
 import io.CsvRow;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import org.openqa.selenium.By;
@@ -66,19 +69,17 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
     }
 
     @Override
-    public String readQueryResult() {
+    public ArrayList<CsvRow> readQueryResult() {
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         String text = table.toCsv();
-        if(!getResultManager().getResult().equals("")){
-            //already have headers, so remove them from the result
-            int idx = text.indexOf('\n');
-            if(idx == -1){
-                //all headers. Get rid of it
-                text = "";
-            } else {
-                text = text.substring(idx + 1);
-            }
+        CsvFile file = CsvParser.toCsvFile(text);
+        
+        if(getResultManager().getCsvFile().getHeaderCount() == 0){
+            //don't have headers yet
+            CsvFile result = getResultManager().getCsvFile();
+            file.getHeaders().forEach((header)->result.addHeader(header));
         }
-        return text;
+        
+        return file.getBody();
     }
 }

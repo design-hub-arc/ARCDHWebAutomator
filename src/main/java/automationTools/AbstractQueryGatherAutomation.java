@@ -2,6 +2,7 @@ package automationTools;
 
 import io.CsvFileRequirements;
 import io.CsvRow;
+import java.util.ArrayList;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -103,7 +104,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
      * Return the parsed content as a string 
      * so that it can be appended to the result file.
      * 
-     * @return a string containing the relevant data in the web page.
+     * @return a list of CsvRows containing the relevant data in the web page.
      */
-    public abstract String readQueryResult();
+    public abstract ArrayList<CsvRow> readQueryResult();
 }

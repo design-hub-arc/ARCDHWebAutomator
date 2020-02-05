@@ -1,10 +1,13 @@
 package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
+import io.CsvFile;
 import io.CsvFileRequirements;
+import io.CsvParser;
 import io.CsvRow;
 import io.FileReaderUtil;
 import java.io.IOException;
+import java.util.ArrayList;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -38,8 +41,10 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
     @Override
     public void initResult(){
         try {
-            String template = FileReaderUtil.readStream(BlanketPurchaseOrder.class.getResourceAsStream("bpoTemplate.csv"));
-            getResultManager().append(template);
+            CsvFile template = CsvParser.toCsvFile(FileReaderUtil.readStream(BlanketPurchaseOrder.class.getResourceAsStream("bpoTemplate.csv")));
+            CsvFile result = getResultManager().getCsvFile();
+            template.getHeaders().forEach((header)->result.addHeader(header));
+            getResultManager().append(template.getBody());
         } catch (IOException ex) {
             reportError(ex);
         }
@@ -52,7 +57,7 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
     }
 
     @Override
-    public String readQueryResult() {
+    public ArrayList<CsvRow> readQueryResult() {
         /*
         
         The table contains the following columns:
@@ -63,15 +68,12 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
         since it doesn't contain Blanket Purchase order, we will need some way of converting PO Number to the BPO name
         */
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
-        String resultText = "";
+        CsvFile tableCsv = CsvParser.toCsvFile(t.toCsv(new String[]{"PO Balance", "PO Number"}));
+        
         // Blanket purchase order, Funds Remaining (From PS Purchase Order Balance Information ), BPO ID, Cust Number, Web Order Address, Account Log-In
-        String tableCsv = t.toCsv(new String[]{"PO Balance", "PO Number"});
         
         
-        String[] tableRows = tableCsv.split("\\n");
-        for(String row : tableRows){
-            resultText += ("," + row + ",,,\n"); //everything is empty right now except for Funds remaining and PO Number.
-        }
-        return resultText;
+
+        return tableCsv.getBody();
     }
 }
