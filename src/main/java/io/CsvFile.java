@@ -5,19 +5,33 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 /**
- * This class is used to work with CSV files
+ * This class is used to work with CSV files.
+ * It allows developers to work with table-like
+ * data without having to guess whether or not
+ * the data is properly formatted.
+ * 
  * @author Matt Crow
  */
 public class CsvFile {
-    private final ArrayList<String> headers;
     private final HashMap<String, Integer> headerCols;
+    private final ArrayList<String> headers;
     private final ArrayList<CsvRow> rows;
     
+    /**
+     * Creates an empty CsvFile
+     */
     public CsvFile(){
-        headers = new ArrayList<>();
         headerCols = new HashMap<>();
+        headers = new ArrayList<>();
         rows = new ArrayList<>();
     }
+    
+    /**
+     * Creates a CsvFile with the given
+     * headers.
+     * 
+     * @param h the headers to include in the new file
+     */
     public CsvFile(String[] h){
         this();
         for(String header : h){
@@ -45,16 +59,22 @@ public class CsvFile {
             }
         }
         
-        //CsvRow newRow;
-        for(CsvRow row : rows){
+        //copy body over
+        rows.forEach((row) -> {
             ret.addRow(row);
-            //newRow = row.getSubrow(newHeaders);
-            
-        }
+            //addRow automaticly reorganizes columns
+        });
         
         return ret;
     }
     
+    /**
+     * Adds the given header to this file,
+     * if it is not already present.
+     * 
+     * @param header the header to add.
+     * @return this, for chaining purposes
+     */
     public CsvFile addHeader(String header){
         if(headerCols.containsKey(header)){
             throw new IllegalArgumentException("This already has header " + header + ". Cannot duplicate headers");
@@ -65,6 +85,14 @@ public class CsvFile {
         return this;
     }
     
+    /**
+     * Renames a column in this file. Note that the old header must
+     * exist in the file, but the new header must not.
+     * 
+     * @param oldHeader
+     * @param newHeader
+     * @return this, for chaining purposes
+     */
     public CsvFile renameColumn(String oldHeader, String newHeader){
         if(!headerCols.containsKey(oldHeader)){
             throw new IllegalArgumentException("Cannot rename column " + oldHeader + ", as it does not exists in the CsvFile");
@@ -75,26 +103,6 @@ public class CsvFile {
         headers.set(headerCols.get(oldHeader), newHeader);
         headerCols.put(newHeader, headerCols.get(oldHeader));
         return this;
-    }
-    
-    public ArrayList<String> getHeaders(){
-        return headers;
-    }
-    
-    /**
-     * Returns the index of the given header
-     * in this file's header row. If the header
-     * is not present, returns -1.
-     * 
-     * @param header the header to find the column of
-     * @return the index of the given header.
-     */
-    public int getHeaderCol(String header){
-        return headerCols.getOrDefault(header, -1);
-    }
-    
-    public int getHeaderCount(){
-        return headers.size();
     }
     
     /**
@@ -113,26 +121,79 @@ public class CsvFile {
         rows.add(newRow);
     }
     
+    /**
+     * Returns the index of the given header
+     * in this file's header row. If the header
+     * is not present, returns -1.
+     * 
+     * @param header the header to find the column of
+     * @return the index of the given header.
+     */
+    public int getHeaderCol(String header){
+        return headerCols.getOrDefault(header, -1);
+    }    
+    
+    /**
+     * 
+     * @return a copy of this' headers, in order.
+     */
+    public ArrayList<String> getHeaders(){
+        return (ArrayList<String>)headers.clone();
+    }
+    /**
+     * 
+     * @param idx the index of the row to return
+     * @return the idx-th row of this file's body
+     */
     public CsvRow getRow(int idx){
         if(idx > 0 || idx <= rows.size()){
             throw new IllegalArgumentException("Cannot access row #" + idx);
         }
         return rows.get(idx);
     }
-    
+    /**
+     * 
+     * @return a copy of this' body
+     */
     public ArrayList<CsvRow> getBody(){
         return (ArrayList<CsvRow>)rows.clone();
     }
     
     /**
-     * Clears the contents
-     * and headers of this
+     * 
+     * @return the number of headers in this file 
      */
-    public void clear(){
-        headers.clear();
-        rows.clear();
+    public int getHeaderCount(){
+        return headers.size();
     }
     
+    /**
+     * 
+     * @return the number of rows in this' body,
+     * not including headers
+     */
+    public int getRowCount(){
+        return rows.size();
+    }
+    
+    /**
+     * Clears the contents
+     * and headers of this
+     * @return this, for chaining purposes
+     */
+    public CsvFile clear(){
+        headers.clear();
+        rows.clear();
+        return this;
+    }
+    
+    /**
+     * Returns this CsvFile in
+     * CSV format, suitable for
+     * saving in a file somewhere.
+     * 
+     * @return 
+     */
     @Override
     public String toString(){
         StringBuilder b = new StringBuilder();

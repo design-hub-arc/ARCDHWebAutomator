@@ -28,15 +28,6 @@ public class CsvRow {
         this(inFile, row.split(","));
     }
     
-    /*
-    public CsvRow getSubrow(String[] newHeaders){
-        CsvRow ret = new CsvRow(parent);
-        for(String header : newHeaders){
-            ret.set(header, get(header));
-        }
-        return ret;
-    }*/
-    
     /**
      * Adds blank cells to this row
      * until it is as wide as its parent.
