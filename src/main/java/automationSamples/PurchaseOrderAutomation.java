@@ -3,7 +3,6 @@ package automationSamples;
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFile;
 import io.CsvFileRequirements;
-import io.CsvParser;
 import io.CsvRow;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +66,7 @@ public class PurchaseOrderAutomation extends AbstractPeopleSoftAutomation{
         }
         writeOutput((expand) ? "I should probably expand this." : "Don't bother expanding");
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
-        CsvFile tableCsv = CsvParser.toCsvFile(t.toCsv());
+        CsvFile tableCsv = t.toCsvFile();
         CsvFile result = getResultManager().getCsvFile();
         if(result.getHeaderCount() == 0){
             tableCsv.getHeaders().forEach((header)->result.addHeader(header));

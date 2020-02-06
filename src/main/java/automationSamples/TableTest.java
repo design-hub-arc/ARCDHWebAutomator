@@ -29,8 +29,7 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
         getDriver().switchTo().frame("frame_More_Examples"); 
         //since the table is inside the IFrame, we need to switch to the frame before accessing the element
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//html/body/table[3]")));
-        String text = table.toCsv(new String[]{"Capitals"});
-        CsvFile tableCsv = CsvParser.toCsvFile(text);
+        CsvFile tableCsv = table.toCsvFile().getSubfile(new String[]{"Capitals"});
         CsvFile result = getResultManager().getCsvFile();
         result.addHeader("Capitals");
         tableCsv.getBody().forEach((row)->{

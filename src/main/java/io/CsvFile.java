@@ -25,6 +25,36 @@ public class CsvFile {
         }
     }
     
+    /**
+     * Creates a smaller version of this file,
+     * containing only columns with the specified
+     * headers.
+     * 
+     * @param newHeaders the headers to include in the returned value.
+     * @return a copy of this, but with fewer columns
+     */
+    public CsvFile getSubfile(String[] newHeaders){
+        CsvFile ret = new CsvFile();
+        
+        //copy headers over
+        for(String header : newHeaders){
+            if(headerCols.containsKey(header)){
+                ret.addHeader(header);
+            } else {
+                throw new MissingHeaderException(header, headers.toArray(new String[headers.size()]));
+            }
+        }
+        
+        //CsvRow newRow;
+        for(CsvRow row : rows){
+            ret.addRow(row);
+            //newRow = row.getSubrow(newHeaders);
+            
+        }
+        
+        return ret;
+    }
+    
     public CsvFile addHeader(String header){
         if(headerCols.containsKey(header)){
             throw new IllegalArgumentException("This already has header " + header + ". Cannot duplicate headers");

@@ -3,7 +3,6 @@ package automationSamples;
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFile;
 import io.CsvFileRequirements;
-import io.CsvParser;
 import io.CsvRow;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +70,7 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
         
         WebElement e = awaitFindElement(By.xpath("//table[@border=1]"));
         HtmlTable t = new HtmlTable(e);
-        CsvFile tableCsv = CsvParser.toCsvFile(t.toCsv());
+        CsvFile tableCsv = t.toCsvFile();
         CsvFile result = getResultManager().getCsvFile();
         if(result.getHeaderCount() == 0){
             tableCsv.getHeaders().forEach((header)->result.addHeader(header));

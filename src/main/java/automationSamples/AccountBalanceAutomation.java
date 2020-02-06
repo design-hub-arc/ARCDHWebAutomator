@@ -3,7 +3,6 @@ package automationSamples;
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFile;
 import io.CsvFileRequirements;
-import io.CsvParser;
 import io.CsvRow;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,8 +70,7 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
     @Override
     public ArrayList<CsvRow> readQueryResult() {
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
-        String text = table.toCsv();
-        CsvFile file = CsvParser.toCsvFile(text);
+        CsvFile file = table.toCsvFile();
         
         if(getResultManager().getCsvFile().getHeaderCount() == 0){
             //don't have headers yet

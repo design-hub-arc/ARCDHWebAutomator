@@ -3,7 +3,6 @@ package automationSamples;
 import automationTools.AbstractPeopleSoftAutomation;
 import io.CsvFile;
 import io.CsvFileRequirements;
-import io.CsvParser;
 import io.CsvRow;
 import java.util.ArrayList;
 import org.openqa.selenium.By;
@@ -46,7 +45,7 @@ public class PurchaseOrderInfoAutomation extends AbstractPeopleSoftAutomation{
     @Override
     public ArrayList<CsvRow> readQueryResult() {
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
-        CsvFile tableCsv = CsvParser.toCsvFile(t.toCsv());
+        CsvFile tableCsv = t.toCsvFile();
         CsvFile result = getResultManager().getCsvFile();
         if(result.getHeaderCount() == 0){
             tableCsv.getHeaders().forEach((header)->result.addHeader(header));

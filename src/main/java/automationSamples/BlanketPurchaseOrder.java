@@ -68,11 +68,14 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
         since it doesn't contain Blanket Purchase order, we will need some way of converting PO Number to the BPO name
         */
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
-        CsvFile tableCsv = CsvParser.toCsvFile(t.toCsv(new String[]{"PO Balance", "PO Number"}));
+        CsvFile tableCsv = t.toCsvFile().getSubfile(new String[]{"PO Balance", "PO Number"});
         
         // Blanket purchase order, Funds Remaining (From PS Purchase Order Balance Information ), BPO ID, Cust Number, Web Order Address, Account Log-In
         
-        
+        CsvFile result = this.getResultManager().getCsvFile();
+        if(result.getHeaderCount() == 0){
+            tableCsv.getHeaders().forEach((header)->result.addHeader(header));
+        }
 
         return tableCsv.getBody();
     }
