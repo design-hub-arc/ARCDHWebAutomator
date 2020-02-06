@@ -70,14 +70,12 @@ public class AccountBalanceAutomation extends AbstractPeopleSoftAutomation{
     @Override
     public ArrayList<CsvRow> readQueryResult() {
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
-        CsvFile file = table.toCsvFile();
+        CsvFile tableCsv = table.toCsvFile();
+        CsvFile result = getResultManager().getCsvFile();
         
-        if(getResultManager().getCsvFile().getHeaderCount() == 0){
-            //don't have headers yet
-            CsvFile result = getResultManager().getCsvFile();
-            file.getHeaders().forEach((header)->result.addHeader(header));
-        }
+        result.concatinateWith(tableCsv);
         
-        return file.getBody();
+        //already added rows, so we don't need to return anything
+        return new ArrayList<>();
     }
 }

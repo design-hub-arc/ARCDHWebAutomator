@@ -72,9 +72,9 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
         HtmlTable t = new HtmlTable(e);
         CsvFile tableCsv = t.toCsvFile();
         CsvFile result = getResultManager().getCsvFile();
-        if(result.getHeaderCount() == 0){
-            tableCsv.getHeaders().forEach((header)->result.addHeader(header));
-        }
-        return result.getBody();
+        result.concatinateWith(tableCsv);
+        
+        //already added rows, so we don't need to return anything
+        return new ArrayList<>();
     }
 }

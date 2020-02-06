@@ -69,6 +69,23 @@ public class CsvFile {
     }
     
     /**
+     * Inserts the contents from otherFile into this,
+     * adding columns as needed.
+     * 
+     * @param otherFile
+     * @return this, for chaining purposes. 
+     */
+    public CsvFile concatinateWith(CsvFile otherFile){
+        otherFile.getHeaders().forEach((header)->{
+            if(!headerCols.containsKey(header)){
+                addHeader(header);
+            }
+        });
+        otherFile.getBody().forEach((row)->addRow(row));
+        return this;
+    }
+    
+    /**
      * Adds the given header to this file,
      * if it is not already present.
      * 

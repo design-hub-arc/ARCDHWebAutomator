@@ -68,9 +68,8 @@ public class PurchaseOrderAutomation extends AbstractPeopleSoftAutomation{
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         CsvFile tableCsv = t.toCsvFile();
         CsvFile result = getResultManager().getCsvFile();
-        if(result.getHeaderCount() == 0){
-            tableCsv.getHeaders().forEach((header)->result.addHeader(header));
-        }
-        return result.getBody();
+        result.concatinateWith(tableCsv);
+        //already added rows, so we don't need to return anything
+        return new ArrayList<>();
     }
 }

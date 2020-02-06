@@ -73,10 +73,8 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
         // Blanket purchase order, Funds Remaining (From PS Purchase Order Balance Information ), BPO ID, Cust Number, Web Order Address, Account Log-In
         
         CsvFile result = this.getResultManager().getCsvFile();
-        if(result.getHeaderCount() == 0){
-            tableCsv.getHeaders().forEach((header)->result.addHeader(header));
-        }
-
-        return tableCsv.getBody();
+        result.concatinateWith(tableCsv);
+        //already added rows, so we don't need to return anything
+        return new ArrayList<>();
     }
 }
