@@ -3,8 +3,8 @@ package automationSamples;
 import automationTools.ResultManager;
 import automationTools.ReadingAutomation;
 import automationTools.AbstractAutomation;
-import io.CsvFile;
-import io.CsvParser;
+import csv.CsvFile;
+import csv.CsvParser;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 

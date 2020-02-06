@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import static io.CsvParser.NEW_LINE;
+import static csv.CsvParser.NEW_LINE;
 
 /**
  * The FileReaderUtil is a static class providing

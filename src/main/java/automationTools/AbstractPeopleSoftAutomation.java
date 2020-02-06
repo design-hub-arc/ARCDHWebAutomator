@@ -1,6 +1,6 @@
 package automationTools;
 
-import io.CsvFileRequirements;
+import csv.CsvFileRequirements;
 
 /**
  * This class currently serves no purpose,

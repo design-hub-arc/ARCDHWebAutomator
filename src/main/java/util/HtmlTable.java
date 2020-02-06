@@ -1,7 +1,7 @@
 package util;
 
-import io.CsvFile;
-import io.CsvRow;
+import csv.CsvFile;
+import csv.CsvRow;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.openqa.selenium.By;

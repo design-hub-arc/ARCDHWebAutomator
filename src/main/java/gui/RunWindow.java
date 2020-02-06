@@ -3,7 +3,7 @@ package gui;
 import application.Application;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
-import io.CsvParser;
+import csv.CsvParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JButton;

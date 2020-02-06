@@ -1,8 +1,8 @@
 package automationTools;
 
-import io.CsvFile;
-import io.CsvFileRequirements;
-import io.CsvRow;
+import csv.CsvFile;
+import csv.CsvFileRequirements;
+import csv.CsvRow;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 

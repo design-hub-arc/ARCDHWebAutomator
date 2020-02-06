@@ -1,9 +1,9 @@
 package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
-import io.CsvFile;
-import io.CsvFileRequirements;
-import io.CsvRow;
+import csv.CsvFile;
+import csv.CsvFileRequirements;
+import csv.CsvRow;
 import java.util.ArrayList;
 import org.openqa.selenium.By;
 import util.HtmlTable;

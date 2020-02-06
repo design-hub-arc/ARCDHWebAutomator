@@ -1,7 +1,7 @@
 package automationTools;
 
-import io.CsvFileRequirements;
-import io.CsvRow;
+import csv.CsvFileRequirements;
+import csv.CsvRow;
 import java.util.ArrayList;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;

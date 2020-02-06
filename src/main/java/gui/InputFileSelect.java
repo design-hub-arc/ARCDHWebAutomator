@@ -2,8 +2,8 @@ package gui;
 
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
-import io.CsvFileException;
-import io.CsvParser;
+import csv.CsvFileException;
+import csv.CsvParser;
 import io.FileSelector;
 import io.FileReaderUtil;
 import java.awt.BorderLayout;

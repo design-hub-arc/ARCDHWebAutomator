@@ -1,5 +1,7 @@
-package io;
+package csv;
 
+import io.FileReaderUtil;
+import io.FileType;
 import java.io.File;
 import java.util.Arrays;
 

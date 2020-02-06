@@ -1,7 +1,7 @@
 package automationTools;
 
-import io.CsvFile;
-import io.CsvRow;
+import csv.CsvFile;
+import csv.CsvRow;
 import io.FileSelector;
 import io.FileWriterUtil;
 import java.io.File;

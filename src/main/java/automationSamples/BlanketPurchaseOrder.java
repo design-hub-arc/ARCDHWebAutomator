@@ -1,10 +1,10 @@
 package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
-import io.CsvFile;
-import io.CsvFileRequirements;
-import io.CsvParser;
-import io.CsvRow;
+import csv.CsvFile;
+import csv.CsvFileRequirements;
+import csv.CsvParser;
+import csv.CsvRow;
 import io.FileReaderUtil;
 import java.io.IOException;
 import java.util.ArrayList;
