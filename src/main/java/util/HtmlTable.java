@@ -1,7 +1,9 @@
 package util;
 
+import io.CsvFile;
 import io.CsvFileException;
 import io.CsvParser;
+import io.CsvRow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,5 +120,35 @@ public class HtmlTable {
             System.out.println("Ret is \n" + ret);
         }
         return ret.toString();
+    }
+    
+    public CsvFile toCsvFile(){
+        boolean debug = true;
+        
+        CsvFile ret = new CsvFile();
+        
+        //first, gather headers
+        List<WebElement> headers = table.findElements(By.tagName("th"));
+        if(debug){
+            System.out.println("Headers are " + headers.stream().map((header)->header.getText()).collect(Collectors.joining(", ")));
+        }
+        headers.forEach((header)->ret.addHeader(header.getText()));
+        
+        //now, gather the body
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+        rows.forEach((WebElement row)->{
+            //previous versions needed By.xpath(".//td|.//th"), 
+            //but that was probably just for the messed up table formatting on the PeopleSoft website
+            List<WebElement> cells = row.findElements(By.tagName("td"));
+            if(debug){
+                System.out.println("Row is " + cells.stream().map((cell)->cell.getText()).collect(Collectors.joining(", ")));
+            }
+            if(!cells.isEmpty()){
+                CsvRow csvRow = new CsvRow(ret, cells.stream().map((cell)->cell.getText()).toArray(String[]::new));
+                ret.addRow(csvRow);
+            }
+        });
+        
+        return ret;
     }
 }

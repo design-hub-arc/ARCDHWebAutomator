@@ -37,6 +37,10 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
             result.addRow(row);
         });
         r.saveToFile();
+        
+        
+        //new HTML table to csv:
+        System.out.println(table.toCsvFile().toString());
     }
 
     @Override
