@@ -54,11 +54,7 @@ public final class CsvFileRequirements {
         
         //see if it has the required headers
         String fileText = FileReaderUtil.readFile(f);
-        int newlineIdx = fileText.indexOf(CsvParser.NEW_LINE);
-        if(newlineIdx == -1){
-            throw new IllegalArgumentException("The file provided has no body content, just headers");
-        }
-        String[] headers = fileText.substring(0, newlineIdx).split(",");
+        String[] headers = CsvParser.extractHeaders(fileText);
         boolean found;
         for(String reqHeader : reqHeaders){
             found = false;

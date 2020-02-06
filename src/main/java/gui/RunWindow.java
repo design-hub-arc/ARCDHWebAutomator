@@ -1,8 +1,8 @@
 package gui;
 
-import application.Application;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
+import csv.CsvFile;
 import csv.CsvParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -49,7 +49,7 @@ public class RunWindow extends Page{
         add(bottom, BorderLayout.PAGE_END);
     }
     
-    public final void run(Class<? extends AbstractAutomation> aClass, String fileText, Class<? extends WebDriver> driverClass){
+    public final void run(Class<? extends AbstractAutomation> aClass, CsvFile inputFile, Class<? extends WebDriver> driverClass){
         ApplicationLog log = getLog();
         new Thread(){
             @Override
@@ -62,7 +62,7 @@ public class RunWindow extends Page{
                     aa.addLogger(log);
                     
                     if(aa instanceof QueryingAutomation){
-                        ((QueryingAutomation)aa).setInputFile(CsvParser.toCsvFile(fileText));
+                        ((QueryingAutomation)aa).setInputFile(inputFile);
                     }
                     
                     aa.run(driverClass);

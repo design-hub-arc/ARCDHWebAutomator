@@ -2,6 +2,7 @@ package gui;
 
 import application.Application;
 import automationTools.AbstractAutomation;
+import csv.CsvFile;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
@@ -26,7 +27,7 @@ public class ApplicationPane extends JPanel{
     private final JPanel middle;
     
     private Class<? extends AbstractAutomation> selAuto;
-    private String fileText;
+    private CsvFile inputFile;
     private Class<? extends WebDriver> driverClass;
     
     public ApplicationPane(ApplicationWindow inWindow){
@@ -52,12 +53,12 @@ public class ApplicationPane extends JPanel{
         });
         file.setOnDone(()->{
             l.show(middle, DRIVER);
-            fileText = file.getFileText();
+            inputFile = file.getSelectedFile();
         });
         driverSel.setOnDone(()->{
             l.show(middle, RUN);
             driverClass = driverSel.getDriverClass();
-            run.run(selAuto, fileText, driverClass);
+            run.run(selAuto, inputFile, driverClass);
         });
         middle.add(auto, AUTO);
         middle.add(file, DATA);

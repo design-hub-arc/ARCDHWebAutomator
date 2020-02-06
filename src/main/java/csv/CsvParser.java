@@ -1,6 +1,5 @@
 package csv;
 
-import csv.CsvFile;
 import io.FileReaderUtil;
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,6 +11,16 @@ import java.util.Arrays;
  */
 public class CsvParser {
     public static final String NEW_LINE = System.lineSeparator();
+    
+    public static String[] extractHeaders(String fileText){
+        int nlIdx = fileText.indexOf(NEW_LINE);
+        if(nlIdx != -1){
+            //contains more than just 1 row
+            fileText = fileText.substring(0, nlIdx); //chop off everything on or after the newline
+        }
+        String[] headers = fileText.split(",");
+        return headers;
+    }
     
     public static CsvFile toCsvFile(String fileText){
         CsvFile ret = new CsvFile();

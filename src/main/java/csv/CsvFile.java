@@ -137,6 +137,7 @@ public class CsvFile {
      * 
      * @return a copy of this' headers, in order.
      */
+    @SuppressWarnings("unchecked")
     public ArrayList<String> getHeaders(){
         return (ArrayList<String>)headers.clone();
     }
@@ -155,6 +156,7 @@ public class CsvFile {
      * 
      * @return a copy of this' body
      */
+    @SuppressWarnings("unchecked")
     public ArrayList<CsvRow> getBody(){
         return (ArrayList<CsvRow>)rows.clone();
     }

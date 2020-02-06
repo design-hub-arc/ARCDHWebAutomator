@@ -1,6 +1,5 @@
 package csv;
 
-import csv.CsvFileException;
 import java.util.Arrays;
 
 /**

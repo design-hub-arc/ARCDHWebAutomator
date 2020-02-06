@@ -2,7 +2,9 @@ package gui;
 
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
+import csv.CsvFile;
 import csv.CsvFileException;
+import csv.CsvFileRequirements;
 import csv.CsvParser;
 import io.FileSelector;
 import io.FileReaderUtil;
@@ -18,17 +20,17 @@ import javax.swing.JPanel;
  * @author Matt
  */
 public class InputFileSelect extends Page{
-    private String fileText;
     private boolean accepted;
     private final JLabel autoText;
     private final ScrollableTextDisplay disp;
     private AbstractAutomation forAuto;
+    private CsvFile selectedFile;
     
     public InputFileSelect(ApplicationPane app){
         super(app);
         autoText = new JLabel("No Automation selected");
         forAuto = null;
-        fileText = "";
+        selectedFile = null;
         accepted = false;
         
         setLayout(new BorderLayout());
@@ -77,7 +79,7 @@ public class InputFileSelect extends Page{
             } else {
                 autoText.setText(forAuto.getName() + " doesn't need a query file to run");
                 disp.appendText("No need to select a file.");
-                fileText = "";
+                selectedFile = null;
                 accepted = true;
                 next();
             }
@@ -90,12 +92,14 @@ public class InputFileSelect extends Page{
         if(forAuto instanceof QueryingAutomation){
             accepted = false;
             try {
-                ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().validateFile(f);
+                CsvFileRequirements reqs = ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs();
+                reqs.validateFile(f);
                 accepted = true;
-                fileText = FileReaderUtil.readFile(f);
+                String fileText = FileReaderUtil.readFile(f);
                 disp.clear();
                 disp.appendText(f.getName() + " was accepted! \n");
-                String reformatted = CsvParser.toCsvFile(fileText).toString();
+                selectedFile = CsvParser.toCsvFile(fileText).getSubfile(reqs.getReqHeaders());
+                String reformatted = selectedFile.toString();
                 addText(reformatted);
                 getLog().clearFlags();
             } catch (CsvFileException ex){
@@ -111,7 +115,7 @@ public class InputFileSelect extends Page{
             accepted = true;
             autoText.setText(forAuto.getName() + " doesn't need a query file to run");
             disp.appendText("No need to select a file.");
-            fileText = "";
+            selectedFile = null;
         }
     }
     
@@ -120,7 +124,7 @@ public class InputFileSelect extends Page{
         disp.appendText(text);
     }
     
-    public final String getFileText(){
-        return fileText;
+    public final CsvFile getSelectedFile(){
+        return selectedFile;
     }
 }

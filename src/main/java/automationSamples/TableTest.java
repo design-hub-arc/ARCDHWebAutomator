@@ -4,7 +4,6 @@ import automationTools.ResultManager;
 import automationTools.ReadingAutomation;
 import automationTools.AbstractAutomation;
 import csv.CsvFile;
-import csv.CsvParser;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
