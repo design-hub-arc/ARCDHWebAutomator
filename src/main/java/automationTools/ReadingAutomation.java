@@ -43,7 +43,7 @@ public interface ReadingAutomation {
                 auto.writeOutput("Attempting to write to " + f.getAbsolutePath());
             }
             try {
-                FileWriterUtil.writeToFile(f, toString());
+                FileWriterUtil.writeToFile(f, getResultFile().toString());
                 if(auto != null){
                     auto.writeOutput("file written successfully");
                 }
