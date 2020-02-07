@@ -43,12 +43,9 @@ public class PurchaseOrderInfoAutomation extends AbstractPeopleSoftAutomation{
     }
 
     @Override
-    public ArrayList<CsvRow> readQueryResult() {
+    public void readQueryResult(CsvFile saveFile) {
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         CsvFile tableCsv = t.toCsvFile();
-        CsvFile result = getResultManager().getCsvFile();
-        result.concatinateWith(tableCsv);
-        //already added rows, so we don't need to return anything
-        return new ArrayList<>();
+        saveFile.concatinateWith(tableCsv);
     }
 }

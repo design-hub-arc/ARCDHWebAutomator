@@ -1,6 +1,7 @@
 package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
+import automationTools.ResultManager;
 import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvParser;
@@ -57,7 +58,7 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
     }
 
     @Override
-    public ArrayList<CsvRow> readQueryResult() {
+    public void readQueryResult(CsvFile saveFile) {
         /*
         
         The table contains the following columns:
@@ -72,9 +73,6 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
         
         // Blanket purchase order, Funds Remaining (From PS Purchase Order Balance Information ), BPO ID, Cust Number, Web Order Address, Account Log-In
         
-        CsvFile result = this.getResultManager().getCsvFile();
-        result.concatinateWith(tableCsv);
-        //already added rows, so we don't need to return anything
-        return new ArrayList<>();
+        saveFile.concatinateWith(tableCsv);
     }
 }

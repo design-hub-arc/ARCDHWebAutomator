@@ -1,6 +1,7 @@
 package automationSamples;
 
 import automationTools.AbstractQueryGatherAutomation;
+import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvRow;
 import java.util.ArrayList;
@@ -47,12 +48,10 @@ public class GoogleSearch extends AbstractQueryGatherAutomation{
     }
 
     @Override
-    public ArrayList<CsvRow> readQueryResult() {
+    public void readQueryResult(CsvFile saveFile) {
         WebElement numResultBox = awaitFindElement(By.id("resultStats"));
-        ArrayList<CsvRow> ret = new ArrayList<>();
-        CsvRow r = new CsvRow(getResultManager().getCsvFile());
+        CsvRow r = new CsvRow(saveFile);
         r.set(RESULT_HEADER, numResultBox.getText());
-        ret.add(r);
-        return ret;
+        saveFile.addRow(r);
     }
 }

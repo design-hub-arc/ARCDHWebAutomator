@@ -1,5 +1,6 @@
 package automationTools;
 
+import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvRow;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
         WebDriver driver = getDriver();
         resultManager.clear();
         initResult();
+        CsvFile result = getResultManager().getCsvFile();
         CsvRow q;
         while(!queryManager.isEmpty()){
             driver.get(queryManager.getInputUrl());
@@ -69,7 +71,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
             e = ExpectedConditions.urlMatches(resultManager.getResultUrl());
             try{
                 getWait().until(e); 
-                resultManager.append(readQueryResult());
+                readQueryResult(result);
             } catch(TimeoutException timeOut){
                 reportError("Did not transition to result page after inputting query: [" + q + "]");
                 reportError(timeOut);
@@ -101,10 +103,10 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
     
     /**
      * Parse the web page specified by this' result URL.
-     * Return the parsed content as a string 
-     * so that it can be appended to the result file.
+     * This method should then use data from the webpage to
+     * change this' result file.
      * 
-     * @return a list of CsvRows containing the relevant data in the web page.
+     * @param saveFile the result file for this automation
      */
-    public abstract ArrayList<CsvRow> readQueryResult();
+    public abstract void readQueryResult(CsvFile saveFile);
 }

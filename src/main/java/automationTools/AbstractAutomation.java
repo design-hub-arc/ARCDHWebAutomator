@@ -233,7 +233,7 @@ public abstract class AbstractAutomation {
         }
         running = true;
         writeOutput("Running " + getClass().getName());
-        writeOutput("Attempting to instanciate WebDriver from " + driverClass.getName());
+        writeOutput("Attempting to create WebDriver from " + driverClass.getName());
         try{
             driver = driverClass.newInstance();
             wait = new WebDriverWait(driver, 10);
@@ -242,7 +242,7 @@ public abstract class AbstractAutomation {
             finish();
             writeOutput("Automation completed successfully");
         } catch(IllegalAccessException | InstantiationException e){
-            writeOutput("Unable to create instance of dirver. Please see error log for details. Terminating process.");
+            writeOutput("Unable to create dirver. Please see error log for details. Terminating process.");
             finish(); //make sure we finish
             throw e;
         }
