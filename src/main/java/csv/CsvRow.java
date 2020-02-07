@@ -63,6 +63,25 @@ public class CsvRow {
     }
     
     /**
+     * Returns the value in the given column, or defaultValue if this CsvRow
+     * does not contain the given column.
+     * 
+     * @param columnHeader
+     * @param defaultValue
+     * @return 
+     */
+    public String getOrDefault(String columnHeader, String defaultValue){
+        String ret = "";
+        int idx = parent.getHeaderCol(columnHeader);
+        if(idx == -1){
+            ret = defaultValue;
+        } else {
+            ret = get(columnHeader);
+        }
+        return ret;
+    }
+    
+    /**
      * 
      * @return this row, as it would appear in a CSV file
      */

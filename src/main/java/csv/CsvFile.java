@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 /**
- * This class is used to work with CSV files.
- * It allows developers to work with table-like
+ * Since so much of the data used and given by
+ * the project is in tabular form, a way to interface
+ * with CSV file-like data makes it much easier to
+ * manage and manipulate the program's data.
+ * This class allows developers to work with table-like
  * data without having to guess whether or not
  * the data is properly formatted.
  * 
@@ -133,7 +136,7 @@ public class CsvFile {
     public void addRow(CsvRow row){
         CsvRow newRow = new CsvRow(this);
         headers.forEach((header)->{
-            newRow.set(header, row.get(header));
+            newRow.set(header, row.getOrDefault(header, ""));
         });
         rows.add(newRow);
     }
@@ -234,10 +237,9 @@ public class CsvFile {
         f.addRow(r);
         
         CsvFile otherFile = new CsvFile();
-        otherFile.addHeader("a").addHeader("d").addHeader("c").addHeader("b");
+        otherFile.addHeader("a").addHeader("d").addHeader("c");
         r = new CsvRow(otherFile);
         r.set("a", "a column");
-        r.set("b", "second");
         r.set("c", "third");
         r.set("d", "don't include this");
         
