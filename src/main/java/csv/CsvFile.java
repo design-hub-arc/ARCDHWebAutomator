@@ -2,6 +2,7 @@ package csv;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class CsvFile {
     private final HashMap<String, Integer> headerCols;
     private final ArrayList<String> headers;
-    private final ArrayList<CsvRow> rows;
+    private final LinkedList<CsvRow> rows;
     
     /**
      * Creates an empty CsvFile
@@ -26,7 +27,7 @@ public class CsvFile {
     public CsvFile(){
         headerCols = new HashMap<>();
         headers = new ArrayList<>();
-        rows = new ArrayList<>();
+        rows = new LinkedList<>();
     }
     
     /**
@@ -86,6 +87,15 @@ public class CsvFile {
         });
         otherFile.getBody().forEach((row)->addRow(row));
         return this;
+    }
+    
+    public CsvRow dequeueFirstRow(){
+        CsvRow ret = null;
+        if(!rows.isEmpty()){
+            ret = rows.removeFirst();
+        }
+        
+        return ret;
     }
     
     /**
@@ -177,8 +187,8 @@ public class CsvFile {
      * @return a copy of this' body
      */
     @SuppressWarnings("unchecked")
-    public ArrayList<CsvRow> getBody(){
-        return (ArrayList<CsvRow>)rows.clone();
+    public LinkedList<CsvRow> getBody(){
+        return (LinkedList<CsvRow>)rows.clone();
     }
     
     /**

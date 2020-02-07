@@ -62,7 +62,7 @@ public class RunWindow extends Page{
                     aa.addLogger(log);
                     
                     if(aa instanceof QueryingAutomation){
-                        ((QueryingAutomation)aa).setInputFile(inputFile);
+                        ((QueryingAutomation)aa).setQueryFile(inputFile);
                     }
                     
                     aa.run(driverClass);

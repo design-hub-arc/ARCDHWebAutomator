@@ -74,7 +74,7 @@ public class InputFileSelect extends Page{
             addText("Set automation to " + aClass.getName() + '\n');
             if(forAuto instanceof QueryingAutomation){
                 autoText.setText("Select source file for " + forAuto.getName());
-                disp.appendText(((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs().getReqDesc() + "\n"); 
+                disp.appendText(((QueryingAutomation)forAuto).getQueryFileReqs().getReqDesc() + "\n"); 
                 accepted = false;
             } else {
                 autoText.setText(forAuto.getName() + " doesn't need a query file to run");
@@ -92,7 +92,7 @@ public class InputFileSelect extends Page{
         if(forAuto instanceof QueryingAutomation){
             accepted = false;
             try {
-                CsvFileRequirements reqs = ((QueryingAutomation)forAuto).getQueryManager().getQueryFileReqs();
+                CsvFileRequirements reqs = ((QueryingAutomation)forAuto).getQueryFileReqs();
                 reqs.validateFile(f);
                 accepted = true;
                 String fileText = FileReaderUtil.readFile(f);

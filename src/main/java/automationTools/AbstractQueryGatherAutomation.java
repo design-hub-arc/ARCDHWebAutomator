@@ -20,27 +20,61 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * @author Matt Crow
  */
 public abstract class AbstractQueryGatherAutomation extends AbstractAutomation implements QueryingAutomation, ReadingAutomation{
-    private final QueryManager queryManager;
+    private final CsvFileRequirements fileReqs;
+    private CsvFile queryFile;
     private final CsvFile resultFile;
+    private final String inputUrl;
     private final String resultUrl;
     
     public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, CsvFileRequirements reqs, String resultUrl) {
         super(autoName, description);
-        queryManager = new QueryManager(this, inputUrl, reqs);
+        fileReqs = reqs;
+        this.inputUrl = inputUrl;
         this.resultUrl = resultUrl;
+        queryFile = null;
         resultFile = new CsvFile();
     }
     
+    // methods inherited from QueryingAutomation
     /**
-     * The QueryManager formats and stores the
-     * queries that the automation should input.
      * 
-     * @return the QueryManager for this automation
+     * @return the URL where this should attempt to send queries to a webpage,
+     * usually to form elements.
      */
     @Override
-    public final QueryManager getQueryManager(){
-        return queryManager;
+    public String getInputUrl(){
+        return inputUrl;
     }
+    
+    /**
+     * Used to specify what columns CSV data fed into
+     * this must contain.
+     * 
+     * @return the requirements for CSV files fed into this
+     */
+    @Override
+    public CsvFileRequirements getQueryFileReqs(){
+        return fileReqs;
+    }
+    
+    /**
+     * 
+     * @param file the file which will be used to feed queries to this automation
+     */
+    @Override
+    public void setQueryFile(CsvFile file){
+        queryFile = file;
+    }
+    
+    /**
+     * 
+     * @return the CsvFile which is feeding queries into this automation.
+     */
+    @Override
+    public CsvFile getQueryFile(){
+        return queryFile;
+    }
+    
     
     @Override
     public final String getResultUrl(){
@@ -58,12 +92,12 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
         result.clear();
         initResult();
         CsvRow q;
-        while(!queryManager.isEmpty()){
-            driver.get(queryManager.getInputUrl());
-            ExpectedCondition<Boolean> e  = ExpectedConditions.urlMatches(queryManager.getInputUrl());
+        while(!hasNoMoreQueries()){
+            driver.get(getInputUrl());
+            ExpectedCondition<Boolean> e  = ExpectedConditions.urlMatches(getInputUrl());
             getWait().until(e);
             
-            q = queryManager.getNextQuery();
+            q = getNextQuery();
             inputQuery(q);
             
             e = ExpectedConditions.urlMatches(getResultUrl());
