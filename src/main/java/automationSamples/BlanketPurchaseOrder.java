@@ -1,14 +1,12 @@
 package automationSamples;
 
 import automationTools.AbstractPeopleSoftAutomation;
-import automationTools.ResultManager;
 import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvParser;
 import csv.CsvRow;
 import io.FileReaderUtil;
 import java.io.IOException;
-import java.util.ArrayList;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -43,9 +41,8 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
     public void initResult(){
         try {
             CsvFile template = CsvParser.toCsvFile(FileReaderUtil.readStream(BlanketPurchaseOrder.class.getResourceAsStream("bpoTemplate.csv")));
-            CsvFile result = getResultManager().getCsvFile();
-            template.getHeaders().forEach((header)->result.addHeader(header));
-            getResultManager().append(template.getBody());
+            CsvFile result = getResultFile();
+            result.concatinateWith(template);
         } catch (IOException ex) {
             reportError(ex);
         }

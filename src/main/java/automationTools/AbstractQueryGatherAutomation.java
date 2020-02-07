@@ -3,7 +3,6 @@ package automationTools;
 import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvRow;
-import java.util.ArrayList;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -22,12 +21,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  */
 public abstract class AbstractQueryGatherAutomation extends AbstractAutomation implements QueryingAutomation, ReadingAutomation{
     private final QueryManager queryManager;
-    private final ResultManager resultManager;
+    private final CsvFile resultFile;
+    private final String resultUrl;
     
     public AbstractQueryGatherAutomation(String autoName, String description, String inputUrl, CsvFileRequirements reqs, String resultUrl) {
         super(autoName, description);
         queryManager = new QueryManager(this, inputUrl, reqs);
-        resultManager = new ResultManager(this, resultUrl);
+        this.resultUrl = resultUrl;
+        resultFile = new CsvFile();
     }
     
     /**
@@ -41,24 +42,21 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
         return queryManager;
     }
     
-    /**
-     * The ResultManager is used to keep track of
-     * what this automation has recorded from webpages
-     * it has visited.
-     * 
-     * @return the ResultManager for this automation
-     */
     @Override
-    public final ResultManager getResultManager(){
-        return resultManager;
+    public final String getResultUrl(){
+        return resultUrl;
+    }
+    @Override
+    public CsvFile getResultFile(){
+        return resultFile;
     }
     
     @Override
     public void doRun() {
         WebDriver driver = getDriver();
-        resultManager.clear();
+        CsvFile result = getResultFile();
+        result.clear();
         initResult();
-        CsvFile result = getResultManager().getCsvFile();
         CsvRow q;
         while(!queryManager.isEmpty()){
             driver.get(queryManager.getInputUrl());
@@ -68,7 +66,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
             q = queryManager.getNextQuery();
             inputQuery(q);
             
-            e = ExpectedConditions.urlMatches(resultManager.getResultUrl());
+            e = ExpectedConditions.urlMatches(getResultUrl());
             try{
                 getWait().until(e); 
                 readQueryResult(result);
@@ -77,7 +75,7 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
                 reportError(timeOut);
             }
         }
-        resultManager.saveToFile();
+        saveResultToFile();
     }
     
     /**

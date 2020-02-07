@@ -1,6 +1,5 @@
 package automationSamples;
 
-import automationTools.ResultManager;
 import automationTools.ReadingAutomation;
 import automationTools.AbstractAutomation;
 import csv.CsvFile;
@@ -14,11 +13,11 @@ import util.HtmlTable;
 public class TableTest extends AbstractAutomation implements ReadingAutomation{
     private static final String DESC = "Tests the program's HTML table reading capabilities.";
     
-    private final ResultManager r;
+    private final CsvFile result;
     
     public TableTest() {
         super("Table test", DESC);
-        r = new ResultManager(this, "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table");
+        result = new CsvFile();
     }
     
     @Override
@@ -29,20 +28,24 @@ public class TableTest extends AbstractAutomation implements ReadingAutomation{
         //since the table is inside the IFrame, we need to switch to the frame before accessing the element
         HtmlTable table = new HtmlTable(awaitFindElement(By.xpath("//html/body/table[3]")));
         CsvFile tableCsv = table.toCsvFile().getSubfile(new String[]{"Capitals"});
-        CsvFile result = getResultManager().getCsvFile();
         result.addHeader("Capitals");
         tableCsv.getBody().forEach((row)->{
             result.addRow(row);
         });
-        r.saveToFile();
+        saveResultToFile();
         
         
         //new HTML table to csv:
         System.out.println(table.toCsvFile().toString());
     }
+    
+    @Override
+    public String getResultUrl(){
+        return "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table";
+    }
 
     @Override
-    public ResultManager getResultManager() {
-        return r;
+    public CsvFile getResultFile() {
+        return result;
     }
 }

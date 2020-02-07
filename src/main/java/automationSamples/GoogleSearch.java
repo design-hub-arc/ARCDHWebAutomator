@@ -4,7 +4,6 @@ import automationTools.AbstractQueryGatherAutomation;
 import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvRow;
-import java.util.ArrayList;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -37,7 +36,7 @@ public class GoogleSearch extends AbstractQueryGatherAutomation{
     
     @Override
     public void initResult(){
-        getResultManager().getCsvFile().addHeader(RESULT_HEADER);
+        getResultFile().addHeader(RESULT_HEADER);
     }
     
     @Override
