@@ -28,10 +28,12 @@ repositories {
 }
 
 jar {
+    def timestamp = new Date().format('dd-M-yyyy');
     
     //need to manually set main class, otherwise, it just compiles the JAR as a library
     manifest {
         attributes 'Main-Class': 'application.Application'
+        attributes 'Date' : timestamp
     }
     
     //include dependencies in JAR file

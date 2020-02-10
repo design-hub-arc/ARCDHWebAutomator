@@ -256,5 +256,8 @@ public class CsvFile {
         f.addRow(r);
         
         System.out.println(f.toString());
+        
+        CsvFile sub = f.getSubfile(new String[]{"c"});
+        System.out.println(sub.toString());
     }
 }

@@ -4,6 +4,11 @@ import gui.ApplicationWindow;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import javax.swing.JFrame;
 import logging.ApplicationLog;
 
@@ -85,6 +90,23 @@ public class Application {
     public static void main(String[] args){
         Application app = getInstance();
         app.start();
+        
+        URL manifest = Application.class.getResource("/META-INF/MANIFEST.MF");
+        System.out.println(manifest);
+        if(manifest != null){
+            try {
+                JarURLConnection conn = (JarURLConnection)manifest.openConnection();
+                Manifest man = conn.getManifest();
+                man.getEntries().forEach((String key, Attributes attrs)->{
+                    System.out.println("#" + key + ":");
+                    attrs.entrySet().forEach((kv)->{
+                        System.out.println(kv.getKey() + ": " + kv.getValue());
+                    });
+                });
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
     
     public ApplicationLog getLog(){
