@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Date: timestamp
+Date: 10-2-2020
 Main-Class: application.Application
 

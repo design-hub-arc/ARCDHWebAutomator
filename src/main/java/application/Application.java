@@ -6,7 +6,6 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import javax.swing.JFrame;
@@ -87,15 +86,20 @@ public class Application {
         ApplicationWindow w = new ApplicationWindow(this); //automatically listens to window
     }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         Application app = getInstance();
         app.start();
         
         URL manifest = Application.class.getResource("/META-INF/MANIFEST.MF");
-        System.out.println(manifest);
         if(manifest != null){
             try {
                 JarURLConnection conn = (JarURLConnection)manifest.openConnection();
+                
+                System.out.println(conn.getMainAttributes().size());
+                conn.getMainAttributes().entrySet().forEach((kv)->{
+                    System.out.println(kv.getKey() + ", " + kv.getValue());
+                });
+                
                 Manifest man = conn.getManifest();
                 System.out.println(man.getEntries().size() + " entries");
                 man.getEntries().forEach((String key, Attributes attrs)->{
