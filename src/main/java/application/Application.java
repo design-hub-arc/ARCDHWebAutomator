@@ -97,11 +97,16 @@ public class Application {
             try {
                 JarURLConnection conn = (JarURLConnection)manifest.openConnection();
                 Manifest man = conn.getManifest();
+                System.out.println(man.getEntries().size() + " entries");
                 man.getEntries().forEach((String key, Attributes attrs)->{
                     System.out.println("#" + key + ":");
                     attrs.entrySet().forEach((kv)->{
                         System.out.println(kv.getKey() + ": " + kv.getValue());
                     });
+                });
+                
+                man.getMainAttributes().forEach((k, v)->{
+                    System.out.println(k + ", " + v);
                 });
             } catch (IOException ex) {
                 ex.printStackTrace();
