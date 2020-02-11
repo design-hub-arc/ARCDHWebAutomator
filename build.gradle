@@ -57,4 +57,6 @@ dependencies {
         exclude group: 'commons-codec', module: 'commons-codec'
         exclude group: 'cglib', module: 'cglib-nodep'
     }
+    // jsoup HTML parser library @ https://jsoup.org/
+    compile 'org.jsoup:jsoup:1.12.2'
 }

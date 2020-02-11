@@ -2,9 +2,12 @@ package application;
 
 import java.io.IOException;
 import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 /**
  * The Updater class is used to check for updates to the program on GitHub
@@ -25,6 +28,7 @@ public class Updater {
                 System.err.println("Failed to get JAR compile date");
             } else {
                 System.out.println("JAR was compiled on " + jarDate);
+                String gitHubDate = getLatestCompileDate();
             }
         } else {
             System.out.println("Not running from JAR");
@@ -62,7 +66,20 @@ public class Updater {
         return ret;
     }
     
+    private String getLatestCompileDate(){
+        String ret = null;
+        Document gitHubPage;
+        try {
+            gitHubPage = Jsoup.connect("https://github.com/design-hub-arc/ARCDHWebAutomator/blob/master/build/tmp/jar/MANIFEST.MF").get();
+            System.out.println("Data is " + gitHubPage);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+    
     public static void main(String[] args){
-        new Updater().checkForUpdates();
+        new Updater().getLatestCompileDate();
+        //new Updater().checkForUpdates();
     }
 }
