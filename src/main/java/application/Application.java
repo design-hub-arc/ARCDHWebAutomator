@@ -1,3 +1,4 @@
+
 package application;
 
 import gui.ApplicationWindow;
@@ -100,18 +101,15 @@ public class Application {
                     System.out.println(kv.getKey() + ", " + kv.getValue());
                 });
                 
-                Manifest man = conn.getManifest();
-                System.out.println(man.getEntries().size() + " entries");
-                man.getEntries().forEach((String key, Attributes attrs)->{
-                    System.out.println("#" + key + ":");
-                    attrs.entrySet().forEach((kv)->{
-                        System.out.println(kv.getKey() + ": " + kv.getValue());
-                    });
-                });
+                String jarDate = conn.getMainAttributes().getValue("Date");
+                System.out.println("JAR date is " + jarDate);
                 
-                man.getMainAttributes().forEach((k, v)->{
-                    System.out.println(k + ", " + v);
-                });
+                if(jarDate == null){
+                    System.out.println("Not running from JAR");
+                } else {
+                    System.out.println("Should check for updates");
+                }
+                
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
