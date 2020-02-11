@@ -1,9 +1,11 @@
 package application;
 
+import io.FileReaderUtil;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsoup.Jsoup;
@@ -70,7 +72,7 @@ public class Updater {
         String ret = null;
         Document gitHubPage;
         try {
-            gitHubPage = Jsoup.connect("https://github.com/design-hub-arc/ARCDHWebAutomator/blob/master/build/tmp/jar/MANIFEST.MF").get();
+            gitHubPage = Jsoup.connect("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF").get();
             System.out.println("Data is " + gitHubPage);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -79,7 +81,18 @@ public class Updater {
     }
     
     public static void main(String[] args){
-        new Updater().getLatestCompileDate();
+        //new Updater().getLatestCompileDate();
         //new Updater().checkForUpdates();
+            
+        try {
+            URL req = new URL("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF");
+            URLConnection conn = req.openConnection();
+            String data = FileReaderUtil.readStream(conn.getInputStream());
+            System.out.println(data);
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
