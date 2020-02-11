@@ -5,10 +5,6 @@ import gui.ApplicationWindow;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import javax.swing.JFrame;
 import logging.ApplicationLog;
 
@@ -91,29 +87,7 @@ public class Application {
         Application app = getInstance();
         app.start();
         
-        URL manifest = Application.class.getResource("/META-INF/MANIFEST.MF");
-        if(manifest != null){
-            try {
-                JarURLConnection conn = (JarURLConnection)manifest.openConnection();
-                
-                System.out.println(conn.getMainAttributes().size());
-                conn.getMainAttributes().entrySet().forEach((kv)->{
-                    System.out.println(kv.getKey() + ", " + kv.getValue());
-                });
-                
-                String jarDate = conn.getMainAttributes().getValue("Date");
-                System.out.println("JAR date is " + jarDate);
-                
-                if(jarDate == null){
-                    System.out.println("Not running from JAR");
-                } else {
-                    System.out.println("Should check for updates");
-                }
-                
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+        new Updater().checkForUpdates();
     }
     
     public ApplicationLog getLog(){
