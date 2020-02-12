@@ -59,4 +59,7 @@ dependencies {
     }
     // jsoup HTML parser library @ https://jsoup.org/
     compile 'org.jsoup:jsoup:1.12.2'
+    // https://mvnrepository.com/artifact/javax.json/javax.json-api
+    compile group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
+    compile group: 'org.glassfish', name: 'javax.json', version: '1.1'
 }

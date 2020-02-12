@@ -87,7 +87,7 @@ public class Application {
         Application app = getInstance();
         app.start();
         
-        new Updater().checkForUpdates();
+        //new Updater().checkForUpdates();
     }
     
     public ApplicationLog getLog(){

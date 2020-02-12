@@ -2,6 +2,7 @@ package application;
 
 import io.FileReaderUtil;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import javax.json.Json;
+import javax.json.JsonObject;
 
 /**
  * The Updater class is used to check for updates to the program on GitHub
@@ -80,6 +83,18 @@ public class Updater {
                 //.header("Accept", "application/vnd.github.VERSION.text+json")
                 .get();
             System.out.println("Data is " + gitHubPage);
+            System.out.println(gitHubPage.body().text());
+            JsonObject asJson = Json
+                .createReader(
+                    new StringReader(
+                        gitHubPage
+                            .body()
+                            .text()
+                    )
+                ).readObject();
+            System.out.println("JSON content: " + asJson.getString("content"));
+            String decoded = new String(Base64.getDecoder().decode(asJson.getString("content")));
+            System.out.println("decoded: " + decoded);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -88,19 +103,6 @@ public class Updater {
     
     public static void main(String[] args){
         new Updater().getLatestCompileDate();
-        String decoded = new String(Base64.getDecoder().decode("TWFuaWZlc3QtVmVyc2lvbjogMS4wCk1haW4tQ2xhc3M6IGFwcGxpY2F0aW9u\nLkFwcGxpY2F0aW9uCgo=\n".getBytes(StandardCharsets.UTF_8)));
-        System.out.println("Decoded:\n" + decoded);
         //new Updater().checkForUpdates();
-        /*    
-        try {
-            URL req = new URL("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF");
-            URLConnection conn = req.openConnection();
-            String data = FileReaderUtil.readStream(conn.getInputStream());
-            System.out.println(data);
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
     }
 }
