@@ -6,6 +6,8 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsoup.Jsoup;
@@ -72,7 +74,11 @@ public class Updater {
         String ret = null;
         Document gitHubPage;
         try {
-            gitHubPage = Jsoup.connect("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF").get();
+            gitHubPage = Jsoup
+                .connect("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF")
+                .ignoreContentType(true)
+                //.header("Accept", "application/vnd.github.VERSION.text+json")
+                .get();
             System.out.println("Data is " + gitHubPage);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -81,9 +87,11 @@ public class Updater {
     }
     
     public static void main(String[] args){
-        //new Updater().getLatestCompileDate();
+        new Updater().getLatestCompileDate();
+        String decoded = new String(Base64.getDecoder().decode("TWFuaWZlc3QtVmVyc2lvbjogMS4wCk1haW4tQ2xhc3M6IGFwcGxpY2F0aW9u\nLkFwcGxpY2F0aW9uCgo=\n".getBytes(StandardCharsets.UTF_8)));
+        System.out.println("Decoded:\n" + decoded);
         //new Updater().checkForUpdates();
-            
+        /*    
         try {
             URL req = new URL("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF");
             URLConnection conn = req.openConnection();
@@ -93,6 +101,6 @@ public class Updater {
             ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 }
