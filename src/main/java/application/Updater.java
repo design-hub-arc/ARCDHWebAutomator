@@ -1,16 +1,10 @@
 package application;
 
-import io.FileReaderUtil;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.JarURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import javax.json.Json;
@@ -93,7 +87,10 @@ public class Updater {
                     )
                 ).readObject();
             System.out.println("JSON content: " + asJson.getString("content"));
-            String decoded = new String(Base64.getDecoder().decode(asJson.getString("content")));
+            String properlyEncoded = new String(Base64.getEncoder().encode("Manifest-Version: 1.0\nMain-Class: application.Application\n".getBytes()));
+            System.out.println("Should be : " + properlyEncoded);
+            System.out.println("Properly decoded: " + new String(Base64.getDecoder().decode(properlyEncoded)));
+            String decoded = new String(Base64.getDecoder().decode(asJson.getString("content").replaceAll("\n", "")));
             System.out.println("decoded: " + decoded);
         } catch (IOException ex) {
             ex.printStackTrace();
