@@ -22,8 +22,9 @@ import javax.json.JsonObject;
 public class Updater {
     private static final String MANIFEST_URL = "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF";
     //Need to use github data API to download, as the JAR is rather large: https://developer.github.com/v3/git/
-    //https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/git/refs
-    private static final String DOWNLOAD_URL = "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/libs/ARCDHWebAutomator.jar";
+    //https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/git/refs/heads/master
+    //this might work: https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar
+    private static final String DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
     
     /**
      * Checks to see if the main application should be updated.
@@ -141,17 +142,20 @@ public class Updater {
     }
     
     public void install() throws IOException{
+        
         Document download = Jsoup
             .connect(DOWNLOAD_URL)
             .ignoreContentType(true)
             .get();
-        System.out.println(download.toString());
+        
+        
+        System.out.println(download.body().toString());
     }
     
     public static void main(String[] args) throws IOException{
         Application.getInstance().getResources().init();
         //new Updater().getJarCompileDate();
-        new Updater().getLatestCompileDate();
-        //new Updater().checkForUpdates();
+        //new Updater().getLatestCompileDate();
+        new Updater().checkForUpdates();
     }
 }
