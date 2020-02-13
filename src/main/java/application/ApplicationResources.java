@@ -32,14 +32,14 @@ public final class ApplicationResources {
     public static final String APP_FOLDER_PATH = ARCDH_FOLDER_PATH + File.separator + "WebAutomator";
     public static final String DRIVER_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "webdrivers";
     public static final String LOG_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "logs";
+    public static final String JAR_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "bin";
     
     private final WebDriverLoader drivers;
     //todo: move functionality from this class to WebDriverLoader
     private final HashMap<Browser, String> driverPaths;
     
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-DD-uuuu_hh_mm_a");
-    private static ApplicationResources instance;
-    
+        
     public ApplicationResources(Application app){
         forApp = app;
         drivers = new WebDriverLoader(app);
@@ -111,6 +111,7 @@ public final class ApplicationResources {
         createIfAbsent(APP_FOLDER_PATH);
         createIfAbsent(DRIVER_FOLDER_PATH);
         createIfAbsent(LOG_FOLDER_PATH);
+        createIfAbsent(JAR_FOLDER_PATH);
     }
     
     /**
