@@ -1,10 +1,15 @@
 package application;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +31,7 @@ public class Updater {
     //this might work: https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar
     private static final String DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
     
+    private static final String APP_JAR_PATH = ApplicationResources.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
     /**
      * Checks to see if the main application should be updated.
      * If the application is running from the IDE, this method
@@ -142,14 +148,13 @@ public class Updater {
     }
     
     public void install() throws IOException{
-        
-        Document download = Jsoup
-            .connect(DOWNLOAD_URL)
-            .ignoreContentType(true)
-            .get();
-        
-        
-        System.out.println(download.body().toString());
+        //https://www.baeldung.com/java-download-file
+        URL downloadMe = new URL(DOWNLOAD_URL);
+        File jarFile = new File(APP_JAR_PATH);
+        BufferedInputStream buff = new BufferedInputStream(downloadMe.openStream());
+        FileOutputStream out = new FileOutputStream(jarFile);
+        ReadableByteChannel in = Channels.newChannel(buff);
+        out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
     }
     
     public static void main(String[] args) throws IOException{
