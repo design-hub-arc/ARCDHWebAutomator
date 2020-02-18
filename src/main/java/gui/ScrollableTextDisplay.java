@@ -41,7 +41,7 @@ public class ScrollableTextDisplay extends JPanel implements Logger{
         repaint();
     }
 
-    ScrollableTextDisplay() {
+    public ScrollableTextDisplay() {
         this("");
     }
     

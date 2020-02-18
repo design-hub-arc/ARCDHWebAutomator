@@ -86,8 +86,6 @@ public class Application {
     public static void main(String[] args) throws IOException{
         Application app = getInstance();
         app.start();
-        
-        //new Updater().checkForUpdates();
     }
     
     public ApplicationLog getLog(){

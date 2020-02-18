@@ -1,5 +1,7 @@
-package application;
+package launcher;
 
+import application.Application;
+import application.ApplicationResources;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +15,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.jar.JarFile;
@@ -20,6 +23,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import javax.json.Json;
 import javax.json.JsonObject;
+import logging.Logger;
 
 /**
  * The Updater class is used to check for updates to the program on GitHub,
@@ -28,12 +32,15 @@ import javax.json.JsonObject;
  * @author Matt Crow
  */
 public class Updater {
+    private final ArrayList<Logger> loggers;
+    
     private static final String APP_MANIFEST_URL = "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF";
     private static final String APP_DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
-    
     private static final String APP_JAR_PATH = ApplicationResources.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
     
-    
+    public Updater(){
+        loggers = new ArrayList<>();
+    }
     
     public void runChecks(){        
         try {
