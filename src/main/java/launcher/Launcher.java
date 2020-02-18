@@ -20,7 +20,7 @@ public class Launcher {
         log = new ApplicationLog();
     }
     
-    public Launcher getInstance(){
+    public static Launcher getInstance(){
         if(instance == null){
             instance = new Launcher();
         }
@@ -29,5 +29,22 @@ public class Launcher {
     
     public void launch(){
         LauncherFrame window = new LauncherFrame();
+        Updater updater = new Updater();
+        updater.addLogger(log);
+        updater.addLogger(window.getContent().getTextDisplay());
+        updater.runChecks();
+        if(updater.appIsInstalled()){
+            Thread appThread = new Thread(){
+                @Override
+                public void run(){
+                    //todo load and run JAR file
+                }
+            };
+            appThread.start();
+        }
+    }
+    
+    public static void main(String[] args){
+        Launcher.getInstance().launch();
     }
 }

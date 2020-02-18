@@ -23,6 +23,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import javax.json.Json;
 import javax.json.JsonObject;
+import logging.ErrorLogger;
 import logging.Logger;
 
 /**
@@ -36,31 +37,68 @@ public class Updater {
     
     private static final String APP_MANIFEST_URL = "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF";
     private static final String APP_DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
-    private static final String APP_JAR_PATH = ApplicationResources.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
+    public static final String APP_JAR_PATH = ApplicationResources.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
     
     public Updater(){
         loggers = new ArrayList<>();
+        loggers.add(new Logger() {
+            @Override
+            public void log(String s) {
+                System.out.println(s);
+            }
+
+            @Override
+            public String getLog() {
+                return "";
+            }
+        });
+    }
+    
+    public void addLogger(Logger l){
+        loggers.add(l);
+    }
+    
+    private void writeOutput(String msg){
+        loggers.forEach((logger)->logger.log(msg));
+    }
+    private void reportError(String msg){
+        loggers.stream().filter((logger)->{
+            return logger instanceof ErrorLogger;
+        }).map((logger)->{
+            return (ErrorLogger)logger;
+        }).forEach((logger)->{
+            logger.logError(msg);
+        });
+    }
+    private void reportError(Exception ex){
+        loggers.stream().filter((logger)->{
+            return logger instanceof ErrorLogger;
+        }).map((logger)->{
+            return (ErrorLogger)logger;
+        }).forEach((logger)->{
+            logger.logError(ex);
+        });
     }
     
     public void runChecks(){        
         try {
             Application.getInstance().getResources().init();
         } catch (IOException ex) {
-            System.err.println("Failed to initialize application resources");
-            ex.printStackTrace();
+            reportError("Failed to initialize application resources");
+            reportError(ex);
         }
         
-        System.out.println("Running Updater.runChecks()...");
+        writeOutput("Running Updater.runChecks()...");
         
         boolean isInstalled = appIsInstalled();
-        System.out.printf("Main application %s installed\n", (isInstalled) ? "is" : "is not");
+        writeOutput(String.format("Main application %s installed", (isInstalled) ? "is" : "is not"));
         if(isInstalled){
-            System.out.println("Application is installed, checking when it was last updated...");
+            writeOutput("Application is installed, checking when it was last updated...");
             String currentlyInstalledDate = getInstalledAppJarDate();
             String mostRecentUpdate = getMostRecentAppUpdate();
             
             if(currentlyInstalledDate == null || mostRecentUpdate == null){
-                System.err.println("Cannot compare dates, as at least one is null.");
+                reportError("Cannot compare dates, as at least one is null.");
             } else {
                 //compare dates
                 DateFormat format = new SimpleDateFormat("dd-M-yyyy");
@@ -68,26 +106,26 @@ public class Updater {
                     Date currDate = format.parse(currentlyInstalledDate);
                     Date newestDate = format.parse(mostRecentUpdate);
                     if(newestDate.after(currDate)){
-                        System.out.println("Currently installed app is outdated, please wait while I install the newest version...");
+                        writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
                         installApp();
                     } else {
-                        System.out.println("Looks like everything is up to date!");
+                        writeOutput("Looks like everything is up to date!");
                     }
                 } catch (ParseException ex) {
-                    ex.printStackTrace();
+                    reportError(ex);
                 } catch (IOException ex) {
-                    System.err.println("Failed to to update");
-                    ex.printStackTrace();
+                    reportError("Failed to to update");
+                    reportError(ex);
                 }
             }
         } else {
-            System.out.println("Please wait while I download and install the application...");
+            writeOutput("Please wait while I download and install the application...");
             try{
                 installApp();
-                System.out.println("Installation successful!");
+                writeOutput("Installation successful!");
             } catch (IOException ex) {
-                System.err.println("Failed to install application. Aborting.");
-                ex.printStackTrace();
+                reportError("Failed to install application. Aborting.");
+                reportError(ex);
                 System.exit(-1);
             }
         }
@@ -99,7 +137,7 @@ public class Updater {
      * 
      * @return 
      */
-    private boolean appIsInstalled(){
+    public boolean appIsInstalled(){
         return Files.exists(Paths.get(APP_JAR_PATH));
     }
     
@@ -133,17 +171,17 @@ public class Updater {
             //extract compile date from JAR
             try {
                 JarFile jar = new JarFile(APP_JAR_PATH);
-                System.out.println("JAR file manifest:");
+                writeOutput("JAR file manifest:");
                 jar.getManifest().getMainAttributes().forEach((s, attr)->{
-                    System.out.printf("* %s: %s\n", s, attr.toString());
+                    writeOutput(String.format("* %s: %s", s, attr.toString()));
                 });
                 String jarDate = jar.getManifest().getMainAttributes().getValue("Date");
                 if(jarDate == null){
-                    System.err.println("JAR manifest does not contain attribute 'Date'");
+                    reportError("JAR manifest does not contain attribute 'Date'");
                 }
                 ret = jarDate;
             } catch (IOException ex) {
-                ex.printStackTrace();
+                reportError(ex);
             }
         }
         
@@ -175,9 +213,9 @@ public class Updater {
                 ).readObject();
             //                                                                                need this, otherwise it doesn't decode
             String decoded = new String(Base64.getDecoder().decode(asJson.getString("content").replaceAll("\n", "")));
-            System.out.println("decoded: " + decoded);
+            writeOutput("decoded: " + decoded + "");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            reportError(ex);
         }
         return ret;
     }
