@@ -10,7 +10,11 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.jar.JarFile;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,37 +28,88 @@ import javax.json.JsonObject;
  * @author Matt Crow
  */
 public class Updater {
-    private static final String MANIFEST_URL = "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF";
-    //Need to use github data API to download, as the JAR is rather large: https://developer.github.com/v3/git/
-    //https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/git/refs/heads/master
-    //this might work: https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar
-    private static final String DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
+    private static final String APP_MANIFEST_URL = "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF";
+    private static final String APP_DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
     
     private static final String APP_JAR_PATH = ApplicationResources.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
-    /**
-     * Checks to see if the main application should be updated.
-     * If the application is running from the IDE, this method
-     * will always return false.
-     * 
-     * @return whether or not a new version of the application JAR file is available on GitHub 
-     */
-    public boolean checkForUpdates(){
-        boolean shouldUpdate = false;
-        
-        String lastCompiled = getJarCompileDate();
-        if(lastCompiled == null){
-            try {
-                //not installed, so download it
-                install();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            String mostRecentVersion = getLatestCompileDate();
-            System.out.printf("Which is newer, %s or %s?\n", lastCompiled, mostRecentVersion);
+    
+    
+    
+    public void runChecks(){        
+        try {
+            Application.getInstance().getResources().init();
+        } catch (IOException ex) {
+            System.err.println("Failed to initialize application resources");
+            ex.printStackTrace();
         }
         
-        return shouldUpdate;
+        System.out.println("Running Updater.runChecks()...");
+        
+        boolean isInstalled = appIsInstalled();
+        System.out.printf("Main application %s installed\n", (isInstalled) ? "is" : "is not");
+        if(isInstalled){
+            System.out.println("Application is installed, checking when it was last updated...");
+            String currentlyInstalledDate = getInstalledAppJarDate();
+            String mostRecentUpdate = getMostRecentAppUpdate();
+            
+            if(currentlyInstalledDate == null || mostRecentUpdate == null){
+                System.err.println("Cannot compare dates, as at least one is null.");
+            } else {
+                //compare dates
+                DateFormat format = new SimpleDateFormat("dd-M-yyyy");
+                try {
+                    Date currDate = format.parse(currentlyInstalledDate);
+                    Date newestDate = format.parse(mostRecentUpdate);
+                    if(newestDate.after(currDate)){
+                        System.out.println("Currently installed app is outdated, please wait while I install the newest version...");
+                        installApp();
+                    } else {
+                        System.out.println("Looks like everything is up to date!");
+                    }
+                } catch (ParseException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    System.err.println("Failed to to update");
+                    ex.printStackTrace();
+                }
+            }
+        } else {
+            System.out.println("Please wait while I download and install the application...");
+            try{
+                installApp();
+                System.out.println("Installation successful!");
+            } catch (IOException ex) {
+                System.err.println("Failed to install application. Aborting.");
+                ex.printStackTrace();
+                System.exit(-1);
+            }
+        }
+    }
+    
+    /**
+     * Checks to see if the main application
+     * JAR file is installed in the proper directory.
+     * 
+     * @return 
+     */
+    private boolean appIsInstalled(){
+        return Files.exists(Paths.get(APP_JAR_PATH));
+    }
+    
+    /**
+     * Downloads and installs the main application
+     * JAR file to the APP_JAR_PATH file
+     * 
+     * @throws IOException if the download or install fail 
+     */
+    private void installApp() throws IOException{
+        //https://www.baeldung.com/java-download-file
+        URL downloadMe = new URL(APP_DOWNLOAD_URL);
+        File writeToMe = new File(APP_JAR_PATH);
+        BufferedInputStream buff = new BufferedInputStream(downloadMe.openStream());
+        FileOutputStream out = new FileOutputStream(writeToMe);
+        ReadableByteChannel in = Channels.newChannel(buff);
+        out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
     }
     
     /**
@@ -64,46 +119,42 @@ public class Updater {
      * @return the compilation date of the JAR file for the main application,
      * or null if none is present.
      */
-    private String getJarCompileDate(){
+    private String getInstalledAppJarDate(){
         String ret = null;
         
-        System.out.println("JAR folder:");
-        File jarFolder = new File(ApplicationResources.JAR_FOLDER_PATH);
-        for(File f : jarFolder.listFiles()){
-            System.out.println(f.getName());
-        }
-        System.out.println("End of JAR folder");
-        
-        if(Files.exists(Paths.get(APP_JAR_PATH))){
+        if(appIsInstalled()){
             //extract compile date from JAR
             try {
                 JarFile jar = new JarFile(APP_JAR_PATH);
                 System.out.println("JAR file manifest:");
                 jar.getManifest().getMainAttributes().forEach((s, attr)->{
-                    System.out.println(s + ": " + attr);
+                    System.out.printf("* %s: %s\n", s, attr.toString());
                 });
                 String jarDate = jar.getManifest().getMainAttributes().getValue("Date");
                 if(jarDate == null){
                     System.err.println("JAR manifest does not contain attribute 'Date'");
-                } else {
-                    ret = jarDate;
                 }
+                ret = jarDate;
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            
-            ret = "TODO: return JAR date";
         }
         
         return ret;
     }
     
-    private String getLatestCompileDate(){
+    /**
+     * Returns the most recent compile date for the JAR file
+     * on GitHub.
+     * 
+     * @return 
+     */
+    private String getMostRecentAppUpdate(){
         String ret = null;
         Document gitHubPage;
         try {
             gitHubPage = Jsoup
-                .connect(MANIFEST_URL)
+                .connect(APP_MANIFEST_URL)
                 .ignoreContentType(true)
                 //.header("Accept", "application/vnd.github.VERSION.text+json")
                 .get();
@@ -124,20 +175,7 @@ public class Updater {
         return ret;
     }
     
-    public void install() throws IOException{
-        //https://www.baeldung.com/java-download-file
-        URL downloadMe = new URL(DOWNLOAD_URL);
-        File jarFile = new File(APP_JAR_PATH);
-        BufferedInputStream buff = new BufferedInputStream(downloadMe.openStream());
-        FileOutputStream out = new FileOutputStream(jarFile);
-        ReadableByteChannel in = Channels.newChannel(buff);
-        out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
-    }
-    
     public static void main(String[] args) throws IOException{
-        Application.getInstance().getResources().init();
-        //new Updater().getJarCompileDate();
-        //new Updater().getLatestCompileDate();
-        new Updater().checkForUpdates();
+        new Updater().runChecks();
     }
 }
