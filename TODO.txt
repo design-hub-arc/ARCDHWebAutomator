@@ -1,0 +1,5 @@
+*) Move classes / functionality from Application subproject to the two other subprojects.
+*) Add task to root project which will compile both JARs
+*) Create updater for the updater (each JAR updates the other)
+*) Fix updater to check the correct URLs
+*) Update README.md
