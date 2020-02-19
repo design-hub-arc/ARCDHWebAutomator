@@ -6,6 +6,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.JFrame;
+import launcher.Launcher;
+import launcher.Updater;
 import logging.ApplicationLog;
 
 /**
@@ -15,6 +17,7 @@ import logging.ApplicationLog;
  * @author Matt Crow
  */
 public class Application {
+    private final Updater updater;
     private final ApplicationResources resources;
     private final ApplicationLog log;
     private final WindowAdapter closeListener;
@@ -25,6 +28,7 @@ public class Application {
         if(instance != null){
             throw new RuntimeException("Cannot instantiate more than one instance of Application. Use Application.getInstance() instead");
         }
+        updater = new Updater();
         resources = new ApplicationResources(this);
         log = new ApplicationLog();
         
@@ -83,8 +87,13 @@ public class Application {
         ApplicationWindow w = new ApplicationWindow(this); //automatically listens to window
     }
     
+    private void runLauncher(){
+        Launcher.getInstance().launch();
+    }
+    
     public static void main(String[] args) throws IOException{
         Application app = getInstance();
+        //app.runLauncher();
         app.start();
     }
     
