@@ -20,8 +20,8 @@ public class FileReaderUtil {
     
     /**
      * Reads the given input stream, and returns its contents
-     * as a String. Note that all newlines are replaced with '\n',
-     * so you needn't concern yourself with Windows' carriage return.
+     * as a String. Note that all newlines remain as System.lineSeparator:
+     * they are not converted to '\n'
      * 
      * @param s the InputStream to convert to a String
      * @return the contents of s, converted to a String
@@ -32,7 +32,7 @@ public class FileReaderUtil {
         
         BufferedReader read = new BufferedReader(new InputStreamReader(s));
         while(read.ready()){
-            ret.append(read.readLine()).append('\n');
+            ret.append(read.readLine()).append(System.lineSeparator());
         }
         read.close();
         
