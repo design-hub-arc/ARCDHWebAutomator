@@ -1,7 +1,6 @@
 package application;
 
 import io.FileSystem;
-import static io.FileSystem.DRIVER_FOLDER_PATH;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
@@ -17,6 +16,7 @@ import util.Browser;
  * @author Matt
  */
 public final class WebDriverLoader {
+    public static final String DRIVER_FOLDER_PATH = FileSystem.APP_FOLDER_PATH + File.separator + "webdrivers";
     private final Application forApp;
     private final HashMap<Browser, String> driverPaths;
     
@@ -57,7 +57,7 @@ public final class WebDriverLoader {
     }
     
     public void loadSavedWebDrivers(){
-        loadFolder(FileSystem.DRIVER_FOLDER_PATH);
+        loadFolder(DRIVER_FOLDER_PATH);
     }
     
     /**
@@ -85,7 +85,7 @@ public final class WebDriverLoader {
         if(path != null){
             driverPaths.remove(forBrowser);
             System.clearProperty(forBrowser.getDriverEnvVar());
-            if(Paths.get(path).getParent().toString().equals(FileSystem.DRIVER_FOLDER_PATH)){
+            if(Paths.get(path).getParent().toString().equals(DRIVER_FOLDER_PATH)){
                 try {
                     Files.delete(Paths.get(path));
                 } catch (AccessDeniedException ex){
@@ -207,7 +207,8 @@ public final class WebDriverLoader {
         return driverPaths.get(forBrowser);
     }
     
-    public void init(){
+    public void init() throws IOException{
+        this.forApp.getResources().createIfAbsent(DRIVER_FOLDER_PATH);
         loadSavedWebDrivers();
     }
 }
