@@ -75,14 +75,14 @@ public class BrowserSelectionPage extends Page{
         
         JButton clear = new JButton("Clear saved WebDriver files");
         clear.addActionListener((e)->{
-            getApp().getResources().clearAllDriverPaths();
+            getApp().getWebDriverLoader().clearAllDriverPaths();
             browserOptions.values().forEach((bi)->bi.updateText());
         });
         bottom.add(clear);
         
         JButton next = new JButton("Next");
         next.addActionListener((e)->{
-            if(getApp().getResources().hasWebDriver(currentBrowser)){
+            if(getApp().getWebDriverLoader().hasWebDriver(currentBrowser)){
                 next();
             } else {
                 JOptionPane.showMessageDialog(this, "Please select the WebDriver for your browser before continuing");
@@ -129,7 +129,7 @@ public class BrowserSelectionPage extends Page{
     
     private void selectDriver(){
         FileSelector.chooseExeFile("Select your WebDriver for " + currentBrowser.getName(),(file)->{
-            getApp().getResources().loadWebDriver(currentBrowser, file.getAbsolutePath());
+            getApp().getWebDriverLoader().loadWebDriver(currentBrowser, file.getAbsolutePath());
         });
         BrowserSelectBox box = browserOptions.get(currentBrowser);
         if(box != null){

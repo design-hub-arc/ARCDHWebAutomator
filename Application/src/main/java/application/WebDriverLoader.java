@@ -1,16 +1,19 @@
 package application;
 
-import io.ApplicationResources;
+import io.FileSystem;
+import static io.FileSystem.DRIVER_FOLDER_PATH;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import util.Browser;
 
 /**
- * Use this to move stuff out of ApplicationResources
+ * Use this to move stuff out of FileSystem
  * @author Matt
  */
 public final class WebDriverLoader {
@@ -53,6 +56,10 @@ public final class WebDriverLoader {
         }
     }
     
+    public void loadSavedWebDrivers(){
+        loadFolder(FileSystem.DRIVER_FOLDER_PATH);
+    }
+    
     /**
      * Saves the path to a webdriver executable so that the
      * program can launch the WebDriver.
@@ -78,7 +85,7 @@ public final class WebDriverLoader {
         if(path != null){
             driverPaths.remove(forBrowser);
             System.clearProperty(forBrowser.getDriverEnvVar());
-            if(Paths.get(path).getParent().toString().equals(ApplicationResources.DRIVER_FOLDER_PATH)){
+            if(Paths.get(path).getParent().toString().equals(FileSystem.DRIVER_FOLDER_PATH)){
                 try {
                     Files.delete(Paths.get(path));
                 } catch (AccessDeniedException ex){
@@ -89,5 +96,118 @@ public final class WebDriverLoader {
                 }
             }
         }
+    }
+    
+    /**
+     * Removes all driver paths from both this class
+     * and the user's environment variables. Also deletes
+     * all webdrivers from the drivers folder
+     */
+    public void clearAllDriverPaths(){
+        driverPaths.forEach((Browser b, String path)->{
+            //calling clearDriverPath(browser) would throw a concurrent modification exception
+            System.clearProperty(b.getDriverEnvVar());
+        });
+        driverPaths.clear();
+        Path driverFolder = Paths.get(DRIVER_FOLDER_PATH);
+        Arrays.stream(driverFolder.toFile().listFiles()).forEach((File f)->{
+            try {
+                Files.delete(Paths.get(f.getAbsolutePath()));
+            } catch (AccessDeniedException ex){
+                forApp.getLog().logError("Unable to delete " + f.getAbsolutePath() + ". Please use your task manager to verify that no instances of this executable are being run.");
+                forApp.getLog().logError(ex);
+            } catch (IOException ex) {
+                forApp.getLog().logError(ex);
+            }
+        });
+    }
+    
+    /**
+     * Copies and stores the given web driver executable to the driver folder
+     * if it is not yet present in that folder. This allows the program to
+     * more easily remember the location of the executable upon exiting and
+     * reloading the program.
+     * 
+     * @param b the browser associated with the webdriver executable given
+     * by path.
+     * @param path the full file path to a webdriver executable.
+     * @return the full file path leading to the new executable
+     * @throws IOException if the file cannot be copied.
+     */
+    private String copyWebDriver(Browser b, String path) throws IOException{
+        if(b == null){
+            throw new NullPointerException("Cannot load webdriver if browser is unknown");
+        }
+        if(path == null){
+            throw new NullPointerException("Cannot load webdriver from null path");
+        }
+        
+        Path origPath = Paths.get(path);
+        String driverPath = DRIVER_FOLDER_PATH + File.separator + origPath.getFileName().toString();
+        if(!Files.exists(Paths.get(driverPath))){
+            Files.copy(origPath, Paths.get(driverPath));
+        }
+        
+        return driverPath;
+    }
+    
+    /**
+     * Sets the path to a WebDriver executable so that
+     * the program can use the WebDriver associated with
+     * the given browser.
+     * 
+     * The program will attempt to copy the driver to its
+     * resource folder so that it can "remember" the location
+     * of the driver after the user quits the program.
+     * 
+     * If this copying attempt fails, <b>the program will not crash</b>.
+     * Instead, the driver path will simply not be remembered.
+     * 
+     * @param b the Browser the given WebDriver is for
+     * @param path the path to a WebDriver
+     */
+    public void loadWebDriver(Browser b, String path){
+        if(b == null){
+            throw new NullPointerException("Cannot load webdriver if browser is unknown");
+        }
+        if(path == null){
+            throw new NullPointerException("Cannot load webdriver from null path");
+        }
+        Path p = Paths.get(path);
+        if(!(Files.exists(p) && !Files.isDirectory(p))){
+            throw new IllegalArgumentException("Path must be a path to a valid file, not a directory");
+        }
+        
+        try{
+            String newPath = copyWebDriver(b, path);
+            saveDriverPath(b, newPath);
+        } catch (IOException ex) {
+            forApp.getLog().logError(ex);
+            saveDriverPath(b, path);
+        }
+    }
+    
+    /**
+     * Returns whether or not the WebDriver for a browser
+     * has been loaded by the program.
+     * 
+     * @param forBrowser the browser to check if there is a WebDriver for.
+     * @return 
+     */
+    public boolean hasWebDriver(Browser forBrowser){
+        return driverPaths.containsKey(forBrowser);
+    }
+    
+    /**
+     * Returns the file path to the WebDriver for the given browser.
+     * @param forBrowser the browser to get the WebDriver path to
+     * @return the complete file path to the browser's webdriver, or null if its path isn't set.
+     */
+    public String getWebDriverPath(Browser forBrowser){
+        return driverPaths.get(forBrowser);
+    }
+    
+    public void init(){
+        loadSavedWebDrivers();
     }
 }

@@ -1,6 +1,6 @@
 package gui;
 
-import io.ApplicationResources;
+import io.FileSystem;
 import io.FileSelector;
 import io.FileWriterUtil;
 import java.awt.BorderLayout;
@@ -27,7 +27,7 @@ public class LogViewer extends JDialog{
         content.setLayout(new BorderLayout());
         setContentPane(content);
         
-        content.add(new JLabel("This log will automatically be saved to " + ApplicationResources.LOG_FOLDER_PATH + " when the program is done"), BorderLayout.PAGE_START);
+        content.add(new JLabel("This log will automatically be saved to " + FileSystem.LOG_FOLDER_PATH + " when the program is done"), BorderLayout.PAGE_START);
         
         ScrollableTextDisplay text = new ScrollableTextDisplay(msg);
         content.add(text, BorderLayout.CENTER);

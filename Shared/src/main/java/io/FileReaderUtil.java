@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import static csv.CsvParser.NEW_LINE;
 
 /**
  * The FileReaderUtil is a static class providing
@@ -33,7 +32,7 @@ public class FileReaderUtil {
         
         BufferedReader read = new BufferedReader(new InputStreamReader(s));
         while(read.ready()){
-            ret.append(read.readLine()).append(NEW_LINE);
+            ret.append(read.readLine()).append('\n');
         }
         read.close();
         

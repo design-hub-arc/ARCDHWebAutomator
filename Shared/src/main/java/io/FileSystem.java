@@ -16,7 +16,7 @@ import main.EntryPoint;
 //import util.Browser;
 
 /**
- * The ApplicationResources class is used
+ * The FileSystem class is used
  to interface with the folder containing
  resources utilized by the program, such as
  webdrivers, plugins, and more.
@@ -26,7 +26,7 @@ import main.EntryPoint;
  * 
  * @author Matt Crow
  */
-public final class ApplicationResources {
+public final class FileSystem {
     private final EntryPoint forApp;
     public static final String USER_HOME = System.getProperty("user.home");
     public static final String ARCDH_FOLDER_PATH = USER_HOME + File.separator + "ARCDH";
@@ -41,7 +41,7 @@ public final class ApplicationResources {
     
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-DD-uuuu_hh_mm_a");
         
-    public ApplicationResources(EntryPoint app){
+    public FileSystem(EntryPoint app){
         forApp = app;
         //drivers = new WebDriverLoader(app);
         //driverPaths = new HashMap<>();
@@ -49,9 +49,10 @@ public final class ApplicationResources {
     
     public void init() throws IOException{
         createAbsentFolders();
-        loadSavedWebDrivers();
+        //loadSavedWebDrivers();
     }
     
+    /*
     private void loadSavedWebDrivers(){
         boolean debug = false;
         File driverFolder = new File(DRIVER_FOLDER_PATH);
@@ -75,7 +76,7 @@ public final class ApplicationResources {
         if(debug){
             System.out.println("End of driver folder.");
         }
-    }
+    }*/
     
     /**
      * Returns whether or not the given directory exists.
@@ -122,10 +123,11 @@ public final class ApplicationResources {
      * @param b the browser the given webdriver is for
      * @param path the full file path to a webdriver executable
      */
+    /*
     private void putDriverPath(Browser b, String path){
         driverPaths.put(b, path);
         System.setProperty(b.getDriverEnvVar(), path);
-    }
+    }*/
     
     /**
      * Removes the given Browser's driver path from
@@ -136,6 +138,7 @@ public final class ApplicationResources {
      * 
      * @param b the browser whose webdriver should have its path cleared from the program's memory.
      */
+    /*
     public void clearDriverPath(Browser b){
         String path = driverPaths.get(b);
         if(path != null){
@@ -152,13 +155,14 @@ public final class ApplicationResources {
                 }
             }
         }
-    }
+    }*/
     
     /**
      * Removes all driver paths from both this class
      * and the user's environment variables. Also deletes
      * all webdrivers from the drivers folder
      */
+    /*
     public void clearAllDriverPaths(){
         driverPaths.forEach((Browser b, String path)->{
             //calling clearDriverPath(browser) would throw a concurrent modification exception
@@ -176,7 +180,7 @@ public final class ApplicationResources {
                 forApp.getLog().logError(ex);
             }
         });
-    }
+    }*/
     
     /**
      * Copies and stores the given web driver executable to the driver folder
@@ -190,6 +194,7 @@ public final class ApplicationResources {
      * @return the full file path leading to the new executable
      * @throws IOException if the file cannot be copied.
      */
+    /*
     private String copyWebDriver(Browser b, String path) throws IOException{
         if(b == null){
             throw new NullPointerException("Cannot load webdriver if browser is unknown");
@@ -205,7 +210,7 @@ public final class ApplicationResources {
         }
         
         return driverPath;
-    }
+    }*/
     
     /**
      * Sets the path to a WebDriver executable so that
@@ -222,6 +227,7 @@ public final class ApplicationResources {
      * @param b the Browser the given WebDriver is for
      * @param path the path to a WebDriver
      */
+    /*
     public void loadWebDriver(Browser b, String path){
         if(b == null){
             throw new NullPointerException("Cannot load webdriver if browser is unknown");
@@ -241,7 +247,7 @@ public final class ApplicationResources {
             forApp.getLog().logError(ex);
             putDriverPath(b, path);
         }
-    }
+    }*/
     
     /**
      * Returns whether or not the WebDriver for a browser
@@ -250,18 +256,20 @@ public final class ApplicationResources {
      * @param forBrowser the browser to check if there is a WebDriver for.
      * @return 
      */
+    /*
     public boolean hasWebDriver(Browser forBrowser){
         return driverPaths.containsKey(forBrowser);
-    }
+    }*/
     
     /**
      * Returns the file path to the WebDriver for the given browser.
      * @param forBrowser the browser to get the WebDriver path to
      * @return the complete file path to the browser's webdriver, or null if its path isn't set.
      */
+    /*
     public String getWebDriverPath(Browser forBrowser){
         return driverPaths.get(forBrowser);
-    }
+    }*/
     
     /**
      * Used to create files, usually in the application resource folder.

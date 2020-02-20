@@ -1,6 +1,6 @@
 package gui;
 
-import io.ApplicationResources;
+import application.WebDriverLoader;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import javax.swing.JLabel;
@@ -58,11 +58,11 @@ public class BrowserSelectBox extends JPanel{
     
     public final void updateText(){
         // set the text based on whether or not the user has the webdriver installed
-        ApplicationResources resources = parent.getApp().getResources();
+        WebDriverLoader drivers = parent.getApp().getWebDriverLoader();
         disp.clear();
-        if(resources.hasWebDriver(forBrowser)){
+        if(drivers.hasWebDriver(forBrowser)){
             disp.appendText("This browser's WebDriver is currently saved to ");
-            disp.appendText(resources.getWebDriverPath(forBrowser));
+            disp.appendText(drivers.getWebDriverPath(forBrowser));
             disp.appendText(", but if you want to update this driver, you can download it from ");
         } else {
             disp.appendText("This browser's WebDriver has not been loaded yet. ");
