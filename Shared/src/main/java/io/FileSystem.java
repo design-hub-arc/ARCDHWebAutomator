@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import logging.Logger;
-import main.EntryPoint;
 
 /**
  * The FileSystem class is used
@@ -22,7 +21,6 @@ import main.EntryPoint;
  * @author Matt Crow
  */
 public final class FileSystem {
-    private final EntryPoint forApp;
     public static final String USER_HOME = System.getProperty("user.home");
     public static final String ARCDH_FOLDER_PATH = USER_HOME + File.separator + "ARCDH";
     public static final String APP_FOLDER_PATH = ARCDH_FOLDER_PATH + File.separator + "WebAutomator";
@@ -31,10 +29,8 @@ public final class FileSystem {
     
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-DD-uuuu_hh_mm_a");
         
-    public FileSystem(EntryPoint app){
-        forApp = app;
-        //drivers = new WebDriverLoader(app);
-        //driverPaths = new HashMap<>();
+    public FileSystem(){
+        
     }
     
     public void init() throws IOException{
@@ -60,7 +56,6 @@ public final class FileSystem {
      */
     public void createIfAbsent(String dirPath) throws IOException{
         if(!dirExists(dirPath)){
-            forApp.getLog().log("Creating directory " + dirPath);
             Files.createDirectory(Paths.get(dirPath));
         }
     }

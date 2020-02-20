@@ -1,7 +1,6 @@
 
 package application;
 
-import io.FileSystem;
 import gui.ApplicationWindow;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -9,7 +8,6 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import launcher.Launcher;
 import launcher.Updater;
-import logging.ApplicationLog;
 import main.EntryPoint;
 
 /**

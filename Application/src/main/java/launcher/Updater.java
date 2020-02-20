@@ -15,7 +15,6 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.jar.JarFile;
@@ -23,7 +22,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import javax.json.Json;
 import javax.json.JsonObject;
-import logging.ErrorLogger;
 import logging.Logger;
 
 /**
@@ -32,16 +30,14 @@ import logging.Logger;
  * 
  * @author Matt Crow
  */
-public class Updater {
-    private final ArrayList<Logger> loggers;
-    
+public class Updater extends main.Updater{
     private static final String APP_MANIFEST_URL = "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF";
     private static final String APP_DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
     public static final String APP_JAR_PATH = FileSystem.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
     
     public Updater(){
-        loggers = new ArrayList<>();
-        loggers.add(new Logger() {
+        super();
+        addLogger(new Logger() {
             @Override
             public void log(String s) {
                 System.out.println(s);
@@ -51,32 +47,6 @@ public class Updater {
             public String getLog() {
                 return "";
             }
-        });
-    }
-    
-    public void addLogger(Logger l){
-        loggers.add(l);
-    }
-    
-    private void writeOutput(String msg){
-        loggers.forEach((logger)->logger.log(msg));
-    }
-    private void reportError(String msg){
-        loggers.stream().filter((logger)->{
-            return logger instanceof ErrorLogger;
-        }).map((logger)->{
-            return (ErrorLogger)logger;
-        }).forEach((logger)->{
-            logger.logError(msg);
-        });
-    }
-    private void reportError(Exception ex){
-        loggers.stream().filter((logger)->{
-            return logger instanceof ErrorLogger;
-        }).map((logger)->{
-            return (ErrorLogger)logger;
-        }).forEach((logger)->{
-            logger.logError(ex);
         });
     }
     

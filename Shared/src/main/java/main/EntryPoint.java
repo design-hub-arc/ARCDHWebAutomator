@@ -5,8 +5,10 @@ import java.io.IOException;
 import logging.ApplicationLog;
 
 /**
- *
- * @author Matt
+ * The EntryPoint class serves as the base
+ * for starting points for each subproject.
+ * 
+ * @author Matt Crow
  */
 public class EntryPoint {
     private final ApplicationLog log;
@@ -14,7 +16,7 @@ public class EntryPoint {
     
     public EntryPoint(){
         log = new ApplicationLog();
-        resources = new FileSystem(this);
+        resources = new FileSystem();
     }
     
     public ApplicationLog getLog(){
