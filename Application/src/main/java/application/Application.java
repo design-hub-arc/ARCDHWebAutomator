@@ -1,6 +1,7 @@
 
 package application;
 
+import io.ApplicationResources;
 import gui.ApplicationWindow;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

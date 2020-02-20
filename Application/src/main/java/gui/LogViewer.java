@@ -1,6 +1,6 @@
 package gui;
 
-import application.ApplicationResources;
+import io.ApplicationResources;
 import io.FileSelector;
 import io.FileWriterUtil;
 import java.awt.BorderLayout;

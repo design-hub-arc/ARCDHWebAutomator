@@ -1,6 +1,6 @@
-package application;
+package io;
 
-import io.FileWriterUtil;
+//import application.WebDriverLoader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
@@ -12,7 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import logging.Logger;
-import util.Browser;
+import main.EntryPoint;
+//import util.Browser;
 
 /**
  * The ApplicationResources class is used
@@ -26,7 +27,7 @@ import util.Browser;
  * @author Matt Crow
  */
 public final class ApplicationResources {
-    private final Application forApp;
+    private final EntryPoint forApp;
     public static final String USER_HOME = System.getProperty("user.home");
     public static final String ARCDH_FOLDER_PATH = USER_HOME + File.separator + "ARCDH";
     public static final String APP_FOLDER_PATH = ARCDH_FOLDER_PATH + File.separator + "WebAutomator";
@@ -34,16 +35,16 @@ public final class ApplicationResources {
     public static final String LOG_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "logs";
     public static final String JAR_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "bin";
     
-    private final WebDriverLoader drivers;
+    //private final WebDriverLoader drivers;
     //todo: move functionality from this class to WebDriverLoader
-    private final HashMap<Browser, String> driverPaths;
+    //private final HashMap<Browser, String> driverPaths;
     
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-DD-uuuu_hh_mm_a");
         
-    public ApplicationResources(Application app){
+    public ApplicationResources(EntryPoint app){
         forApp = app;
-        drivers = new WebDriverLoader(app);
-        driverPaths = new HashMap<>();
+        //drivers = new WebDriverLoader(app);
+        //driverPaths = new HashMap<>();
     }
     
     public void init() throws IOException{

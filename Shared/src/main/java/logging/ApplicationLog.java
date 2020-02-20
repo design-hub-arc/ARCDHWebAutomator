@@ -1,6 +1,8 @@
 package logging;
 
 import java.util.ArrayList;
+import logging.ErrorListener;
+import logging.ErrorLogger;
 
 /**
  * The ApplicationLog is used to record the actions

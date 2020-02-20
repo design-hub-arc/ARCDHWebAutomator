@@ -1,6 +1,6 @@
 package gui;
 
-import application.ApplicationResources;
+import io.ApplicationResources;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import javax.swing.JLabel;

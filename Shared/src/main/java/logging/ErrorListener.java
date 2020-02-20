@@ -1,5 +1,7 @@
 package logging;
 
+import logging.ErrorLogger;
+
 /**
  * Classes which need to know when an ErrorLogger
  * logs a message should implement this interface,

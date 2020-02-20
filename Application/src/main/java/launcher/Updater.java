@@ -1,7 +1,7 @@
 package launcher;
 
 import application.Application;
-import application.ApplicationResources;
+import io.ApplicationResources;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;

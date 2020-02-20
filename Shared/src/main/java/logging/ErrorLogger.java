@@ -1,5 +1,7 @@
 package logging;
 
+import logging.Logger;
+
 /**
  * The ErrorLogger class is used to allow Loggers
  * to log Exceptions, differentiating them from
