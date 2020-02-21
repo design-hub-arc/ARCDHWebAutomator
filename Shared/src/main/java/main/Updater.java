@@ -1,9 +1,14 @@
 package main;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
@@ -153,5 +158,20 @@ public class Updater {
             reportError(ex);
         }
         return date;
+    }
+    
+    /**
+     * Downloads the JAR file from GitHub,
+     * and installs it in this.jarLocalPath
+     * @throws java.io.IOException if anything fails while either downloading or installing
+     */
+    public void downloadAndInstall() throws IOException{
+        //https://www.baeldung.com/java-download-file
+        URL downloadMe = new URL(jarDownloadUrl);
+        File writeToMe = new File(jarLocalPath);
+        BufferedInputStream buff = new BufferedInputStream(downloadMe.openStream());
+        FileOutputStream out = new FileOutputStream(writeToMe);
+        ReadableByteChannel in = Channels.newChannel(buff);
+        out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
     }
 }

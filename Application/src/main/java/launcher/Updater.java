@@ -2,13 +2,8 @@ package launcher;
 
 import application.Application;
 import io.FileSystem;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -24,7 +19,6 @@ import java.util.jar.JarFile;
  * @author Matt Crow
  */
 public class Updater extends main.Updater{
-    private static final String APP_DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
     public static final String APP_JAR_PATH = FileSystem.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
     
     public Updater(){
@@ -62,7 +56,7 @@ public class Updater extends main.Updater{
                     Date newestDate = format.parse(mostRecentUpdate);
                     if(newestDate.after(currDate)){
                         writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
-                        installApp();
+                        downloadAndInstall();
                     } else {
                         writeOutput("Looks like everything is up to date!");
                     }
@@ -76,7 +70,7 @@ public class Updater extends main.Updater{
         } else {
             writeOutput("Please wait while I download and install the application...");
             try{
-                installApp();
+                downloadAndInstall();
                 writeOutput("Installation successful!");
             } catch (IOException ex) {
                 reportError("Failed to install application. Aborting.");
@@ -94,22 +88,6 @@ public class Updater extends main.Updater{
      */
     public boolean appIsInstalled(){
         return Files.exists(Paths.get(APP_JAR_PATH));
-    }
-    
-    /**
-     * Downloads and installs the main application
-     * JAR file to the APP_JAR_PATH file
-     * 
-     * @throws IOException if the download or install fail 
-     */
-    private void installApp() throws IOException{
-        //https://www.baeldung.com/java-download-file
-        URL downloadMe = new URL(APP_DOWNLOAD_URL);
-        File writeToMe = new File(APP_JAR_PATH);
-        BufferedInputStream buff = new BufferedInputStream(downloadMe.openStream());
-        FileOutputStream out = new FileOutputStream(writeToMe);
-        ReadableByteChannel in = Channels.newChannel(buff);
-        out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
     }
     
     /**
