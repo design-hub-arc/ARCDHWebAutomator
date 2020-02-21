@@ -2,12 +2,14 @@
 package application;
 
 import gui.ApplicationWindow;
+import io.FileSystem;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import javax.swing.JFrame;
 import launcher.Launcher;
-import launcher.Updater;
+import main.Updater;
 import main.EntryPoint;
 
 /**
@@ -28,7 +30,11 @@ public class Application extends EntryPoint{
         if(instance != null){
             throw new RuntimeException("Cannot instantiate more than one instance of Application. Use Application.getInstance() instead");
         }
-        updater = new Updater();
+        updater = new Updater(
+            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/tmp/jar/MANIFEST.MF",
+            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar",
+            FileSystem.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar"
+        );
         webDriverLoader = new WebDriverLoader(this);
         
         closeListener = new WindowAdapter(){
@@ -73,7 +79,7 @@ public class Application extends EntryPoint{
         ApplicationWindow w = new ApplicationWindow(this); //automatically listens to window
     }
     
-    private void runLauncher(){
+    private void runLauncher() throws IOException{
         Launcher.getInstance().launch();
     }
     
@@ -81,5 +87,7 @@ public class Application extends EntryPoint{
         Application app = getInstance();
         //app.runLauncher();
         app.start();
+        //System.out.println(Application.class.getResource("Application.class"));
+        //System.out.println(getInstance().getRunningJar());
     }
 }

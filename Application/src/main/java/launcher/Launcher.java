@@ -30,11 +30,12 @@ public class Launcher {
     
     public void launch() throws IOException{
         LauncherFrame window = new LauncherFrame();
+        /*
         Updater updater = new Updater();
         updater.addLogger(log);
         updater.addLogger(window.getContent().getTextDisplay());
         updater.run();
-        /*
+        
         if(updater.appIsInstalled()){
             Thread appThread = new Thread(){
                 @Override

@@ -1,7 +1,9 @@
 package main;
 
 import io.FileSystem;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import logging.ApplicationLog;
 
 /**
@@ -40,8 +42,25 @@ public class EntryPoint {
         }
     }
     
-    /*
-    public static void main(String[] args){
-        
-    }*/
+    public boolean isRunningFromJar(){
+        return "jar".equals(getClass().getResource(getClass().getSimpleName() + ".class").toString().split(":")[0]);
+    }
+    
+    /**
+     * 
+     * @return the name of the JAR file running this program, if any
+     */
+    public String getRunningJar(){
+        String ret = null;
+        if(isRunningFromJar()){
+            try {
+                File jarFile = (new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()));
+                //System.out.println(jarFile.getAbsolutePath());
+                ret = jarFile.getName();
+            } catch (URISyntaxException ex) {
+                log.logError(ex);
+            }
+        }
+        return ret;
+    }
 }
