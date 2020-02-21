@@ -1,6 +1,11 @@
 package main;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.jar.Manifest;
 import java.util.stream.Stream;
 import logging.ErrorLogger;
 import logging.Logger;
@@ -32,6 +37,12 @@ public class Updater {
         jarLocalPath = localPath;
         loggers = new ArrayList<>();
     }
+    
+    
+    /*
+    Output related methods.
+    */
+    
     
     /**
      * Registers an object implementing the
@@ -105,5 +116,42 @@ public class Updater {
                 logger.logError(ex);
             });
         }
+    }
+    
+    
+    /*
+    Internet related methods
+    */
+    
+    
+    /**
+     * Returns the most recent compilation
+     * date for the JAR file on GitHub.
+     * 
+     * @return the last JAR compilation date, or null if the manifest contains no compilation date
+     */
+    public String getLatestManifestDate(){
+        String date = null;
+        writeOutput("Checking latest manifest date...");
+        try {
+            URL manUrl = new URL(manifestUrl);
+            try (InputStream in = manUrl.openStream()) {
+                Manifest mf = new Manifest(in);
+                writeOutput("Manifest:");
+                mf.getMainAttributes().forEach((a, b)->{
+                    writeOutput(String.format("%s: %s\n", a, b));
+                });
+                if(mf.getMainAttributes().containsKey("Date")){
+                    date = mf.getMainAttributes().getValue("Date");
+                } else {
+                    reportError("Manifest does not contain attribute 'Date'");
+                }
+            }
+        } catch (MalformedURLException ex) {
+            reportError("Malformed URL in " + getClass().getName() + ": " + manifestUrl);
+        } catch (IOException ex) {
+            reportError(ex);
+        }
+        return date;
     }
 }

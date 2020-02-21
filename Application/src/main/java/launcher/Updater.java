@@ -6,7 +6,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -15,13 +14,8 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 import java.util.jar.JarFile;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import javax.json.Json;
-import javax.json.JsonObject;
 
 /**
  * The Updater class is used to check for updates to the program on GitHub,
@@ -30,13 +24,12 @@ import javax.json.JsonObject;
  * @author Matt Crow
  */
 public class Updater extends main.Updater{
-    private static final String APP_MANIFEST_URL = "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF";
     private static final String APP_DOWNLOAD_URL = "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar";
     public static final String APP_JAR_PATH = FileSystem.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
     
     public Updater(){
         super(
-            "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF",
+            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/tmp/jar/MANIFEST.MF",
             "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar",
             FileSystem.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar"
         );
@@ -57,7 +50,7 @@ public class Updater extends main.Updater{
         if(isInstalled){
             writeOutput("Application is installed, checking when it was last updated...");
             String currentlyInstalledDate = getInstalledAppJarDate();
-            String mostRecentUpdate = getMostRecentAppUpdate();
+            String mostRecentUpdate = getLatestManifestDate();
             
             if(currentlyInstalledDate == null || mostRecentUpdate == null){
                 reportError("Cannot compare dates, as at least one is null.");
@@ -150,39 +143,7 @@ public class Updater extends main.Updater{
         return ret;
     }
     
-    /**
-     * Returns the most recent compile date for the JAR file
-     * on GitHub.
-     * 
-     * @return 
-     */
-    private String getMostRecentAppUpdate(){
-        String ret = null;
-        Document gitHubPage;
-        try {
-            gitHubPage = Jsoup
-                .connect(APP_MANIFEST_URL)
-                .ignoreContentType(true)
-                //.header("Accept", "application/vnd.github.VERSION.text+json")
-                .get();
-            JsonObject asJson = Json
-                .createReader(
-                    new StringReader(
-                        gitHubPage
-                            .body()
-                            .text()
-                    )
-                ).readObject();
-            //                                                                                need this, otherwise it doesn't decode
-            String decoded = new String(Base64.getDecoder().decode(asJson.getString("content").replaceAll("\n", "")));
-            writeOutput("decoded: " + decoded + "");
-        } catch (IOException ex) {
-            reportError(ex);
-        }
-        return ret;
-    }
-    
     public static void main(String[] args) throws IOException{
-        new Updater().runChecks();
+        new Updater().getLatestManifestDate();//.runChecks();
     }
 }
