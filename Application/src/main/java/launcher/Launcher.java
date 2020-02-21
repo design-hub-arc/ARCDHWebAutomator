@@ -1,5 +1,6 @@
 package launcher;
 
+import java.io.IOException;
 import logging.ApplicationLog;
 
 /**
@@ -27,12 +28,13 @@ public class Launcher {
         return instance;
     }
     
-    public void launch(){
+    public void launch() throws IOException{
         LauncherFrame window = new LauncherFrame();
         Updater updater = new Updater();
         updater.addLogger(log);
         updater.addLogger(window.getContent().getTextDisplay());
-        updater.runChecks();
+        updater.run();
+        /*
         if(updater.appIsInstalled()){
             Thread appThread = new Thread(){
                 @Override
@@ -41,10 +43,10 @@ public class Launcher {
                 }
             };
             appThread.start();
-        }
+        }*/
     }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         Launcher.getInstance().launch();
     }
 }

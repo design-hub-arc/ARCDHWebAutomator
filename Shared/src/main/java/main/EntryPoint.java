@@ -39,4 +39,9 @@ public class EntryPoint {
             ex.printStackTrace();
         }
     }
+    
+    /*
+    public static void main(String[] args){
+        
+    }*/
 }

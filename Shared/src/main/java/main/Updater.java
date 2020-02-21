@@ -11,7 +11,11 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
@@ -222,6 +226,47 @@ public class Updater {
     */
     
     /**
+     * Checks to see if the latest version is newer
+     * than the current version. If current version is
+     * null, but latest is not, latest is considered newer.
+     * 
+     * @param currVersion
+     * @param latestVersion
+     * @return 
+     */
+    private boolean latestIsNewer(String currVersion, String latestVersion){
+        boolean latestIsNewer = false;
+        
+        if(currVersion == null && latestVersion == null){
+            //cannot compare
+            reportError("both the current and latest JAR version are null, so I cannot compare them");
+        } else if(latestVersion == null){
+            //latest is null, current isn't
+            reportError("Something may be wrong with the file on GitHub: the current version is dated " + currVersion + ", while the GitHub manifest lists null");
+        } else if(currVersion == null){
+            //current is null, latest isn't
+            latestIsNewer = true;
+        } else {
+            //neither is null, so compare
+            DateFormat format = new SimpleDateFormat("dd-M-yyyy");
+            try {
+                Date currDate = format.parse(currVersion);
+                Date newestDate = format.parse(latestVersion);
+                if(newestDate.after(currDate)){
+                    writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
+                    latestIsNewer = true;
+                } else {
+                    writeOutput("Looks like everything is up to date!");
+                }
+            } catch (ParseException ex) {
+                reportError(ex);
+            }
+        }
+        
+        return latestIsNewer;
+    }
+    
+    /**
      * 
      * @return whether or not this should
      * attempt to install a new version of
@@ -230,13 +275,28 @@ public class Updater {
     public boolean shouldInstall(){
         boolean shouldInstall = false;
         
-        if(!isInstalled()){
+        if(isInstalled()){
+            String currentlyInstalled = getInstalledJarDate();
+            String latestVersion = getLatestManifestDate();
+            shouldInstall = latestIsNewer(currentlyInstalled, latestVersion);
+        } else {
+            //TODO: if this is running from JAR, move it to the app bin folder
             writeOutput(jarLocalPath + " is not installed, so I will install it.");
             shouldInstall = true;
-        } else {
-            
-        }        
+        }
         
         return shouldInstall;
+    }
+    
+    /**
+     * Checks for updates, and installs them
+     * if they exist.
+     * 
+     * @throws IOException should the program encounter any errors while installing.
+     */
+    public void run() throws IOException{
+        if(shouldInstall()){
+            downloadAndInstall();
+        }
     }
 }
