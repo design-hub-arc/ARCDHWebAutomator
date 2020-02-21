@@ -4,13 +4,10 @@ import application.Application;
 import io.FileSystem;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.jar.JarFile;
 
 /**
  * The Updater class is used to check for updates to the program on GitHub,
@@ -39,11 +36,11 @@ public class Updater extends main.Updater{
         
         writeOutput("Running Updater.runChecks()...");
         
-        boolean isInstalled = appIsInstalled();
+        boolean isInstalled = isInstalled();
         writeOutput(String.format("Main application %s installed", (isInstalled) ? "is" : "is not"));
         if(isInstalled){
             writeOutput("Application is installed, checking when it was last updated...");
-            String currentlyInstalledDate = getInstalledAppJarDate();
+            String currentlyInstalledDate = getInstalledJarDate();
             String mostRecentUpdate = getLatestManifestDate();
             
             if(currentlyInstalledDate == null || mostRecentUpdate == null){
@@ -80,48 +77,8 @@ public class Updater extends main.Updater{
         }
     }
     
-    /**
-     * Checks to see if the main application
-     * JAR file is installed in the proper directory.
-     * 
-     * @return 
-     */
-    public boolean appIsInstalled(){
-        return Files.exists(Paths.get(APP_JAR_PATH));
-    }
-    
-    /**
-     * Reads the manifest of the currently installed application,
-     * and returns when it was last compiled.
-     * 
-     * @return the compilation date of the JAR file for the main application,
-     * or null if none is present.
-     */
-    private String getInstalledAppJarDate(){
-        String ret = null;
-        
-        if(appIsInstalled()){
-            //extract compile date from JAR
-            try {
-                JarFile jar = new JarFile(APP_JAR_PATH);
-                writeOutput("JAR file manifest:");
-                jar.getManifest().getMainAttributes().forEach((s, attr)->{
-                    writeOutput(String.format("* %s: %s", s, attr.toString()));
-                });
-                String jarDate = jar.getManifest().getMainAttributes().getValue("Date");
-                if(jarDate == null){
-                    reportError("JAR manifest does not contain attribute 'Date'");
-                }
-                ret = jarDate;
-            } catch (IOException ex) {
-                reportError(ex);
-            }
-        }
-        
-        return ret;
-    }
     
     public static void main(String[] args) throws IOException{
-        new Updater().getLatestManifestDate();//.runChecks();
+        new Updater().runChecks();
     }
 }

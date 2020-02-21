@@ -9,7 +9,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
 import logging.ErrorLogger;
@@ -47,7 +50,6 @@ public class Updater {
     /*
     Output related methods.
     */
-    
     
     /**
      * Registers an object implementing the
@@ -125,9 +127,48 @@ public class Updater {
     
     
     /*
-    Internet related methods
+    Local file system methods
     */
     
+    /**
+     * 
+     * @return whether or not the JAR file is installed in the proper directory 
+     */
+    public boolean isInstalled(){
+        return Files.exists(Paths.get(jarLocalPath));
+    }
+    
+    /**
+     * Reads the manifest of the currently installed application,
+     * and returns when it was last compiled.
+     * 
+     * @return the compilation date of the JAR file for the main application,
+     * or null if none is present.
+     */
+    public String getInstalledJarDate(){
+        String date = null;
+        if(isInstalled()){
+            try {
+                JarFile jar = new JarFile(jarLocalPath);
+                writeOutput("Currently installed JAR manifest:");
+                jar.getManifest().getMainAttributes().forEach((s, attr)->{
+                    writeOutput(String.format("* %s: %s", s, attr.toString()));
+                });
+                date = jar.getManifest().getMainAttributes().getValue("Date");
+                if(date == null){
+                    reportError("JAR manifest does not contain attribute 'Date'");
+                }
+            } catch (IOException ex) {
+                reportError(ex);
+            }
+        }
+        return date;
+    }
+    
+    
+    /*
+    Internet related methods
+    */
     
     /**
      * Returns the most recent compilation
@@ -173,5 +214,29 @@ public class Updater {
         FileOutputStream out = new FileOutputStream(writeToMe);
         ReadableByteChannel in = Channels.newChannel(buff);
         out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
+    }
+    
+    
+    /*
+    Process methods
+    */
+    
+    /**
+     * 
+     * @return whether or not this should
+     * attempt to install a new version of
+     * the application
+     */
+    public boolean shouldInstall(){
+        boolean shouldInstall = false;
+        
+        if(!isInstalled()){
+            writeOutput(jarLocalPath + " is not installed, so I will install it.");
+            shouldInstall = true;
+        } else {
+            
+        }        
+        
+        return shouldInstall;
     }
 }
