@@ -22,7 +22,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import javax.json.Json;
 import javax.json.JsonObject;
-import logging.Logger;
 
 /**
  * The Updater class is used to check for updates to the program on GitHub,
@@ -36,18 +35,11 @@ public class Updater extends main.Updater{
     public static final String APP_JAR_PATH = FileSystem.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar";
     
     public Updater(){
-        super();
-        addLogger(new Logger() {
-            @Override
-            public void log(String s) {
-                System.out.println(s);
-            }
-
-            @Override
-            public String getLog() {
-                return "";
-            }
-        });
+        super(
+            "https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/contents/build/tmp/jar/MANIFEST.MF",
+            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar",
+            FileSystem.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar"
+        );
     }
     
     public void runChecks(){        
