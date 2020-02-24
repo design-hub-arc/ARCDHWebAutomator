@@ -13,8 +13,25 @@ if (!hasProperty('mainClass')) {
     ext.mainClass = 'main.Updater'
 }
 
+jar {
+    def timestamp = new Date().format('dd-M-yyyy');
+    
+    //need to manually set main class, otherwise, it just compiles the JAR as a library
+    manifest {
+        attributes(
+            'Main-Class': 'main.Updater',
+            'Date': timestamp
+        )
+    }
+    
+    //include dependencies in JAR file
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 dependencies {
-    //compile project(':Shared')
+    compile project(':Shared')
     // TODO: Add dependencies here
     //   but note that JUnit should have already been added in parent.gradle.
     //   By default, only the Maven Central Repository is specified in

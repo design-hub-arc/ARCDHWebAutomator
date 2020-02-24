@@ -1,2 +1,4 @@
 Manifest-Version: 1.0
+Date: 24-2-2020
+Main-Class: main.Updater
 
