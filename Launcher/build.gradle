@@ -14,7 +14,7 @@ if (!hasProperty('mainClass')) {
 }
 
 dependencies {
-    compile project(':Shared')
+    //compile project(':Shared')
     // TODO: Add dependencies here
     //   but note that JUnit should have already been added in parent.gradle.
     //   By default, only the Maven Central Repository is specified in
