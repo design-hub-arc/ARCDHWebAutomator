@@ -10,7 +10,7 @@
 // prefer. In this case NetBeans will not add these tasks but you may rely on
 // your own implementation.
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'main.Updater'
+    ext.mainClass = 'main.Launcher'
 }
 
 jar {
@@ -19,7 +19,7 @@ jar {
     //need to manually set main class, otherwise, it just compiles the JAR as a library
     manifest {
         attributes(
-            'Main-Class': 'main.Updater',
+            'Main-Class': 'main.Launcher',
             'Date': timestamp
         )
     }
