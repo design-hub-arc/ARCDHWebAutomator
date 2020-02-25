@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.stream.Stream;
 import logging.ErrorLogger;
 import logging.Logger;
 
@@ -91,18 +90,18 @@ public class Updater {
      * @param msg 
      */
     public void reportError(String msg){
-        Stream<ErrorLogger> errLogs = loggers.stream()
+        ErrorLogger[] errLogs = loggers.stream()
             .filter((logger)->{
             return logger instanceof ErrorLogger;
         }).map((logger)->{
             return (ErrorLogger)logger;
-        });
-        if(errLogs.count() == 0){
+        }).toArray((size)->new ErrorLogger[size]);
+        if(errLogs.length == 0){
             System.err.println(msg);
         } else {
-            errLogs.forEach((logger)->{
+            for(ErrorLogger logger : errLogs){
                 logger.logError(msg);
-            });
+            }
         }
     }
     
@@ -115,17 +114,18 @@ public class Updater {
      * @param ex 
      */
     public void reportError(Exception ex){
-        Stream<ErrorLogger> errLogs = loggers.stream().filter((logger)->{
+        ErrorLogger[] errLogs = loggers.stream()
+            .filter((logger)->{
             return logger instanceof ErrorLogger;
         }).map((logger)->{
             return (ErrorLogger)logger;
-        });
-        if(errLogs.count() == 0){
+        }).toArray((size)->new ErrorLogger[size]);
+        if(errLogs.length == 0){
             ex.printStackTrace();
         } else {
-            errLogs.forEach((logger)->{
+            for(ErrorLogger logger : errLogs){
                 logger.logError(ex);
-            });
+            }
         }
     }
     
@@ -187,14 +187,14 @@ public class Updater {
             URL manUrl = new URL(manifestUrl);
             try (InputStream in = manUrl.openStream()) {
                 Manifest mf = new Manifest(in);
-                writeOutput("Manifest:");
+                writeOutput("GitHub Manifest:");
                 mf.getMainAttributes().forEach((a, b)->{
-                    writeOutput(String.format("%s: %s\n", a, b));
+                    writeOutput(String.format("* %s: %s", a, b));
                 });
-                if(mf.getMainAttributes().containsKey("Date")){
-                    date = mf.getMainAttributes().getValue("Date");
-                } else {
+                if(mf.getMainAttributes().getValue("Date") == null){
                     reportError("Manifest does not contain attribute 'Date'");
+                } else {
+                    date = mf.getMainAttributes().getValue("Date");
                 }
             }
         } catch (MalformedURLException ex) {
@@ -214,10 +214,13 @@ public class Updater {
         //https://www.baeldung.com/java-download-file
         URL downloadMe = new URL(jarDownloadUrl);
         File writeToMe = new File(jarLocalPath);
+        writeOutput("Downloading...");
         BufferedInputStream buff = new BufferedInputStream(downloadMe.openStream());
         FileOutputStream out = new FileOutputStream(writeToMe);
         ReadableByteChannel in = Channels.newChannel(buff);
+        writeOutput("Installing...");
         out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
+        writeOutput("Installed successfully!");
     }
     
     

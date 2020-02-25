@@ -6,7 +6,11 @@
 package launch;
 
 import gui.LauncherFrame;
+import io.FileSystem;
+import java.io.File;
+import java.io.IOException;
 import main.EntryPoint;
+import main.Updater;
 
 /**
  *
@@ -33,21 +37,29 @@ public class Launcher extends EntryPoint{
     public void doRun(){
         LauncherFrame window = new LauncherFrame();
         listenToWindow(window);
-        /*
-        Updater updater = new Updater();
-        updater.addLogger(log);
-        updater.addLogger(window.getContent().getTextDisplay());
-        updater.run();
         
-        if(updater.appIsInstalled()){
+        Updater updater = new Updater(
+            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/indev/Application/build/tmp/jar/MANIFEST.MF",
+            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/indev/Application/build/libs/Application-1.0-SNAPSHOT.jar",
+            FileSystem.JAR_FOLDER_PATH + File.separator + "Application.jar"
+        );
+        updater.addLogger(getLog());
+        updater.addLogger(window.getContent().getTextDisplay());
+        try {
+            updater.run();
+            /*
+            if(updater.appIsInstalled()){
             Thread appThread = new Thread(){
-                @Override
-                public void run(){
-                    //todo load and run JAR file
-                }
+            @Override
+            public void run(){
+            //todo load and run JAR file
+            }
             };
             appThread.start();
-        }*/
+            }*/
+        } catch (IOException ex) {
+            getLog().logError(ex);
+        }
     }
     
     /**
