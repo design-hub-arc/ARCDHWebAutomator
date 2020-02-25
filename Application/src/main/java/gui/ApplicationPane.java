@@ -1,5 +1,6 @@
 package gui;
 
+import guiComponents.LogViewer;
 import application.Application;
 import automationTools.AbstractAutomation;
 import csv.CsvFile;

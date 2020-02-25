@@ -1,4 +1,4 @@
-package gui;
+package guiComponents;
 
 import java.awt.Color;
 import java.awt.GridLayout;

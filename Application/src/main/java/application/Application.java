@@ -15,7 +15,6 @@ import main.EntryPoint;
  */
 public class Application extends EntryPoint{
     private final WebDriverLoader webDriverLoader;
-    
     private static Application instance;
     
     private Application(){

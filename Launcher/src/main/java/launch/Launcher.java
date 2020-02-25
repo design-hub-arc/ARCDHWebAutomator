@@ -5,6 +5,7 @@
  */
 package launch;
 
+import gui.LauncherFrame;
 import main.EntryPoint;
 
 /**
@@ -30,7 +31,23 @@ public class Launcher extends EntryPoint{
     
     @Override
     public void doRun(){
+        LauncherFrame window = new LauncherFrame();
+        listenToWindow(window);
+        /*
+        Updater updater = new Updater();
+        updater.addLogger(log);
+        updater.addLogger(window.getContent().getTextDisplay());
+        updater.run();
         
+        if(updater.appIsInstalled()){
+            Thread appThread = new Thread(){
+                @Override
+                public void run(){
+                    //todo load and run JAR file
+                }
+            };
+            appThread.start();
+        }*/
     }
     
     /**

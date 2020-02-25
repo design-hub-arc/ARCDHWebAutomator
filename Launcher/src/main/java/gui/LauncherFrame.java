@@ -1,4 +1,4 @@
-package launcher;
+package gui;
 
 import javax.swing.JFrame;
 

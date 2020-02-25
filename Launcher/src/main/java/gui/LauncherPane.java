@@ -1,6 +1,6 @@
-package launcher;
+package gui;
 
-import gui.ScrollableTextDisplay;
+import guiComponents.ScrollableTextDisplay;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 

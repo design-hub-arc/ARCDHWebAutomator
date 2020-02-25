@@ -1,4 +1,4 @@
-package gui;
+package guiComponents;
 
 import io.FileSystem;
 import io.FileSelector;

@@ -1,5 +1,6 @@
 package gui;
 
+import guiComponents.ScrollableTextDisplay;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
 import csv.CsvFile;
