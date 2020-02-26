@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import javax.swing.JFrame;
 import logging.ApplicationLog;
 
@@ -93,7 +94,7 @@ public abstract class EntryPoint {
     
     /**
      * 
-     * @return the name of the JAR file running this program, if any
+     * @return the file path of the JAR file running this program, if any
      */
     public final String getRunningJar(){
         String ret = null;
@@ -101,12 +102,22 @@ public abstract class EntryPoint {
             try {
                 File jarFile = (new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()));
                 //System.out.println(jarFile.getAbsolutePath());
-                ret = jarFile.getName();
+                ret = jarFile.getAbsolutePath();
             } catch (URISyntaxException ex) {
                 log.logError(ex);
             }
         }
         return ret;
+    }
+    
+    public final void checkForUpdates(){
+        String[] exclude = (isRunningFromJar()) ? new String[]{getRunningJar()} : new String[]{};
+        System.out.println(Arrays.toString(exclude));
+        try {
+            Updater.updateAll(exclude);
+        } catch (IOException ex) {
+            log.logError(ex);
+        }
     }
     
     /**

@@ -361,7 +361,9 @@ public class Updater {
                     excludeMe = true;
                 }
             }
-            if(!excludeMe){
+            if(excludeMe){
+                updater.writeOutput("Don't update " + updater.jarLocalPath);
+            } else {
                 try {
                     updater.run();
                 } catch (IOException ex) {

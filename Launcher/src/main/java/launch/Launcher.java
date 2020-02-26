@@ -38,16 +38,18 @@ public class Launcher extends EntryPoint{
     public void doRun(){
         LauncherFrame window = new LauncherFrame();
         listenToWindow(window);
-        
+        /*
         Updater updater = new Updater(
             new GitHubUrl("design-hub-arc", "ARCDHWebAutomator", "indev", "Application/build/tmp/jar/MANIFEST.MF"),
             new GitHubUrl("design-hub-arc", "ARCDHWebAutomator", "indev", "Application/build/libs/Application-1.0-SNAPSHOT.jar"),
             FileSystem.JAR_FOLDER_PATH + File.separator + "Application.jar"
         );
         updater.addLogger(getLog());
-        updater.addLogger(window.getContent().getTextDisplay());
+        updater.addLogger(window.getContent().getTextDisplay());*/
         try {
-            updater.run();
+            //updater.run();
+            checkForUpdates();
+            throw new IOException();
             /*
             if(updater.appIsInstalled()){
             Thread appThread = new Thread(){
