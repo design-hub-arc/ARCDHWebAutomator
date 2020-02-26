@@ -1,5 +1,7 @@
 package main;
 
+import io.FileReaderUtil;
+import io.FileSystem;
 import io.GitHubUrl;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -17,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import logging.ErrorLogger;
@@ -304,12 +307,75 @@ public class Updater {
         }
     }
     
+    @Override
+    public String toString(){
+        return String.format("Updater:\n * Manifest: %s\n * Jar: %s\n * Install to %s", manifestUrl.toString(), jarDownloadUrl.toString(), jarLocalPath);
+    }
+    
     /**
      * Updates all JAR files specified
-     * in ??? that are not currently
-     * being run.
+     * in jarInfo.csv file that are not currently
+     * being run. The reposityInfo.properties file
+     * specifies the repository to check. Both of
+     * these files are located under Shared/Resources
+     * @param exclude the entire paths of local JAR files to exclude,
+     * such as the running JAR file.
      */
-    public static void updateAll(){
+    public static void updateAll(String[] exclude) throws IOException{
         
+        // first, read repository file
+        InputStream in = Updater.class.getResourceAsStream("/repositoryInfo.properties");
+        Properties repoProps = new Properties();
+        repoProps.load(in);
+        in.close();
+        String repoOwner = repoProps.getProperty("owner");
+        String repoName = repoProps.getProperty("repository-name");
+        String repoBranch = repoProps.getProperty("branch");
+        
+        // next, get get the JAR file information
+        String content = FileReaderUtil.readStream(Updater.class.getResourceAsStream("/jarInfo.csv"));
+        String[] rows = content.split(System.lineSeparator()); 
+        // I may want to make this check which column contains which header
+        int manifestPathIdx = 0;
+        int jarPathIdx = 1;
+        int jarNameIdx = 2;
+        
+        ArrayList<Updater> updaters = new ArrayList<>();
+        String[] cells;
+        // Skip headers
+        for(int i = 1; i < rows.length; i++){
+            cells = rows[i].split(",");
+            updaters.add(new Updater(
+                new GitHubUrl(repoOwner, repoName, repoBranch, cells[manifestPathIdx].trim()),
+                new GitHubUrl(repoOwner, repoName, repoBranch, cells[jarPathIdx].trim()),
+                FileSystem.JAR_FOLDER_PATH + File.separator + cells[jarNameIdx].trim()
+            ));
+        }
+        
+        // now, download and install
+        updaters.forEach((updater)->{
+            boolean excludeMe = false;
+            System.out.println(updater.toString());
+            for(String excluded : exclude){
+                if(excluded.equals(updater.jarLocalPath)){
+                    excludeMe = true;
+                }
+            }
+            if(!excludeMe){
+                try {
+                    updater.run();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+    
+    public static void updateAll() throws IOException{
+        updateAll(new String[]{});
+    }
+    
+    public static void main(String[] args) throws IOException{
+        Updater.updateAll();
     }
 }
