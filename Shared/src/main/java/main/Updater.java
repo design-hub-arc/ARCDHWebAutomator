@@ -1,5 +1,6 @@
 package main;
 
+import io.GitHubUrl;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,8 +32,8 @@ import logging.Logger;
  * @author Matt Crow
  */
 public class Updater {
-    private final String manifestUrl;
-    private final String jarDownloadUrl;
+    private final GitHubUrl manifestUrl;
+    private final GitHubUrl jarDownloadUrl;
     private final String jarLocalPath;
     private final ArrayList<Logger> loggers;
     
@@ -42,7 +43,7 @@ public class Updater {
      * @param jarUrl the URL pointing to the JAR file this should download if it needs to update.
      * @param localPath the complete path to the file where this should download the JAR file to.
      */
-    public Updater(String manifestFileUrl, String jarUrl, String localPath){
+    public Updater(GitHubUrl manifestFileUrl, GitHubUrl jarUrl, String localPath){
         manifestUrl = manifestFileUrl;
         jarDownloadUrl = jarUrl;
         jarLocalPath = localPath;
@@ -184,7 +185,7 @@ public class Updater {
         String date = null;
         writeOutput("Checking latest manifest date...");
         try {
-            URL manUrl = new URL(manifestUrl);
+            URL manUrl = new URL(manifestUrl.toString());
             try (InputStream in = manUrl.openStream()) {
                 Manifest mf = new Manifest(in);
                 writeOutput("GitHub Manifest:");
@@ -212,7 +213,7 @@ public class Updater {
      */
     public void downloadAndInstall() throws IOException{
         //https://www.baeldung.com/java-download-file
-        URL downloadMe = new URL(jarDownloadUrl);
+        URL downloadMe = new URL(jarDownloadUrl.toString());
         File writeToMe = new File(jarLocalPath);
         writeOutput("Downloading...");
         BufferedInputStream buff = new BufferedInputStream(downloadMe.openStream());

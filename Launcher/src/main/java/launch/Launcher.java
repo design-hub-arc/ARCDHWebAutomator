@@ -7,6 +7,7 @@ package launch;
 
 import gui.LauncherFrame;
 import io.FileSystem;
+import io.GitHubUrl;
 import java.io.File;
 import java.io.IOException;
 import main.EntryPoint;
@@ -39,8 +40,8 @@ public class Launcher extends EntryPoint{
         listenToWindow(window);
         
         Updater updater = new Updater(
-            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/indev/Application/build/tmp/jar/MANIFEST.MF",
-            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/indev/Application/build/libs/Application-1.0-SNAPSHOT.jar",
+            new GitHubUrl("design-hub-arc", "ARCDHWebAutomator", "indev", "Application/build/tmp/jar/MANIFEST.MF"),
+            new GitHubUrl("design-hub-arc", "ARCDHWebAutomator", "indev", "Application/build/libs/Application-1.0-SNAPSHOT.jar"),
             FileSystem.JAR_FOLDER_PATH + File.separator + "Application.jar"
         );
         updater.addLogger(getLog());
