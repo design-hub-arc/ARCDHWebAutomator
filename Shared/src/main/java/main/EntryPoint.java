@@ -114,7 +114,7 @@ public abstract class EntryPoint {
         String[] exclude = (isRunningFromJar()) ? new String[]{getRunningJar()} : new String[]{};
         System.out.println(Arrays.toString(exclude));
         try {
-            Updater.updateAll(exclude);
+            Updater.updateAll(exclude, log);
         } catch (IOException ex) {
             log.logError(ex);
         }
@@ -123,10 +123,15 @@ public abstract class EntryPoint {
     /**
      * Subclasses should call this
      * method to run the program.
+     * 
+     * Initializes resources,
+     * checks for updates,
+     * and invokes doRun()
      */
     public final void run(){
         try {
             resources.init();
+            
         } catch (IOException ex) {
             log.logError(ex);
         }

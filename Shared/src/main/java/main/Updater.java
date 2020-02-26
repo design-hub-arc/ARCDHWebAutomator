@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import logging.ApplicationLog;
 import logging.ErrorLogger;
 import logging.Logger;
 
@@ -64,9 +65,11 @@ public class Updater {
      * from this object.
      * 
      * @param l 
+     * @return this, for chaining purposes
      */
-    public void addLogger(Logger l){
+    public Updater addLogger(Logger l){
         loggers.add(l);
+        return this;
     }
     
     /**
@@ -320,8 +323,9 @@ public class Updater {
      * these files are located under Shared/Resources
      * @param exclude the entire paths of local JAR files to exclude,
      * such as the running JAR file.
+     * @param l the Logger to receive output from the Updaters
      */
-    public static void updateAll(String[] exclude) throws IOException{
+    public static void updateAll(String[] exclude, Logger l) throws IOException{
         
         // first, read repository file
         InputStream in = Updater.class.getResourceAsStream("/repositoryInfo.properties");
@@ -349,13 +353,13 @@ public class Updater {
                 new GitHubUrl(repoOwner, repoName, repoBranch, cells[manifestPathIdx].trim()),
                 new GitHubUrl(repoOwner, repoName, repoBranch, cells[jarPathIdx].trim()),
                 FileSystem.JAR_FOLDER_PATH + File.separator + cells[jarNameIdx].trim()
-            ));
+            ).addLogger(l));
         }
         
         // now, download and install
         updaters.forEach((updater)->{
             boolean excludeMe = false;
-            System.out.println(updater.toString());
+            updater.writeOutput(updater.toString());
             for(String excluded : exclude){
                 if(excluded.equals(updater.jarLocalPath)){
                     excludeMe = true;
@@ -367,17 +371,17 @@ public class Updater {
                 try {
                     updater.run();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    updater.reportError(ex);
                 }
             }
         });
     }
     
-    public static void updateAll() throws IOException{
-        updateAll(new String[]{});
+    public static void updateAll(Logger l) throws IOException{
+        updateAll(new String[]{}, l);
     }
     
     public static void main(String[] args) throws IOException{
-        Updater.updateAll();
+        Updater.updateAll(new ApplicationLog());
     }
 }
