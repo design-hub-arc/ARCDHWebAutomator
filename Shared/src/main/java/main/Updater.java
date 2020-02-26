@@ -303,4 +303,13 @@ public class Updater {
             downloadAndInstall();
         }
     }
+    
+    /**
+     * Updates all JAR files specified
+     * in ??? that are not currently
+     * being run.
+     */
+    public static void updateAll(){
+        
+    }
 }
