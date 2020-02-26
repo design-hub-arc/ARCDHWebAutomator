@@ -29,6 +29,7 @@ repositories {
 
 jar {
     def timestamp = new Date().format('dd-M-yyyy');
+    archiveName = 'Application.jar';
     
     //need to manually set main class, otherwise, it just compiles the JAR as a library
     manifest {

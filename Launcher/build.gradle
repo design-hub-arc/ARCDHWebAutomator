@@ -13,7 +13,10 @@ if (!hasProperty('mainClass')) {
     ext.mainClass = 'launch.Launcher'
 }
 
+
 jar {
+    archiveName = 'Launcher.jar';
+    
     def timestamp = new Date().format('dd-M-yyyy');
     
     //need to manually set main class, otherwise, it just compiles the JAR as a library
