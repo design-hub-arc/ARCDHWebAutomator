@@ -7,11 +7,9 @@ package launch;
 
 import gui.LauncherFrame;
 import io.FileSystem;
-import io.GitHubUrl;
 import java.io.File;
 import java.io.IOException;
 import main.EntryPoint;
-import main.Updater;
 
 /**
  *
@@ -38,18 +36,24 @@ public class Launcher extends EntryPoint{
     public void doRun(){
         LauncherFrame window = new LauncherFrame();
         listenToWindow(window);
-        //updater.run();
         checkForUpdates();
-        /*
-        if(updater.appIsInstalled()){
+        
+        Launcher l = this;
         Thread appThread = new Thread(){
             @Override
             public void run(){
-                //todo load and run JAR file
+                //https://stackoverflow.com/questions/4936266/execute-jar-file-from-a-java-program
+                ProcessBuilder builder = new ProcessBuilder("java", "-jar", FileSystem.JAR_FOLDER_PATH + File.separator + "Application.jar");
+                try {
+                    builder.start();
+                } catch (IOException ex) {
+                    l.getLog().logError(ex);
+                }
             }
         };
         appThread.start();
-        }*/
+        writeLog();
+        window.dispose();
     }
     
     /**

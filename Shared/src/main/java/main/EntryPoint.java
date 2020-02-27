@@ -30,7 +30,7 @@ public abstract class EntryPoint {
             // for some reason, windowClosed doesn't fire.
             @Override
             public void windowClosing(WindowEvent e){
-                if(log.getLog().length() >= 0){
+                if(log.getLog().length() > 0){
                     writeLog();
                 }
             }
