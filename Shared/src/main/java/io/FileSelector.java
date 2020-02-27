@@ -73,7 +73,7 @@ public class FileSelector{
     public static void createNewFile(String text, Consumer<File> action){
         new FileSelector(text, FileType.DIR, (File f)->{
             String name = JOptionPane.showInputDialog(null, "What do you want to name this new file?");
-            if(name.isEmpty()){
+            if(name == null || name.isEmpty()){
                 name = "name-not-set";
             }
             File newFile = new File(f.getAbsolutePath() + File.separator + name);

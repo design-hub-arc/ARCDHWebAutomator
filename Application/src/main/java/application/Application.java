@@ -3,6 +3,7 @@ package application;
 
 import gui.ApplicationWindow;
 import java.io.IOException;
+import logging.Logger;
 import main.EntryPoint;
 
 /**
@@ -22,13 +23,6 @@ public class Application extends EntryPoint{
         if(instance != null){
             throw new RuntimeException("Cannot instantiate more than one instance of Application. Use Application.getInstance() instead");
         }
-        
-        /*
-        updater = new Updater(
-            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/tmp/jar/MANIFEST.MF",
-            "https://raw.githubusercontent.com/design-hub-arc/ARCDHWebAutomator/master/build/libs/ARCDHWebAutomator.jar",
-            FileSystem.JAR_FOLDER_PATH + File.separator + "ARCDHWebAutomator.jar"
-        );*/
         webDriverLoader = new WebDriverLoader(this);
     }
     
@@ -55,6 +49,23 @@ public class Application extends EntryPoint{
     
     public static void main(String[] args) throws IOException{
         Application app = getInstance();
+        Thread updater = new Thread(){
+            @Override
+            public void run(){
+                app.checkForUpdates(new Logger(){
+                    @Override
+                    public void log(String s) {
+                        System.out.println(s);
+                    }
+
+                    @Override
+                    public String getLog() {
+                        return "";
+                    }
+                });
+            }
+        };
+        updater.start();
         app.run();
     }
 }

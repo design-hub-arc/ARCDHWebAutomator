@@ -323,9 +323,9 @@ public class Updater {
      * these files are located under Shared/Resources
      * @param exclude the entire paths of local JAR files to exclude,
      * such as the running JAR file.
-     * @param l the Logger to receive output from the Updaters
+     * @param out the Loggers to receive output from the Updaters
      */
-    public static void updateAll(String[] exclude, Logger l) throws IOException{
+    public static void updateAll(String[] exclude, Logger[] out) throws IOException{
         
         // first, read repository file
         InputStream in = Updater.class.getResourceAsStream("/repositoryInfo.properties");
@@ -345,15 +345,20 @@ public class Updater {
         int jarNameIdx = 2;
         
         ArrayList<Updater> updaters = new ArrayList<>();
+        Updater up;
         String[] cells;
         // Skip headers
         for(int i = 1; i < rows.length; i++){
             cells = rows[i].split(",");
-            updaters.add(new Updater(
+            up = new Updater(
                 new GitHubUrl(repoOwner, repoName, repoBranch, cells[manifestPathIdx].trim()),
                 new GitHubUrl(repoOwner, repoName, repoBranch, cells[jarPathIdx].trim()),
                 FileSystem.JAR_FOLDER_PATH + File.separator + cells[jarNameIdx].trim()
-            ).addLogger(l));
+            );
+            for(Logger logger : out){
+                up.addLogger(logger);
+            }
+            updaters.add(up);
         }
         
         // now, download and install
@@ -377,11 +382,11 @@ public class Updater {
         });
     }
     
-    public static void updateAll(Logger l) throws IOException{
-        updateAll(new String[]{}, l);
+    public static void updateAll(Logger[] out) throws IOException{
+        updateAll(new String[]{}, out);
     }
     
     public static void main(String[] args) throws IOException{
-        Updater.updateAll(new ApplicationLog());
+        Updater.updateAll(new Logger[]{new ApplicationLog()});
     }
 }
