@@ -395,9 +395,11 @@ public class Updater {
         Updater.updateAll(new Logger[]{new ApplicationLog()});
         
         //https://developer.github.com/v3/
-        URL url = new URL("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/commits?sha=indev&path=Application/build/libs/Application.jar");
+        URL url = new URL("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/commits?sha=indev&path=Application/build/libs/Application.jar&page=1&per_page=1");
         JsonReader read = Json.createReader(url.openStream());
         JsonArray arr = read.readArray();
+        read.close();
+        System.out.println(arr);
         System.out.println(arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date"));
     }
 }
