@@ -1,2 +1,3 @@
 *) Use GitHub API to check JAR last updated date instead of using MANIFEST.MF
 *) Update README.md
+*) Make logging static
