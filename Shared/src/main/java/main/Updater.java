@@ -214,6 +214,27 @@ public class Updater {
         } catch (IOException ex) {
             reportError(ex);
         }
+        
+        
+        
+        //https://developer.github.com/v3/
+        //https://developer.github.com/v3/repos/commits/
+        writeOutput("Checking GitHub API instead....");
+        try {
+            URL apiUrl = new URL(String.format("https://api.github.com/repos/%s/%s/commits?sha=%s&path=%s&page=1&per_page=1", jarDownloadUrl.getOwner(), jarDownloadUrl.getRepo(), jarDownloadUrl.getBranch(), jarDownloadUrl.getFilePath()));
+            JsonReader read = Json.createReader(apiUrl.openStream());
+            JsonArray arr = read.readArray();
+            read.close();
+            System.out.println(arr);
+            System.out.println(arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date"));
+        } catch (MalformedURLException ex) {
+            reportError(ex);
+        } catch (IOException ex) {
+            reportError(ex);
+        }
+        
+        
+        
         return date;
     }
     
@@ -393,13 +414,5 @@ public class Updater {
     
     public static void main(String[] args) throws IOException{
         Updater.updateAll(new Logger[]{new ApplicationLog()});
-        
-        //https://developer.github.com/v3/
-        URL url = new URL("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/commits?sha=indev&path=Application/build/libs/Application.jar&page=1&per_page=1");
-        JsonReader read = Json.createReader(url.openStream());
-        JsonArray arr = read.readArray();
-        read.close();
-        System.out.println(arr);
-        System.out.println(arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date"));
     }
 }

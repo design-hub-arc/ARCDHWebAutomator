@@ -33,6 +33,22 @@ public class GitHubUrl {
         filePath = path;
     }
     
+    public String getOwner(){
+        return repoOwner;
+    }
+    
+    public String getRepo(){
+        return repository;
+    }
+    
+    public String getBranch(){
+        return branch;
+    }
+    
+    public String getFilePath(){
+        return filePath;
+    }
+    
     @Override
     public String toString(){
         return String.format("https://raw.githubusercontent.com/%s/%s/%s/%s", repoOwner, repository, branch, filePath);
