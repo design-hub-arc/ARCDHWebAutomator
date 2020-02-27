@@ -22,6 +22,11 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
 import logging.ApplicationLog;
 import logging.ErrorLogger;
 import logging.Logger;
@@ -388,5 +393,11 @@ public class Updater {
     
     public static void main(String[] args) throws IOException{
         Updater.updateAll(new Logger[]{new ApplicationLog()});
+        
+        //https://developer.github.com/v3/
+        URL url = new URL("https://api.github.com/repos/design-hub-arc/ARCDHWebAutomator/commits?sha=indev&path=Application/build/libs/Application.jar");
+        JsonReader read = Json.createReader(url.openStream());
+        JsonArray arr = read.readArray();
+        System.out.println(arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date"));
     }
 }
