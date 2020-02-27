@@ -1,8 +1,2 @@
-*) Move classes / functionality from Application subproject to the two other subprojects.
-*) Add task to root project which will compile all 3 JARs
-*) Updater:
-    iterate over a list of all JARs to potentially update,
-    check for updates for all except the currently running JAR.
-*) Don't forget updater for Shared project!
-*) Fix updater to check the correct URLs
+*) Use GitHub API to check JAR last updated date instead of using MANIFEST.MF
 *) Update README.md

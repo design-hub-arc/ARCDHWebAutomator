@@ -1,5 +1,9 @@
 import org.gradle.api.artifacts.*
 
+/*
+Note: Use 'gradle build' to compile all JAR files for each subproject.
+*/
+
 apply plugin: 'base' // To add "clean" task to the root project.
 
 subprojects {
