@@ -1,5 +1,6 @@
 package main;
 
+import guiComponents.LogViewer;
 import io.FileReaderUtil;
 import io.FileSystem;
 import io.GitHubUrl;
@@ -48,9 +49,9 @@ public class Updater {
     private final String jarLocalPath;
     private final ArrayList<Logger> loggers;
     
-    private static final String TIME_FORMAT = "YYYY-MM-DD'T'HH:MM:SSZ";
+    //                                                   single quotes for literal
+    private static final String TIME_FORMAT = "YYYY-MM-DD'T'HH:MM:SS'Z'";
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat(TIME_FORMAT);
-    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME;
     
     /**
      * 
@@ -167,28 +168,20 @@ public class Updater {
      * @return the compilation date of the JAR file for the main application,
      * or null if none is present.
      */
-    public String getInstalledJarDate(){
-        String date = null;
+    public Date getInstalledJarDate(){
+        Date date = null;
         if(isInstalled()){
             try {
-                JarFile jar = new JarFile(jarLocalPath);
-                writeOutput("Currently installed JAR manifest:");
-                jar.getManifest().getMainAttributes().forEach((s, attr)->{
-                    writeOutput(String.format("* %s: %s", s, attr.toString()));
-                });
-                date = jar.getManifest().getMainAttributes().getValue("Date");
-                if(date == null){
-                    reportError("JAR manifest does not contain attribute 'Date'");
-                }
-                
                 File f = new File(jarLocalPath);
                 f.lastModified();
                 FileTime ft = Files.getLastModifiedTime(Paths.get(f.getAbsolutePath()));
-                date = ft.toString();
                 
-                //YYYY-MM-DDTHH:MM:SSZ
-                System.out.println("Installed JAR: " + Date.from(ft.toInstant()).toString());
+                date = FORMAT.parse(ft.toString().split("\\.")[0] + "Z"); //get rid of fractions of a second
+                
+                System.out.println("Installed JAR: " + date);
             } catch (IOException ex) {
+                reportError(ex);
+            } catch (ParseException ex) {
                 reportError(ex);
             }
         }
@@ -204,46 +197,24 @@ public class Updater {
      * Returns the most recent compilation
      * date for the JAR file on GitHub.
      * 
-     * @return the last JAR compilation date, or null if the manifest contains no compilation date
+     * @return the last JAR compilation date, or null if an error occurs
      */
-    public String getLatestManifestDate(){
-        String date = null;
-        writeOutput("Checking latest manifest date...");
-        try {
-            URL manUrl = new URL(manifestUrl.toString());
-            try (InputStream in = manUrl.openStream()) {
-                Manifest mf = new Manifest(in);
-                writeOutput("GitHub Manifest:");
-                mf.getMainAttributes().forEach((a, b)->{
-                    writeOutput(String.format("* %s: %s", a, b));
-                });
-                if(mf.getMainAttributes().getValue("Date") == null){
-                    reportError("Manifest does not contain attribute 'Date'");
-                } else {
-                    date = mf.getMainAttributes().getValue("Date");
-                }
-            }
-        } catch (MalformedURLException ex) {
-            reportError("Malformed URL in " + getClass().getName() + ": " + manifestUrl);
-        } catch (IOException ex) {
-            reportError(ex);
-        }
-        
-        
+    public Date getLatestManifestDate(){
+        Date date = null;
         
         //https://developer.github.com/v3/
         //https://developer.github.com/v3/repos/commits/
-        writeOutput("Checking GitHub API instead....");
+        writeOutput("Checking GitHub API for latest update....");
         try {
             URL apiUrl = new URL(String.format("https://api.github.com/repos/%s/%s/commits?sha=%s&path=%s&page=1&per_page=1", jarDownloadUrl.getOwner(), jarDownloadUrl.getRepo(), jarDownloadUrl.getBranch(), jarDownloadUrl.getFilePath()));
             JsonReader read = Json.createReader(apiUrl.openStream());
             JsonArray arr = read.readArray();
             read.close();
             System.out.println(arr);
-            date = arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date");
-            System.out.println(date);
-            
-            System.out.println("GITHUB: " + FORMAT.parse(date));
+            String sDate = arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date");
+            System.out.println(sDate);
+            date = FORMAT.parse(sDate);
+            System.out.println("GITHUB: " + date);
         } catch (MalformedURLException ex) {
             reportError(ex);
         } catch (IOException ex) {
@@ -289,7 +260,7 @@ public class Updater {
      * @param latestVersion
      * @return 
      */
-    private boolean latestIsNewer(String currVersion, String latestVersion){
+    private boolean latestIsNewer(Date currVersion, Date latestVersion){
         boolean latestIsNewer = false;
         
         if(currVersion == null && latestVersion == null){
@@ -303,18 +274,12 @@ public class Updater {
             latestIsNewer = true;
         } else {
             //neither is null, so compare
-            try {
-                Date currDate = FORMAT.parse(currVersion);
-                Date newestDate = FORMAT.parse(latestVersion);
-                writeOutput(currDate.toString() + " vs " + newestDate.toString());
-                if(newestDate.after(currDate)){
-                    writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
-                    latestIsNewer = true;
-                } else {
-                    writeOutput("Looks like everything is up to date!");
-                }
-            } catch (ParseException ex) {
-                ex.printStackTrace();
+            writeOutput(currVersion.toString() + " vs " + latestVersion.toString());
+            if(latestVersion.after(currVersion)){
+                writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
+                latestIsNewer = true;
+            } else {
+                writeOutput("Looks like everything is up to date!");
             }
             
         }
@@ -332,8 +297,8 @@ public class Updater {
         boolean shouldInstall = false;
         
         if(isInstalled()){
-            String currentlyInstalled = getInstalledJarDate();
-            String latestVersion = getLatestManifestDate();
+            Date currentlyInstalled = getInstalledJarDate();
+            Date latestVersion = getLatestManifestDate();
             shouldInstall = latestIsNewer(currentlyInstalled, latestVersion);
         } else {
             //TODO: if this is running from JAR, move it to the app bin folder
@@ -433,6 +398,8 @@ public class Updater {
     }
     
     public static void main(String[] args) throws IOException{
-        Updater.updateAll(new Logger[]{new ApplicationLog()});
+        ApplicationLog log = new ApplicationLog();
+        Updater.updateAll(new Logger[]{log});
+        System.out.println(log.getLog());
     }
 }
