@@ -14,9 +14,11 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -45,6 +47,10 @@ public class Updater {
     private final GitHubUrl jarDownloadUrl;
     private final String jarLocalPath;
     private final ArrayList<Logger> loggers;
+    
+    private static final String TIME_FORMAT = "YYYY-MM-DD'T'HH:MM:SSZ";
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat(TIME_FORMAT);
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME;
     
     /**
      * 
@@ -174,6 +180,14 @@ public class Updater {
                 if(date == null){
                     reportError("JAR manifest does not contain attribute 'Date'");
                 }
+                
+                File f = new File(jarLocalPath);
+                f.lastModified();
+                FileTime ft = Files.getLastModifiedTime(Paths.get(f.getAbsolutePath()));
+                date = ft.toString();
+                
+                //YYYY-MM-DDTHH:MM:SSZ
+                System.out.println("Installed JAR: " + Date.from(ft.toInstant()).toString());
             } catch (IOException ex) {
                 reportError(ex);
             }
@@ -226,10 +240,15 @@ public class Updater {
             JsonArray arr = read.readArray();
             read.close();
             System.out.println(arr);
-            System.out.println(arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date"));
+            date = arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date");
+            System.out.println(date);
+            
+            System.out.println("GITHUB: " + FORMAT.parse(date));
         } catch (MalformedURLException ex) {
             reportError(ex);
         } catch (IOException ex) {
+            reportError(ex);
+        } catch (ParseException ex) {
             reportError(ex);
         }
         
@@ -284,10 +303,10 @@ public class Updater {
             latestIsNewer = true;
         } else {
             //neither is null, so compare
-            DateFormat format = new SimpleDateFormat("dd-M-yyyy");
             try {
-                Date currDate = format.parse(currVersion);
-                Date newestDate = format.parse(latestVersion);
+                Date currDate = FORMAT.parse(currVersion);
+                Date newestDate = FORMAT.parse(latestVersion);
+                writeOutput(currDate.toString() + " vs " + newestDate.toString());
                 if(newestDate.after(currDate)){
                     writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
                     latestIsNewer = true;
@@ -295,8 +314,9 @@ public class Updater {
                     writeOutput("Looks like everything is up to date!");
                 }
             } catch (ParseException ex) {
-                reportError(ex);
+                ex.printStackTrace();
             }
+            
         }
         
         return latestIsNewer;
