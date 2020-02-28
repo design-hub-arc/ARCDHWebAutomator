@@ -1,5 +1,0 @@
-manifestPath,                          jarPath,                                jarName
-Application/build/tmp/jar/MANIFEST.MF, Application/build/libs/Application.jar, Application.jar
-Launcher/build/tmp/jar/MANIFEST.MF,    Launcher/build/libs/Launcher.jar,       Launcher.jar
-Shared/build/tmp/jar/MANIFEST.MF,      Shared/build/libs/Shared.jar,           Shared.jar
-

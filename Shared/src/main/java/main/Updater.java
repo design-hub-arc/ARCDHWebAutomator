@@ -45,23 +45,22 @@ import logging.Logger;
  * @author Matt Crow
  */
 public class Updater {
-    private final GitHubUrl manifestUrl;
     private final GitHubUrl jarDownloadUrl;
     private final String jarLocalPath;
     private final ArrayList<Logger> loggers;
     
     //                                                   single quotes for literal
     private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    // this is the format the GitHub API outputs dates in
+    
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat(TIME_FORMAT, Locale.getDefault());
     
     /**
      * 
-     * @param manifestFileUrl the URL pointing to the MANIFEST.MF file for the JAR this should update.
      * @param jarUrl the URL pointing to the JAR file this should download if it needs to update.
      * @param localPath the complete path to the file where this should download the JAR file to.
      */
-    public Updater(GitHubUrl manifestFileUrl, GitHubUrl jarUrl, String localPath){
-        manifestUrl = manifestFileUrl;
+    public Updater(GitHubUrl jarUrl, String localPath){
         jarDownloadUrl = jarUrl;
         jarLocalPath = localPath;
         loggers = new ArrayList<>();
@@ -174,13 +173,9 @@ public class Updater {
         if(isInstalled()){
             try {
                 File f = new File(jarLocalPath);
-                f.lastModified();
                 FileTime ft = Files.getLastModifiedTime(Paths.get(f.getAbsolutePath()));
-                System.out.println("Unparsed installed JAR: " + FORMAT.format(ft.toMillis()));
-                //System.out.println("Without milliseconds: " + FORMAT.format(ft.toString().split("\\.")[0] + "Z"));
-                //date = FORMAT.parse(ft.toString().split("\\.")[0] + "Z"); //get rid of fractions of a second
                 date = FORMAT.parse(FORMAT.format(ft.toMillis()));
-                System.out.println("Installed JAR: " + FORMAT.format(date) + " (" + FORMAT.format(ft.toMillis())+ ")");
+                System.out.println("installed JAR last updated: " + FORMAT.format(date));
             } catch (IOException ex) {
                 reportError(ex);
             } catch (ParseException ex) {
@@ -212,11 +207,11 @@ public class Updater {
             JsonReader read = Json.createReader(apiUrl.openStream());
             JsonArray arr = read.readArray();
             read.close();
-            System.out.println(arr);
+            //System.out.println(arr);
             String sDate = arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date");
-            System.out.println(sDate);
+            //System.out.println(sDate);
             date = FORMAT.parse(sDate);
-            System.out.println("GITHUB: " + FORMAT.format(date));
+            writeOutput("GitHub: " + FORMAT.format(date));
         } catch (MalformedURLException ex) {
             reportError(ex);
         } catch (IOException ex) {
@@ -224,8 +219,6 @@ public class Updater {
         } catch (ParseException ex) {
             reportError(ex);
         }
-        
-        
         
         return date;
     }
@@ -276,14 +269,13 @@ public class Updater {
             latestIsNewer = true;
         } else {
             //neither is null, so compare
-            writeOutput(FORMAT.format(currVersion) + " vs " + FORMAT.format(latestVersion));
+            writeOutput("Currently installed is " + FORMAT.format(currVersion) + ", " + "newest is " + FORMAT.format(latestVersion));
             if(latestVersion.after(currVersion)){
                 writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
                 latestIsNewer = true;
             } else {
                 writeOutput("Looks like everything is up to date!");
             }
-            
         }
         
         return latestIsNewer;
@@ -325,7 +317,7 @@ public class Updater {
     
     @Override
     public String toString(){
-        return String.format("Updater:\n * Manifest: %s\n * Jar: %s\n * Install to %s", manifestUrl.toString(), jarDownloadUrl.toString(), jarLocalPath);
+        return String.format("Updater:\n * Jar: %s\n * Install to %s", jarDownloadUrl.toString(), jarLocalPath);
     }
     
     /**
@@ -350,23 +342,18 @@ public class Updater {
         String repoBranch = repoProps.getProperty("branch");
         
         // next, get get the JAR file information
-        String content = FileReaderUtil.readStream(Updater.class.getResourceAsStream("/jarInfo.csv"));
+        String content = FileReaderUtil.readStream(Updater.class.getResourceAsStream("/jarInfo.txt"));
         String[] rows = content.split(System.lineSeparator()); 
-        // I may want to make this check which column contains which header
-        int manifestPathIdx = 0;
-        int jarPathIdx = 1;
-        int jarNameIdx = 2;
         
         ArrayList<Updater> updaters = new ArrayList<>();
         Updater up;
-        String[] cells;
-        // Skip headers
-        for(int i = 1; i < rows.length; i++){
-            cells = rows[i].split(",");
+        GitHubUrl url;
+        
+        for (String row : rows) {
+            url = new GitHubUrl(repoOwner, repoName, repoBranch, row.trim());
             up = new Updater(
-                new GitHubUrl(repoOwner, repoName, repoBranch, cells[manifestPathIdx].trim()),
-                new GitHubUrl(repoOwner, repoName, repoBranch, cells[jarPathIdx].trim()),
-                FileSystem.JAR_FOLDER_PATH + File.separator + cells[jarNameIdx].trim()
+                url,
+                FileSystem.JAR_FOLDER_PATH + File.separator + url.getFileName()
             );
             for(Logger logger : out){
                 up.addLogger(logger);

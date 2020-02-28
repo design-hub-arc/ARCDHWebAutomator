@@ -11,6 +11,7 @@ public class GitHubUrl {
     private final String repository;
     private final String branch;
     private final String filePath;
+    private final String fileName;
     
     /**
      * 
@@ -31,6 +32,8 @@ public class GitHubUrl {
         repository = repositoryName;
         branch = branchName;
         filePath = path;
+        String[] split = path.split("\\/");
+        fileName = split[split.length - 1];
     }
     
     public String getOwner(){
@@ -47,6 +50,10 @@ public class GitHubUrl {
     
     public String getFilePath(){
         return filePath;
+    }
+    
+    public String getFileName(){
+        return fileName;
     }
     
     @Override
