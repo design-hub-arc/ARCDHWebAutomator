@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -51,7 +52,7 @@ public class Updater {
     
     //                                                   single quotes for literal
     private static final String TIME_FORMAT = "YYYY-MM-DD'T'HH:MM:SS'Z'";
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat(TIME_FORMAT);
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat(TIME_FORMAT, Locale.getDefault());
     
     /**
      * 
@@ -175,10 +176,11 @@ public class Updater {
                 File f = new File(jarLocalPath);
                 f.lastModified();
                 FileTime ft = Files.getLastModifiedTime(Paths.get(f.getAbsolutePath()));
-                
+                System.out.println("Unparsed installed JAR: " + ft.toString());
+                System.out.println("Without milliseconds: " + ft.toString().split("\\.")[0] + "Z");
                 date = FORMAT.parse(ft.toString().split("\\.")[0] + "Z"); //get rid of fractions of a second
                 
-                System.out.println("Installed JAR: " + date);
+                System.out.println("Installed JAR: " + FORMAT.format(date));
             } catch (IOException ex) {
                 reportError(ex);
             } catch (ParseException ex) {
@@ -214,7 +216,7 @@ public class Updater {
             String sDate = arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date");
             System.out.println(sDate);
             date = FORMAT.parse(sDate);
-            System.out.println("GITHUB: " + date);
+            System.out.println("GITHUB: " + FORMAT.format(date));
         } catch (MalformedURLException ex) {
             reportError(ex);
         } catch (IOException ex) {
@@ -268,13 +270,13 @@ public class Updater {
             reportError("both the current and latest JAR version are null, so I cannot compare them");
         } else if(latestVersion == null){
             //latest is null, current isn't
-            reportError("Something may be wrong with the file on GitHub: the current version is dated " + currVersion + ", while the GitHub manifest lists null");
+            reportError("Something may be wrong with the file on GitHub: the current version is dated " + FORMAT.format(currVersion) + ", while the GitHub manifest lists null");
         } else if(currVersion == null){
             //current is null, latest isn't
             latestIsNewer = true;
         } else {
             //neither is null, so compare
-            writeOutput(currVersion.toString() + " vs " + latestVersion.toString());
+            writeOutput(FORMAT.format(currVersion) + " vs " + FORMAT.format(latestVersion));
             if(latestVersion.after(currVersion)){
                 writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
                 latestIsNewer = true;
