@@ -51,7 +51,7 @@ public class Updater {
     private final ArrayList<Logger> loggers;
     
     //                                                   single quotes for literal
-    private static final String TIME_FORMAT = "YYYY-MM-DD'T'HH:MM:SS'Z'";
+    private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat(TIME_FORMAT, Locale.getDefault());
     
     /**
@@ -176,11 +176,11 @@ public class Updater {
                 File f = new File(jarLocalPath);
                 f.lastModified();
                 FileTime ft = Files.getLastModifiedTime(Paths.get(f.getAbsolutePath()));
-                System.out.println("Unparsed installed JAR: " + ft.toString());
-                System.out.println("Without milliseconds: " + ft.toString().split("\\.")[0] + "Z");
-                date = FORMAT.parse(ft.toString().split("\\.")[0] + "Z"); //get rid of fractions of a second
-                
-                System.out.println("Installed JAR: " + FORMAT.format(date));
+                System.out.println("Unparsed installed JAR: " + FORMAT.format(ft.toMillis()));
+                //System.out.println("Without milliseconds: " + FORMAT.format(ft.toString().split("\\.")[0] + "Z"));
+                //date = FORMAT.parse(ft.toString().split("\\.")[0] + "Z"); //get rid of fractions of a second
+                date = FORMAT.parse(FORMAT.format(ft.toMillis()));
+                System.out.println("Installed JAR: " + FORMAT.format(date) + " (" + FORMAT.format(ft.toMillis())+ ")");
             } catch (IOException ex) {
                 reportError(ex);
             } catch (ParseException ex) {
