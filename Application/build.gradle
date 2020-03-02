@@ -1,30 +1,11 @@
-apply plugin: 'java'
+/*
+Note: "common.gradle" in the root project contains additional initialization
+for this project. This initialization is applied in the "build.gradle"
+of the root project, ARCDHWebAutomator.
+*/
 
-sourceCompatibility = '1.8'
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:unchecked"
-    }
-}
-
-// NetBeans will automatically add "run" and "debug" tasks relying on the
-// "mainClass" property. You may however define the property prior executing
-// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
-//
-// Note however, that you may define your own "run" and "debug" task if you
-// prefer. In this case NetBeans will not add these tasks but you may rely on
-// your own implementation.
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'application.Application'
-}
-
-repositories {
-    mavenCentral()
-    // You may define additional repositories, or even remove "mavenCentral()".
-    // Read more about repositories here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:repositories
 }
 
 jar {
@@ -45,10 +26,19 @@ jar {
 
 dependencies {
     compile project(':Shared')
-    // TODO: Add dependencies here ...
-    // You can read more about how to add dependency here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
-    testCompile group: 'junit', name: 'junit', version: '4.10'
+    /*
+    Note that this path is relative to ARCDHWebAutomator, so Gradle
+    can only resolve this path when commands are run from the ARCDHWebAutomator directory,
+    not this project's directory.
+    */
+
+    // You can read more about how to add dependency here: http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+
+    /*
+    You can read about selenium here:
+      - https://www.selenium.dev/selenium/docs/api/java/index.html
+      - https://www.selenium.dev/documentation/en/
+    */
     compile('org.seleniumhq.selenium:selenium-java:3.4.0') {
         exclude group: 'org.seleniumhq.selenium', module: 'selenium-android-driver'
         exclude group: 'org.seleniumhq.selenium', module: 'selenium-iphone-driver'
@@ -57,7 +47,4 @@ dependencies {
         exclude group: 'commons-codec', module: 'commons-codec'
         exclude group: 'cglib', module: 'cglib-nodep'
     }
-    // https://mvnrepository.com/artifact/javax.json/javax.json-api
-    compile group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
-    compile group: 'org.glassfish', name: 'javax.json', version: '1.1'
 }

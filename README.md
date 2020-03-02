@@ -16,7 +16,7 @@ To use this project, you need Java installed on your computer. You can check if 
 ```
 java -version
 ```
-if your computer can find java, you're good! Otherwise, you can download it [here](https://www.java.com/en/). 
+if your computer can find java, you're good! Otherwise, you can download it [here](https://www.java.com/en/).
 
 ### Downloading and Installing
 
@@ -25,7 +25,7 @@ This program requires no installation to run, so you don't need administrative a
 
 ### Running the program (for users)
 
-Once you've downloaded and unzipped the project, you can ignore most of the files. Go to 
+Once you've downloaded and unzipped the project, you can ignore most of the files. Go to
 ```
 ARCDHWebAutomator-master/build/libs
 ```
@@ -67,9 +67,11 @@ You can then hit enter, at which point, if the application doesn't start, the te
 You will need Netbeans IDE version 8.2 with the Gradle plugin installed to run the project.
 Obviously, Java is needed to allow the project to run. You can use
 ```
-gradle jar
+gradle build
 ```
-to rebuild the JAR file for the project.
+from the ARCDHWebAutomator directory to rebuild the JAR file for the project.
+Note that if the command is run from any of the sub-projects, Gradle will be unable to resolve the path
+to sibling projects, so the build will fail.
 
 ## Built With
 

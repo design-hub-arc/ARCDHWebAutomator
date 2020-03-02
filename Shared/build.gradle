@@ -1,14 +1,10 @@
-// Note: "common.gradle" in the root project contains additional initialization
-//   for this project. This initialization is applied in the "build.gradle"
-//   of the root project.
+/*
+Note: "common.gradle" in the root project contains additional initialization
+for this project. This initialization is applied in the "build.gradle"
+of the root project, ARCDHWebAutomator.
+*/
 
-// NetBeans will automatically add "run" and "debug" tasks relying on the
-// "mainClass" property. You may however define the property prior executing
-// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
-//
-// Note however, that you may define your own "run" and "debug" task if you
-// prefer. In this case NetBeans will not add these tasks but you may rely on
-// your own implementation.
+// Shared does not have a main class, as it is just a library for the other sub-projects
 if (!hasProperty('mainClass')) {
     ext.mainClass = ''
 }
@@ -23,13 +19,10 @@ jar {
 }
 
 dependencies {
-    // TODO: Add dependencies here
-    //   but note that JUnit should have already been added in parent.gradle.
-    //   By default, only the Maven Central Repository is specified in
-    //   parent.gradle.
-    //
-    // You can read more about how to add dependency here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+    // You can read more about how to add dependency here: http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+
+    // these two are used for javax.json
+    // both of these are used for Shared.main.Updater
     // https://mvnrepository.com/artifact/javax.json/javax.json-api
     compile group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
     compile group: 'org.glassfish', name: 'javax.json', version: '1.1'
