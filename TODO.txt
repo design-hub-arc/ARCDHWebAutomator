@@ -1,5 +1,4 @@
 *) Make batch files to launch the program
 *) Update README.md
 *) Make logging static
-*) Remove dates from JAR files
 *) clean up Updater.java

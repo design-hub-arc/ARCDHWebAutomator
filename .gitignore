@@ -5,3 +5,7 @@
 *.DS_Store
 *.user
 /.nb-gradle/
+/Application/build/
+/Launcher/build/
+/Shared/build/
+/Shared/.nb-gradle/

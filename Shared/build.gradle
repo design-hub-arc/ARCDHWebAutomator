@@ -15,16 +15,7 @@ if (!hasProperty('mainClass')) {
 
 jar {
     archiveName = 'Shared.jar';
-    
-    def timestamp = new Date().format('dd-M-yyyy');
-    
-    //need to manually set main class, otherwise, it just compiles the JAR as a library
-    manifest {
-        attributes(
-            'Date': timestamp
-        )
-    }
-    
+
     //include dependencies in JAR file
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }

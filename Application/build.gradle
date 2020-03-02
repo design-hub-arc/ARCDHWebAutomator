@@ -28,17 +28,15 @@ repositories {
 }
 
 jar {
-    def timestamp = new Date().format('dd-M-yyyy');
     archiveName = 'Application.jar';
-    
+
     //need to manually set main class, otherwise, it just compiles the JAR as a library
     manifest {
         attributes(
-            'Main-Class': 'application.Application',
-            'Date': timestamp
+            'Main-Class': 'application.Application'
         )
     }
-    
+
     //include dependencies in JAR file
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
