@@ -73,6 +73,28 @@ from the ARCDHWebAutomator directory to rebuild the JAR file for the project.
 Note that if the command is run from any of the sub-projects, Gradle will be unable to resolve the path
 to sibling projects, so the build will fail.
 
+## Project structure
+The project is divided into 4 projects:
+- ARCDHWebAutomator:
+    the root project, used to hold the sub-projects.
+    Gradle tasks should be run from this folder instead of folders of sub-projects.
+- Application:
+    the primary application. This project handles the GUI and web automation. Generally speaking,
+    this is the project developers will work in.
+- Launcher:
+    Since JAR files cannot be updated when they are running, the Launcher.jar file allows us to have the launcher update
+    the other JAR files, then have the main application update the launcher. Generally speaking, developers will not have
+    to change or view this project.
+- Shared:
+    This contains classes used by the other sub-projects. You can include
+    ```
+    dependencies {
+        compile project(':Shared')
+    }
+    ```
+    in the build.gradle file of a project to use classes from this project. Note that you will
+    likely have to reload the project to recompile dependencies.
+
 ## Built With
 
 * [Selenium](https://selenium.dev/selenium/docs/api/java/index.html) - The automation framework used
