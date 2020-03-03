@@ -1,12 +1,12 @@
 package logging;
 
 /**
- * The Logger interface should be implemented by any class
- * which should output and store messages from the program.
+ * The LoggerInterface interface should be implemented by any class
+ which should output and store messages from the program.
  * @see ApplicationLog
  * @author Matt Crow
  */
-public interface Logger {
+public interface LoggerInterface {
     /**
      * Logs a message. 
      * @param s the message to log.

@@ -7,15 +7,15 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import logging.Logger;
+import logging.LoggerInterface;
 
 /**
- * Not sure if I want this to implement Logger,
- * since while is does need to report messages, it needn't store them.
+ * Not sure if I want this to implement LoggerInterface,
+ since while is does need to report messages, it needn't store them.
  * 
  * @author Matt Crow
  */
-public class ScrollableTextDisplay extends JPanel implements Logger{
+public class ScrollableTextDisplay extends JPanel implements LoggerInterface{
     private final JTextArea textArea;
     private final JScrollPane pane;
     private final StringBuilder text;

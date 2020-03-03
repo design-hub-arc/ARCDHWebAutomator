@@ -26,7 +26,7 @@ import javax.json.JsonArray;
 import javax.json.JsonReader;
 import logging.ApplicationLog;
 import logging.ErrorLogger;
-import logging.Logger;
+import logging.LoggerInterface;
 
 /**
  * The Updater class is used to automatically download
@@ -40,7 +40,7 @@ import logging.Logger;
 public class Updater {
     private final GitHubUrl jarDownloadUrl;
     private final String jarLocalPath;
-    private final ArrayList<Logger> loggers;
+    private final ArrayList<LoggerInterface> loggers;
     
     //                                                   single quotes for literal
     private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -66,13 +66,13 @@ public class Updater {
     
     /**
      * Registers an object implementing the
-     * Logger interface to receive output
-     * from this object.
+ LoggerInterface interface to receive output
+ from this object.
      * 
      * @param l 
      * @return this, for chaining purposes
      */
-    public Updater addLogger(Logger l){
+    public Updater addLogger(LoggerInterface l){
         loggers.add(l);
         return this;
     }
@@ -323,7 +323,7 @@ public class Updater {
      * such as the running JAR file.
      * @param out the Loggers to receive output from the Updaters
      */
-    public static void updateAll(String[] exclude, Logger[] out) throws IOException{
+    public static void updateAll(String[] exclude, LoggerInterface[] out) throws IOException{
         
         // first, read repository file
         InputStream in = Updater.class.getResourceAsStream("/repositoryInfo.properties");
@@ -348,7 +348,7 @@ public class Updater {
                 url,
                 FileSystem.JAR_FOLDER_PATH + File.separator + url.getFileName()
             );
-            for(Logger logger : out){
+            for(LoggerInterface logger : out){
                 up.addLogger(logger);
             }
             updaters.add(up);
@@ -375,13 +375,13 @@ public class Updater {
         });
     }
     
-    public static void updateAll(Logger[] out) throws IOException{
+    public static void updateAll(LoggerInterface[] out) throws IOException{
         updateAll(new String[]{}, out);
     }
     
     public static void main(String[] args) throws IOException{
         ApplicationLog log = new ApplicationLog();
-        Updater.updateAll(new Logger[]{log});
+        Updater.updateAll(new LoggerInterface[]{log});
         System.out.println(log.getLog());
     }
 }

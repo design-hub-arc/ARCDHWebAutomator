@@ -1,6 +1,6 @@
 package logging;
 
-import logging.Logger;
+import logging.LoggerInterface;
 
 /**
  * The ErrorLogger class is used to allow Loggers
@@ -9,7 +9,7 @@ import logging.Logger;
  * 
  * @author Matt Crow
  */
-public interface ErrorLogger extends Logger{
+public interface ErrorLogger extends LoggerInterface{
     /**
      * This method should add a detailed description
      * of the given Exception to the text log.

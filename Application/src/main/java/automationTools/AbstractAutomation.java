@@ -3,12 +3,12 @@ package automationTools;
 import java.util.ArrayList;
 import java.util.List;
 import logging.ErrorLogger;
-import logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import logging.LoggerInterface;
 
 /**
  * The AbstractAutomation class serves as
@@ -29,7 +29,7 @@ public abstract class AbstractAutomation {
     private WebDriverWait wait;
     private boolean running;
     
-    private final ArrayList<Logger> loggers;
+    private final ArrayList<LoggerInterface> loggers;
     
     /**
      * 
@@ -63,10 +63,10 @@ public abstract class AbstractAutomation {
      * Adds an object which should receive output from the automation.
      * This defaults to sending output to System.out, but RunWindow calls this method,
      * passing in its ScrollableTextDisplay.
-     * @param l an object implementing the logging.Logger interface
+     * @param l an object implementing the logging.LoggerInterface interface
      * @return this, for chaining purposes
      */
-    public AbstractAutomation addLogger(Logger l){
+    public AbstractAutomation addLogger(LoggerInterface l){
         loggers.add(l);
         return this;
     }

@@ -10,7 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import logging.Logger;
+import logging.LoggerInterface;
 
 /**
  *
@@ -19,7 +19,7 @@ import logging.Logger;
 public class LogViewer extends JDialog{
     private final String msg;
     
-    public LogViewer(Logger log){
+    public LogViewer(LoggerInterface log){
         super();
         msg = log.getLog();
         
