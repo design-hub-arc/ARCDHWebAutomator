@@ -15,24 +15,41 @@ import java.io.IOException;
  * @author Matt Crow
  */
 public class Installer {
-    private static void installBatch() throws IOException{
-        String batchText = FileReaderUtil.readStream(Installer.class.getResourceAsStream("/batchTemplate.bat"));
-        System.out.println(batchText);
-        batchText = batchText.replace("$(LAUNCHER)", FileSystem.JAR_FOLDER_PATH + File.separator + "Launcher.jar");
-        System.out.println(batchText);
-        File f = new File(System.getProperty("user.home") + File.separator + "Desktop\\ARCDHWebAutomator.bat");
+    private static String formatTemplate(String template){
+        return template.replace("$(LAUNCHER)", FileSystem.JAR_FOLDER_PATH + File.separator + "Launcher.jar");
+    }
+    private static void writeToDesktop(String fileName, String contents) throws IOException{
+        File f = new File(System.getProperty("user.home") + File.separator + "Desktop" + File.separator + fileName);
         if(!f.exists()){
             f.createNewFile();
         }
-        FileWriterUtil.writeToFile(f, batchText);
+        FileWriterUtil.writeToFile(f, contents);
     }
-    public static void install(){
-        
+    
+    private static void installBatch() throws IOException{
+        String batchText = formatTemplate(FileReaderUtil.readStream(Installer.class.getResourceAsStream("/batchTemplate.bat")));
+        System.out.println(batchText);
+        writeToDesktop("ARCDHWebAutomator.bat", batchText);
+    }
+    private static void installBash() throws IOException{
+        String bashText = formatTemplate(FileReaderUtil.readStream(Installer.class.getResourceAsStream("/scriptTemplate.sh")));
+        System.out.println(bashText);
+        writeToDesktop("ARCDHWebAutomator.sh", bashText);
+    }
+    
+    public static void install() throws IOException{
+        String os = System.getProperty("os.name");
+        System.out.println("Operating system is " + os);
+        if(os.toLowerCase().contains("windows")){
+            installBatch();
+        } else {
+            installBash();
+        }
     }
     
     public static void main(String[] args){
         try {
-            installBatch();
+            install();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
