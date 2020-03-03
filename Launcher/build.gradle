@@ -20,12 +20,12 @@ jar {
 
     //include dependencies in JAR file
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
 dependencies {
-    compile project(':Shared')
+    implementation project(':Shared')
     /*
     Note that this path is relative to ARCDHWebAutomator, so Gradle
     can only resolve this path when commands are run from the ARCDHWebAutomator directory,
