@@ -1,6 +1,5 @@
 package main;
 
-import guiComponents.LogViewer;
 import io.FileReaderUtil;
 import io.FileSystem;
 import io.GitHubUrl;
@@ -16,21 +15,15 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.json.JsonReaderFactory;
 import logging.ApplicationLog;
 import logging.ErrorLogger;
 import logging.Logger;

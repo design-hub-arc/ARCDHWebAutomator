@@ -1,4 +1,3 @@
 *) Make batch files to launch the program
 *) Update README.md
 *) Make logging static
-*) clean up Updater.java
