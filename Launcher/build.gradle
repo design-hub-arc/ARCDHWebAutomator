@@ -9,7 +9,7 @@ if (!hasProperty('mainClass')) {
 }
 
 jar {
-    archiveName = 'Launcher.jar';
+    archiveFileName = 'Launcher.jar';
 
     //need to manually set main class, otherwise, it just compiles the JAR as a library
     manifest {

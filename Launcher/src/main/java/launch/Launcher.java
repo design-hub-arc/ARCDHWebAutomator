@@ -36,6 +36,13 @@ public class Launcher extends EntryPoint{
     public void doRun(){
         LauncherFrame window = new LauncherFrame();
         listenToWindow(window);
+        
+        try {
+            Installer.install();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
         checkForUpdates(window.getContent().getTextDisplay());
         
         Launcher l = this;

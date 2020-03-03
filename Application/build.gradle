@@ -9,7 +9,7 @@ if (!hasProperty('mainClass')) {
 }
 
 jar {
-    archiveName = 'Application.jar';
+    archiveFileName = 'Application.jar';
 
     //need to manually set main class, otherwise, it just compiles the JAR as a library
     manifest {
@@ -20,12 +20,12 @@ jar {
 
     //include dependencies in JAR file
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
 dependencies {
-    compile project(':Shared')
+    implementation project(':Shared')
     /*
     Note that this path is relative to ARCDHWebAutomator, so Gradle
     can only resolve this path when commands are run from the ARCDHWebAutomator directory,
@@ -39,7 +39,7 @@ dependencies {
       - https://www.selenium.dev/selenium/docs/api/java/index.html
       - https://www.selenium.dev/documentation/en/
     */
-    compile('org.seleniumhq.selenium:selenium-java:3.4.0') {
+    implementation('org.seleniumhq.selenium:selenium-java:3.4.0') {
         exclude group: 'org.seleniumhq.selenium', module: 'selenium-android-driver'
         exclude group: 'org.seleniumhq.selenium', module: 'selenium-iphone-driver'
         exclude group: 'org.seleniumhq.selenium', module: 'selenium-safari-driver'
