@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class Logger {
     private static final StringBuilder LOG = new StringBuilder();
     private static final ArrayList<LoggerInterface> MSG_LISTENERS = new ArrayList<>();
+    private static final ArrayList<ErrorListener> ERR_LISTENERS = new ArrayList<>();
     private static boolean errorFlag = false;
     
     public Logger(){
@@ -21,9 +22,7 @@ public class Logger {
     /**
      * Registers the given object implementing LoggerInterface to
      * receive messages from the Logger: any message the Logger logs
-     * will be sent to this LoggerInterface as well. If the given
-     * object also implements the ErrorListener interface, it will
-     * also receive error messages and stack traces in the same way.
+     * will be sent to this LoggerInterface as well.
      * 
      * @param i the object to receive messages in addition to the Logger.
      */
@@ -32,6 +31,20 @@ public class Logger {
             throw new NullPointerException("Cannot add null as a message listener");
         }
         MSG_LISTENERS.add(i);
+    }
+    
+    /**
+     * Registers the given object implementing ErrorListener to
+     * receive error messages from the Logger: any error message the Logger logs
+     * will be sent to this ErrorListener as well.
+     * 
+     * @param i the object to receive error messages in addition to the Logger.
+     */
+    public static final void addErrorListener(ErrorListener i){
+        if(i == null){
+            throw new NullPointerException("Cannot add null as an error listener");
+        }
+        ERR_LISTENERS.add(i);
     }
     
     /**
@@ -48,6 +61,24 @@ public class Logger {
         boolean ret = MSG_LISTENERS.contains(i);
         if(ret){
             MSG_LISTENERS.remove(i);
+        }
+        return ret;
+    }
+    
+    /**
+     * Removes an object from the list of objects which should receive error messages
+     * sent to the Logger.
+     * 
+     * @param i the object to remove from the error listener list
+     * @return whether or not the given object was in the list to begin with
+     */
+    public static final boolean removeErrorListener(ErrorListener i){
+        if(i == null){
+            throw new NullPointerException("Cannot remove null as an error listener");
+        }
+        boolean ret = ERR_LISTENERS.contains(i);
+        if(ret){
+            ERR_LISTENERS.remove(i);
         }
         return ret;
     }
@@ -83,8 +114,7 @@ public class Logger {
     
     /**
      * Logs the given error message so it can later be written to a log file.
-     * This message is also send to each message listener attached to
-     * the Logger that implements ErrorListener. 
+     * This message is also send to each error listener attached to the Logger. 
      * If no error message listeners are attached, 
      * writes the message to standard error output.
      * Also sets the error flag of the Logger to true until Logger.clearFlags() is invoked.
@@ -107,20 +137,16 @@ public class Logger {
         String formattedMsg = String.format("[%s] Error: %s", source, errMsg);
         LOG.append(formattedMsg).append('\n');
         
-        ErrorListener[] errListen = getErrorListeners();
-        if(errListen.length == 0){
+        if(ERR_LISTENERS.isEmpty()){
             System.err.println(formattedMsg);
         } else {
-            for(ErrorListener listener : errListen){
-                listener.errorLogged(errMsg);
-            }
+            ERR_LISTENERS.forEach((errList)->errList.errorLogged(errMsg));
         }
     }
     
     /**
      * Logs the given exception's stack trace so it can later be written to a log file.
-     * This stack trace is also send to each message listener attached to
-     * the Logger that implements ErrorListener. 
+     * This stack trace is also send to each error listener attached to the Logger. 
      * If no error message listeners are attached, 
      * prints the exception's stack trace to standard error output.
      * Also sets the error flag of the Logger to true until Logger.clearFlags() is invoked.
@@ -155,9 +181,7 @@ public class Logger {
      */
     public static final void clearFlags(){
         errorFlag = false;
-        for(ErrorListener listen : getErrorListeners()){
-            listen.logCleared();
-        }
+        ERR_LISTENERS.forEach((errList)->errList.logCleared());
     }
     
     /**
@@ -167,14 +191,6 @@ public class Logger {
      */
     public static final boolean hasLoggedError(){
         return errorFlag;
-    }
-    
-    private static ErrorListener[] getErrorListeners(){
-        return MSG_LISTENERS
-            .stream()
-            .filter((listener)->listener instanceof ErrorListener)
-            .map((listener)->(ErrorListener)listener)
-            .toArray((size)->new ErrorListener[size]);
     }
     
     /**

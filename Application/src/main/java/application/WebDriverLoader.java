@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import logging.Logger;
 import util.Browser;
 
 /**
@@ -46,7 +47,7 @@ public final class WebDriverLoader {
             String fileName = split[0];
             Browser b = Browser.getByDriverFileName(fileName);
             if(b == null){
-                forApp.getLog().logError("Cannot find browser with webdriver named " + fileName);
+                Logger.logError("WebDriverLoader.loadFolder", "Cannot find browser with webdriver named " + fileName);
             } else {
                 saveDriverPath(b, savedDriver.getAbsolutePath());
             }
@@ -89,10 +90,10 @@ public final class WebDriverLoader {
                 try {
                     Files.delete(Paths.get(path));
                 } catch (AccessDeniedException ex){
-                    forApp.getLog().logError("Unable to delete " + path + ". Please use your task manager to verify that no instances of this executable are being run.");
-                    forApp.getLog().logError(ex);
+                    Logger.logError("WebDriverLoader.clearDriverPath", "Unable to delete " + path + ". Please use your task manager to verify that no instances of this executable are being run.");
+                    Logger.logError("WebDriverLoader.clearDriverPath", ex);
                 } catch (IOException ex) {
-                    forApp.getLog().logError(ex);
+                    Logger.logError("WebDriverLoader.clearDriverPath", ex);
                 }
             }
         }
@@ -114,10 +115,10 @@ public final class WebDriverLoader {
             try {
                 Files.delete(Paths.get(f.getAbsolutePath()));
             } catch (AccessDeniedException ex){
-                forApp.getLog().logError("Unable to delete " + f.getAbsolutePath() + ". Please use your task manager to verify that no instances of this executable are being run.");
-                forApp.getLog().logError(ex);
+                Logger.logError("WebDriverLoader.clearAllDriverPaths", "Unable to delete " + f.getAbsolutePath() + ". Please use your task manager to verify that no instances of this executable are being run.");
+                Logger.logError("WebDriverLoader.clearAllDriverPaths", ex);
             } catch (IOException ex) {
-                forApp.getLog().logError(ex);
+                Logger.logError("WebDriverLoader.clearAllDriverPaths", ex);
             }
         });
     }
@@ -182,7 +183,7 @@ public final class WebDriverLoader {
             String newPath = copyWebDriver(b, path);
             saveDriverPath(b, newPath);
         } catch (IOException ex) {
-            forApp.getLog().logError(ex);
+            Logger.logError("WebDriverLoader.loadWebDriver", ex);
             saveDriverPath(b, path);
         }
     }

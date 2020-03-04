@@ -4,6 +4,7 @@ import gui.LauncherFrame;
 import io.FileSystem;
 import java.io.File;
 import java.io.IOException;
+import logging.Logger;
 import main.EntryPoint;
 
 /**
@@ -49,7 +50,7 @@ public class Launcher extends EntryPoint{
                 try {
                     builder.start();
                 } catch (IOException ex) {
-                    l.getLog().logError(ex);
+                    Logger.logError("Launcher.doRun", ex);
                 }
             }
         };

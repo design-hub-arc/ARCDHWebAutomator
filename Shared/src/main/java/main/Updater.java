@@ -26,6 +26,7 @@ import javax.json.JsonArray;
 import javax.json.JsonReader;
 import logging.ApplicationLog;
 import logging.ErrorLogger;
+import logging.Logger;
 import logging.LoggerInterface;
 
 /**
@@ -382,6 +383,6 @@ public class Updater {
     public static void main(String[] args) throws IOException{
         ApplicationLog log = new ApplicationLog();
         Updater.updateAll(new LoggerInterface[]{log});
-        System.out.println(log.getLog());
+        System.out.println(Logger.getLog());
     }
 }

@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import logging.ApplicationLog;
+import logging.Logger;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -56,7 +57,7 @@ public class RunWindow extends Page{
             @Override
             public void run(){
                 try{
-                    log.clearFlags();
+                    Logger.clearFlags();
                     AbstractAutomation aa = aClass.newInstance();
                     text.setText("***Program output will appear here***\n");
                     aa.addLogger(text);
@@ -68,7 +69,7 @@ public class RunWindow extends Page{
                     
                     aa.run(driverClass);
                 } catch (Exception ex){
-                    log.logError(ex);
+                    Logger.logError("RunWindow.run", ex);
                 }
             }
         }.start();

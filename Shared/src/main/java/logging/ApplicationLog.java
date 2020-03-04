@@ -11,6 +11,32 @@ import logging.ErrorLogger;
  * @author Matt
  */
 public class ApplicationLog implements ErrorLogger{
+
+    @Override
+    public void logError(Exception ex) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void logError(String errMsg) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void log(String msg) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getLog() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean hasLoggedError() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    /*
     private final StringBuilder log;
     private final ArrayList<ErrorListener> errorListeners;
     private boolean hasLoggedError;
@@ -64,5 +90,5 @@ public class ApplicationLog implements ErrorLogger{
     @Override
     public String getLog() {
         return log.toString();
-    }
+    }*/
 }

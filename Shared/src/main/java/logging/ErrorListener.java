@@ -1,7 +1,5 @@
 package logging;
 
-import logging.ErrorLogger;
-
 /**
  * Classes which need to know when an ErrorLogger
  * logs a message should implement this interface,
@@ -13,23 +11,13 @@ import logging.ErrorLogger;
 
 public interface ErrorListener {
     /**
-     * Fires whenever the given log logs an error message.
-     * @param log the ErrorLogger which logged an error.
-     * @param msg the error message which was logged.
+     * Fires whenever the Logger logs an error message.
+     * @param errMsg the error message which was logged.
      */
-    public void errorLogged(ErrorLogger log, String msg);
+    public void errorLogged(String errMsg);
     
     /**
-     * Fired whenever the given ErrorLogger has its error log cleared
-     * @param log 
+     * Fired whenever the given Logger has its error log cleared
      */
-    public void logCleared(ErrorLogger log);
-
-    public default void errorLogged(String errMsg){
-        throw new UnsupportedOperationException();
-    }
-    
-    public default void logCleared(){
-        throw new UnsupportedOperationException();
-    }
+    public void logCleared();
 }

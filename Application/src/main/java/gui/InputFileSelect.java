@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import logging.Logger;
 
 /**
  *
@@ -85,7 +86,7 @@ public class InputFileSelect extends Page{
                 next();
             }
         } catch (Exception ex) {
-            getLog().logError(ex);
+            Logger.logError("InputFileSelect.selAuto", ex);
         }
     }
     
@@ -102,15 +103,15 @@ public class InputFileSelect extends Page{
                 selectedFile = CsvParser.toCsvFile(fileText).getSubfile(reqs.getReqHeaders());
                 String reformatted = selectedFile.toString();
                 addText(reformatted);
-                getLog().clearFlags();
+                Logger.clearFlags();
             } catch (CsvFileException ex){
                 disp.appendText("The file was not accepted for the following reasons:\n");
                 disp.appendText(ex.getMessage() + '\n');
-                getLog().logError(ex);
+                Logger.logError("InputFileSelect.selectFile", ex);
             } catch (Exception ex) {
                 disp.appendText("Encountered this error: \n");
                 disp.appendText(ex.getMessage() + '\n');
-                getLog().logError(ex);
+                Logger.logError("InputFileSelect.selectFile", ex);
             }    
         } else {
             accepted = true;
@@ -121,7 +122,7 @@ public class InputFileSelect extends Page{
     }
     
     private void addText(String text){
-        getLog().log(text);
+        Logger.log("InputFileSelect.addText", text);
         disp.appendText(text);
     }
     

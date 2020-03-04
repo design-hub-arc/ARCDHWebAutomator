@@ -3,6 +3,7 @@ package application;
 
 import gui.ApplicationWindow;
 import java.io.IOException;
+import logging.Logger;
 import main.EntryPoint;
 import logging.LoggerInterface;
 
@@ -42,7 +43,7 @@ public class Application extends EntryPoint{
         try {
             webDriverLoader.init();
         } catch (IOException ex) {
-            getLog().logError(ex);
+            Logger.logError("Application.doRun", ex);
         }
         ApplicationWindow w = new ApplicationWindow(this); //automatically listens to window
     }

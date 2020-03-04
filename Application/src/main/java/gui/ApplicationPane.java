@@ -13,6 +13,7 @@ import logging.ApplicationLog;
 import logging.ErrorLogger;
 import org.openqa.selenium.WebDriver;
 import logging.ErrorListener;
+import logging.Logger;
 
 /**
  *
@@ -74,14 +75,14 @@ public class ApplicationPane extends JPanel{
         JButton viewLogButton = new JButton("View Log");
         
         ApplicationLog log = inWindow.getApp().getLog();
-        log.addErrorListener(new ErrorListener(){
+        Logger.addErrorListener(new ErrorListener(){
             @Override
-            public void errorLogged(ErrorLogger log, String msg){
+            public void errorLogged(String msg){
                 viewLogButton.setText("Encountered an error");
             }
             
             @Override
-            public void logCleared(ErrorLogger log){
+            public void logCleared(){
                 viewLogButton.setText("View Log");
             };
         });
@@ -97,12 +98,12 @@ public class ApplicationPane extends JPanel{
     }
     
     public final void prev(){
-        forApp.getLog().clearFlags();
+        Logger.clearFlags();
         ((CardLayout)middle.getLayout()).previous(middle);
     }
     
     public final void next(){
-        forApp.getLog().clearFlags();
+        Logger.clearFlags();
         ((CardLayout)middle.getLayout()).next(middle);
     }
 }

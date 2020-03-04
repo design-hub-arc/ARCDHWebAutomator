@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import javax.swing.JFrame;
 import logging.ApplicationLog;
+import logging.Logger;
 import logging.LoggerInterface;
 
 /**
@@ -31,7 +32,7 @@ public abstract class EntryPoint {
             // for some reason, windowClosed doesn't fire.
             @Override
             public void windowClosing(WindowEvent e){
-                if(log.getLog().length() > 0){
+                if(Logger.getLog().length() > 0){
                     writeLog();
                 }
             }
@@ -105,7 +106,7 @@ public abstract class EntryPoint {
                 //System.out.println(jarFile.getAbsolutePath());
                 ret = jarFile.getAbsolutePath();
             } catch (URISyntaxException ex) {
-                log.logError(ex);
+                Logger.logError("EntryPoint.getRunningJar", ex);
             }
         }
         return ret;
@@ -117,7 +118,7 @@ public abstract class EntryPoint {
         try {
             Updater.updateAll(exclude, new LoggerInterface[]{log, otherLogger});
         } catch (IOException ex) {
-            log.logError(ex);
+            Logger.logError("EntryPoint.checkForUpdates", ex);
         }
     }
     
@@ -132,9 +133,8 @@ public abstract class EntryPoint {
     public final void run(){
         try {
             resources.init();
-            
         } catch (IOException ex) {
-            log.logError(ex);
+            Logger.logError("EntryPoint.run", ex);
         }
         doRun();
     }
