@@ -24,4 +24,12 @@ public interface ErrorListener {
      * @param log 
      */
     public void logCleared(ErrorLogger log);
+
+    public default void errorLogged(String errMsg){
+        throw new UnsupportedOperationException();
+    }
+    
+    public default void logCleared(){
+        throw new UnsupportedOperationException();
+    }
 }
