@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import javax.swing.JFrame;
-import logging.ApplicationLog;
 import logging.Logger;
 import logging.LoggerInterface;
 
@@ -21,12 +20,10 @@ import logging.LoggerInterface;
  * @author Matt Crow
  */
 public abstract class EntryPoint {
-    private final ApplicationLog log;
     private final FileSystem resources;
     private final WindowAdapter closeListener;
     
     public EntryPoint(){
-        log = new ApplicationLog();
         resources = new FileSystem();
         closeListener = new WindowAdapter(){
             // for some reason, windowClosed doesn't fire.
@@ -37,19 +34,6 @@ public abstract class EntryPoint {
                 }
             }
         };
-    }
-    
-    /**
-     * Used to get the message log used
-     * by this program. Developers should
-     * use this log to record program output
-     * which may be useful for debugging the
-     * program.
-     * 
-     * @return this program's output log. 
-     */
-    public ApplicationLog getLog(){
-        return log;
     }
     
     /**
@@ -79,7 +63,7 @@ public abstract class EntryPoint {
      */
     public void writeLog(){
         try {
-            resources.saveLog(log);
+            resources.saveLog();
         } catch (IOException ex) {
             System.err.println("Unable to write application log:");
             ex.printStackTrace();
@@ -116,7 +100,7 @@ public abstract class EntryPoint {
         String[] exclude = (isRunningFromJar()) ? new String[]{getRunningJar()} : new String[]{};
         System.out.println(Arrays.toString(exclude));
         try {
-            Updater.updateAll(exclude, new LoggerInterface[]{log, otherLogger});
+            Updater.updateAll(exclude, new LoggerInterface[]{otherLogger});
         } catch (IOException ex) {
             Logger.logError("EntryPoint.checkForUpdates", ex);
         }

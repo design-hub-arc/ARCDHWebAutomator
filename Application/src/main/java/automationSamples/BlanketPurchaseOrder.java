@@ -7,6 +7,7 @@ import csv.CsvParser;
 import csv.CsvRow;
 import io.FileReaderUtil;
 import java.io.IOException;
+import logging.Logger;
 import org.openqa.selenium.By;
 import util.HtmlTable;
 
@@ -44,7 +45,7 @@ public class BlanketPurchaseOrder extends AbstractPeopleSoftAutomation{
             CsvFile result = getResultFile();
             result.concatinateWith(template);
         } catch (IOException ex) {
-            reportError(ex);
+            Logger.logError("BlanketPurchaseOrder.initResult", ex);
         }
     }
     

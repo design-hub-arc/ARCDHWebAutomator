@@ -3,6 +3,7 @@ package automationTools;
 import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvRow;
+import logging.Logger;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -105,8 +106,8 @@ public abstract class AbstractQueryGatherAutomation extends AbstractAutomation i
                 getWait().until(e); 
                 readQueryResult(result);
             } catch(TimeoutException timeOut){
-                reportError("Did not transition to result page after inputting query: [" + q + "]");
-                reportError(timeOut);
+                Logger.logError("AbstractQueryGatherAutomation.doRun", "Did not transition to result page after inputting query: [" + q + "]");
+                Logger.logError("AbstractQueryGatherAutomation.doRun", timeOut);
             }
         }
         saveResultToFile();

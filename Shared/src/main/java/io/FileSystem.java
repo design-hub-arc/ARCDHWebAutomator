@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import logging.Logger;
 import logging.LoggerInterface;
 
 /**
@@ -87,7 +88,13 @@ public final class FileSystem {
         FileWriterUtil.writeToFile(newFile, contents);
     }
     
-    public void saveLog(LoggerInterface log) throws IOException{
-        saveToFile(LOG_FOLDER_PATH, "Log" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", log.getLog());
+    /**
+     * Saves the output of the Logger class
+     * to the log output folder.
+     * 
+     * @throws IOException if any errors occur when writing the file 
+     */
+    public void saveLog() throws IOException{
+        saveToFile(LOG_FOLDER_PATH, "Log" + LocalDateTime.now().format(DATE_FORMAT) + ".txt", Logger.getLog());
     }
 }

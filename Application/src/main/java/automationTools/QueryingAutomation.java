@@ -4,6 +4,7 @@ import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvRow;
 import java.util.NoSuchElementException;
+import logging.Logger;
 
 /**
  * The QueryingAutomation interface should
@@ -58,14 +59,14 @@ public interface QueryingAutomation {
         CsvFile queryFile = getQueryFile();
         
         if(auto != null){
-            auto.writeOutput("Before dequeueing:\n" + queryFile.toString());
+            Logger.log("QueryingAutomation.getNextQuery", "Before dequeueing:\n" + queryFile.toString());
         }
         
         CsvRow nextQuery = queryFile.dequeueFirstRow();
         
         if(auto != null){
-            auto.writeOutput("Dequeued: " + nextQuery.toString());
-            auto.writeOutput("After dequeueing:\n" + queryFile.toString());
+            Logger.log("QueryingAutomation.getNextQuery", "Dequeued: " + nextQuery.toString());
+            Logger.log("QueryingAutomation.getNextQuery", "After dequeueing:\n" + queryFile.toString());
         }
         
         return nextQuery;

@@ -9,8 +9,6 @@ import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import logging.ApplicationLog;
-import logging.ErrorLogger;
 import org.openqa.selenium.WebDriver;
 import logging.ErrorListener;
 import logging.Logger;
@@ -74,7 +72,6 @@ public class ApplicationPane extends JPanel{
         bottom.setLayout(new FlowLayout());
         JButton viewLogButton = new JButton("View Log");
         
-        ApplicationLog log = inWindow.getApp().getLog();
         Logger.addErrorListener(new ErrorListener(){
             @Override
             public void errorLogged(String msg){
@@ -87,7 +84,7 @@ public class ApplicationPane extends JPanel{
             };
         });
         viewLogButton.addActionListener((e)->{
-            new LogViewer(log);
+            new LogViewer(null); //LogViewer will be changed to just display Logger
         });
         bottom.add(viewLogButton);
         add(bottom, BorderLayout.PAGE_END);

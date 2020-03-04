@@ -4,8 +4,8 @@ import automationTools.AbstractPeopleSoftAutomation;
 import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvRow;
-import java.util.ArrayList;
 import java.util.Arrays;
+import logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -49,7 +49,7 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
     public void readQueryResult(CsvFile saveFile) {
         WebDriver d = getDriver();
         String url = d.getCurrentUrl();
-        writeOutput("URL is " + url);
+        Logger.log("RequisitionAutomation.readQueryResult", "URL is " + url);
         
         //expand if we have not yet expanded
         boolean expand = false;
@@ -66,7 +66,7 @@ public class RequisitionAutomation extends AbstractPeopleSoftAutomation{
         if(expand){
             awaitFindElement(By.xpath("//a[@href='/REQ_HistoryQ.asp?REQ_History_PagingMove=ALL']")).click();
         }
-        writeOutput((expand) ? "I should probably expand this." : "Don't bother expanding");
+        Logger.log("RequisitionAutomation.readQueryResult", (expand) ? "I should probably expand this." : "Don't bother expanding");
         
         WebElement e = awaitFindElement(By.xpath("//table[@border=1]"));
         HtmlTable t = new HtmlTable(e);

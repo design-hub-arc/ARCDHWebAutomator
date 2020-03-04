@@ -4,8 +4,8 @@ import automationTools.AbstractPeopleSoftAutomation;
 import csv.CsvFile;
 import csv.CsvFileRequirements;
 import csv.CsvRow;
-import java.util.ArrayList;
 import java.util.Arrays;
+import logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import util.HtmlTable;
@@ -48,7 +48,7 @@ public class PurchaseOrderAutomation extends AbstractPeopleSoftAutomation{
     public void readQueryResult(CsvFile saveFile) {
         WebDriver driver = getDriver();
         String url = driver.getCurrentUrl();
-        writeOutput("URL is " + url);
+        Logger.log("PurchaseOrderAutomation.readQueryResult", "URL is " + url);
         
         boolean expand = false;
         if(url.indexOf('?') == -1){
@@ -64,7 +64,7 @@ public class PurchaseOrderAutomation extends AbstractPeopleSoftAutomation{
         if(expand){
             awaitFindElement(By.xpath("//a[@href='/PO_HistoryQ.asp?POID_History_PagingMove=ALL']")).click();
         }
-        writeOutput((expand) ? "I should probably expand this." : "Don't bother expanding");
+        Logger.log("PurchaseOrderAutomation.readQueryResult", (expand) ? "I should probably expand this." : "Don't bother expanding");
         HtmlTable t = new HtmlTable(awaitFindElement(By.xpath("//table[@border=1]")));
         CsvFile tableCsv = t.toCsvFile();
         saveFile.concatinateWith(tableCsv);

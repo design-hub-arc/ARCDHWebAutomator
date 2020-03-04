@@ -24,8 +24,6 @@ import java.util.Properties;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
-import logging.ApplicationLog;
-import logging.ErrorLogger;
 import logging.Logger;
 import logging.LoggerInterface;
 
@@ -41,7 +39,6 @@ import logging.LoggerInterface;
 public class Updater {
     private final GitHubUrl jarDownloadUrl;
     private final String jarLocalPath;
-    private final ArrayList<LoggerInterface> loggers;
     
     //                                                   single quotes for literal
     private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -57,89 +54,6 @@ public class Updater {
     public Updater(GitHubUrl jarUrl, String localPath){
         jarDownloadUrl = jarUrl;
         jarLocalPath = localPath;
-        loggers = new ArrayList<>();
-    }
-    
-    
-    /*
-    Output related methods.
-    */
-    
-    /**
-     * Registers an object implementing the
- LoggerInterface interface to receive output
- from this object.
-     * 
-     * @param l 
-     * @return this, for chaining purposes
-     */
-    public Updater addLogger(LoggerInterface l){
-        loggers.add(l);
-        return this;
-    }
-    
-    /**
-     * Prints the given message to each
-     * logger added to this object. If no
-     * loggers are added, prints the message
-     * to System.out.
-     * 
-     * @param msg 
-     */
-    public void writeOutput(String msg){
-        if(loggers.isEmpty()){
-            System.out.println(msg);
-        }
-        loggers.forEach((logger)->logger.log(msg));
-    }
-    
-    /**
-     * Prints the given error message to
-     * each logger added to this, so long
-     * as they implement the ErrorLogger interface.
-     * If no such ErrorLogger is attached, prints
-     * to System.err.
-     * 
-     * @param msg 
-     */
-    public void reportError(String msg){
-        ErrorLogger[] errLogs = loggers.stream()
-            .filter((logger)->{
-            return logger instanceof ErrorLogger;
-        }).map((logger)->{
-            return (ErrorLogger)logger;
-        }).toArray((size)->new ErrorLogger[size]);
-        if(errLogs.length == 0){
-            System.err.println(msg);
-        } else {
-            for(ErrorLogger logger : errLogs){
-                logger.logError(msg);
-            }
-        }
-    }
-    
-    /**
-     * Prints the stack trace for the given
-     * exception to each ErrorLogger added to
-     * this. If no such logger has been added,
-     * prints the stack trace to standard output.
-     * 
-     * @param ex 
-     */
-    public void reportError(Exception ex){
-        ErrorLogger[] errLogs = loggers.stream()
-            .filter((logger)->{
-            return logger instanceof ErrorLogger;
-        }).map((logger)->{
-            return (ErrorLogger)logger;
-        }).toArray((size)->new ErrorLogger[size]);
-        if(errLogs.length == 0){
-            ex.printStackTrace();
-        } else {
-            for(ErrorLogger logger : errLogs){
-                logger.logError(ex);
-            }
-        }
     }
     
     
@@ -171,9 +85,9 @@ public class Updater {
                 date = FORMAT.parse(FORMAT.format(ft.toMillis()));
                 System.out.println("installed JAR last updated: " + FORMAT.format(date));
             } catch (IOException ex) {
-                reportError(ex);
+                Logger.logError("Updater.getInstalledJarDate", ex);
             } catch (ParseException ex) {
-                reportError(ex);
+                Logger.logError("Updater.getInstalledJarDate", ex);
             }
         }
         return date;
@@ -195,7 +109,7 @@ public class Updater {
         
         //https://developer.github.com/v3/
         //https://developer.github.com/v3/repos/commits/
-        writeOutput("Checking GitHub API for latest update....");
+        Logger.log("Updater.getLatestManifestDate", "Checking GitHub API for latest update....");
         try {
             URL apiUrl = new URL(String.format("https://api.github.com/repos/%s/%s/commits?sha=%s&path=%s&page=1&per_page=1", jarDownloadUrl.getOwner(), jarDownloadUrl.getRepo(), jarDownloadUrl.getBranch(), jarDownloadUrl.getFilePath()));
             JsonReader read = Json.createReader(apiUrl.openStream());
@@ -205,13 +119,13 @@ public class Updater {
             String sDate = arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date");
             //System.out.println(sDate);
             date = FORMAT.parse(sDate);
-            writeOutput("GitHub: " + FORMAT.format(date));
+            Logger.log("Updater.getLatestManifestDate", "GitHub: " + FORMAT.format(date));
         } catch (MalformedURLException ex) {
-            reportError(ex);
+            Logger.logError("Updater.getLatestManifestDate", ex);
         } catch (IOException ex) {
-            reportError(ex);
+            Logger.logError("Updater.getLatestManifestDate", ex);
         } catch (ParseException ex) {
-            reportError(ex);
+            Logger.logError("Updater.getLatestManifestDate", ex);
         }
         
         return date;
@@ -226,13 +140,13 @@ public class Updater {
         //https://www.baeldung.com/java-download-file
         URL downloadMe = new URL(jarDownloadUrl.toString());
         File writeToMe = new File(jarLocalPath);
-        writeOutput("Downloading...");
+        Logger.log("Updater.downloadAndInstall", "Downloading...");
         BufferedInputStream buff = new BufferedInputStream(downloadMe.openStream());
         FileOutputStream out = new FileOutputStream(writeToMe);
         ReadableByteChannel in = Channels.newChannel(buff);
-        writeOutput("Installing...");
+        Logger.log("Updater.downloadAndInstall", "Installing...");
         out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
-        writeOutput("Installed successfully!");
+        Logger.log("Updater.downloadAndInstall", "Installed successfully!");
     }
     
     
@@ -254,21 +168,21 @@ public class Updater {
         
         if(currVersion == null && latestVersion == null){
             //cannot compare
-            reportError("both the current and latest JAR version are null, so I cannot compare them");
+            Logger.logError("Updater.latestIsNewer", "both the current and latest JAR version are null, so I cannot compare them");
         } else if(latestVersion == null){
             //latest is null, current isn't
-            reportError("Something may be wrong with the file on GitHub: the current version is dated " + FORMAT.format(currVersion) + ", while the GitHub manifest lists null");
+            Logger.logError("Updater.latestIsNewer", "Something may be wrong with the file on GitHub: the current version is dated " + FORMAT.format(currVersion) + ", while the GitHub manifest lists null");
         } else if(currVersion == null){
             //current is null, latest isn't
             latestIsNewer = true;
         } else {
             //neither is null, so compare
-            writeOutput("Currently installed is " + FORMAT.format(currVersion) + ", " + "newest is " + FORMAT.format(latestVersion));
+            Logger.log("Updater.latestIsNewer", "Currently installed is " + FORMAT.format(currVersion) + ", " + "newest is " + FORMAT.format(latestVersion));
             if(latestVersion.after(currVersion)){
-                writeOutput("Currently installed app is outdated, please wait while I install the newest version...");
+                Logger.log("Updater.latestIsNewer", "Currently installed app is outdated, please wait while I install the newest version...");
                 latestIsNewer = true;
             } else {
-                writeOutput("Looks like everything is up to date!");
+                Logger.log("Updater.latestIsNewer", "Looks like everything is up to date!");
             }
         }
         
@@ -290,7 +204,7 @@ public class Updater {
             shouldInstall = latestIsNewer(currentlyInstalled, latestVersion);
         } else {
             //TODO: if this is running from JAR, move it to the app bin folder
-            writeOutput(jarLocalPath + " is not installed, so I will install it.");
+            Logger.log("Updater.shouldInstall", jarLocalPath + " is not installed, so I will install it.");
             shouldInstall = true;
         }
         
@@ -349,28 +263,25 @@ public class Updater {
                 url,
                 FileSystem.JAR_FOLDER_PATH + File.separator + url.getFileName()
             );
-            for(LoggerInterface logger : out){
-                up.addLogger(logger);
-            }
             updaters.add(up);
         }
         
         // now, download and install
         updaters.forEach((updater)->{
             boolean excludeMe = false;
-            updater.writeOutput(updater.toString());
+            Logger.log("Updater.updateAll", updater.toString());
             for(String excluded : exclude){
                 if(excluded.equals(updater.jarLocalPath)){
                     excludeMe = true;
                 }
             }
             if(excludeMe){
-                updater.writeOutput("Don't update " + updater.jarLocalPath);
+                Logger.log("Updater.updateAll", "Don't update " + updater.jarLocalPath);
             } else {
                 try {
                     updater.run();
                 } catch (IOException ex) {
-                    updater.reportError(ex);
+                    Logger.logError("Updater.updateAll", ex);
                 }
             }
         });
@@ -381,8 +292,7 @@ public class Updater {
     }
     
     public static void main(String[] args) throws IOException{
-        ApplicationLog log = new ApplicationLog();
-        Updater.updateAll(new LoggerInterface[]{log});
+        Updater.updateAll(new LoggerInterface[]{});
         System.out.println(Logger.getLog());
     }
 }

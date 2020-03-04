@@ -1,12 +1,11 @@
 package logging;
 
 /**
- * Classes which need to know when an ErrorLogger
- * logs a message should implement this interface,
- * and add themselves as an errorLogListener to that
- * error logger.
+ * Classes which need to know when the Logger
+ * logs an error message should implement this interface,
+ * and add themselves to the Logger as an error listener.
  * 
- * @author matt Crow
+ * @author Matt Crow
  */
 
 public interface ErrorListener {

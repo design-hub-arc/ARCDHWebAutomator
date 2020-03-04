@@ -1,14 +1,12 @@
 package automationTools;
 
-import java.util.ArrayList;
 import java.util.List;
-import logging.ErrorLogger;
+import logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import logging.LoggerInterface;
 
 /**
  * The AbstractAutomation class serves as
@@ -29,8 +27,6 @@ public abstract class AbstractAutomation {
     private WebDriverWait wait;
     private boolean running;
     
-    private final ArrayList<LoggerInterface> loggers;
-    
     /**
      * 
      * @param autoName the name of this automation
@@ -43,7 +39,6 @@ public abstract class AbstractAutomation {
         driver = null;
         wait = null;
         running = false;
-        loggers = new ArrayList<>();
     }
     
     public final String getName(){
@@ -57,18 +52,6 @@ public abstract class AbstractAutomation {
      */
     public final String getDesc(){
         return desc;
-    }
-    
-    /**
-     * Adds an object which should receive output from the automation.
-     * This defaults to sending output to System.out, but RunWindow calls this method,
-     * passing in its ScrollableTextDisplay.
-     * @param l an object implementing the logging.LoggerInterface interface
-     * @return this, for chaining purposes
-     */
-    public AbstractAutomation addLogger(LoggerInterface l){
-        loggers.add(l);
-        return this;
     }
     
     /**
@@ -140,63 +123,6 @@ public abstract class AbstractAutomation {
     }
     
     /**
-     * Sends a string to the current loggers.
-     * 
-     * @param output the text to write to output, with a newline appended to the end.
-     * @return this, for chaining purposes
-     */
-    public final AbstractAutomation writeOutput(String output){
-        if(loggers.isEmpty()){
-            System.out.println(output);
-        } else {
-            loggers.forEach((logger)->logger.log(output));
-        }
-        return this;
-    }
-    
-    /**
-     * Sends an error message to the error logs.
-     * 
-     * @param msg the error text to write.
-     * @return this, for chaining purposes
-     */
-    public final AbstractAutomation reportError(String msg){
-        if(loggers.isEmpty()){
-            System.err.println(msg);
-        } else {
-            loggers.forEach((logger)->{
-                if(logger instanceof ErrorLogger){
-                    ((ErrorLogger)logger).logError(msg);
-                } else {
-                    logger.log(msg);
-                }
-            });
-        }
-        return this;
-    }
-    
-    /**
-     * Sends an error message to the error logs.
-     * 
-     * @param ex the exception to send to the error logger
-     * @return this, for chaining purposes
-     */
-    public final AbstractAutomation reportError(Exception ex){
-        if(loggers.isEmpty()){
-            ex.printStackTrace();
-        } else {
-            loggers.forEach((logger)->{
-                if(logger instanceof ErrorLogger){
-                    ((ErrorLogger)logger).logError(ex);
-                } else {
-                    logger.log(ex.toString());
-                }
-            });
-        }
-        return this;
-    }
-    
-    /**
      * Shuts down the WebDriver and wait used
      * by this automation. Only works if the
      * automation is currently being run. Note
@@ -206,7 +132,7 @@ public abstract class AbstractAutomation {
      * @return this, for chaining purposes. 
      */
     private AbstractAutomation finish(){
-        writeOutput("Done running, quitting browser.");
+        Logger.log("AbstractAutomation.finish", "Done running, quitting browser.");
         if(driver != null){
             driver.quit();
             driver = null;
@@ -232,17 +158,17 @@ public abstract class AbstractAutomation {
             throw new UnsupportedOperationException("Cannot run automation, as it is already running");
         }
         running = true;
-        writeOutput("Running " + getClass().getName());
-        writeOutput("Attempting to create WebDriver from " + driverClass.getName());
+        Logger.log("AbstractAutomation.run", "Running " + getClass().getName());
+        Logger.log("AbstractAutomation.run", "Attempting to create WebDriver from " + driverClass.getName());
         try{
             driver = driverClass.newInstance();
             wait = new WebDriverWait(driver, 10);
-            writeOutput("Driver created successfully.");
+            Logger.log("AbstractAutomation.run", "Driver created successfully.");
             doRun();
             finish();
-            writeOutput("Automation completed successfully");
+            Logger.log("AbstractAutomation.run", "Automation completed successfully");
         } catch(IllegalAccessException | InstantiationException e){
-            writeOutput("Unable to create dirver. Please see error log for details. Terminating process.");
+            Logger.log("AbstractAutomation.run", "Unable to create dirver. Please see error log for details. Terminating process.");
             finish(); //make sure we finish
             throw e;
         }

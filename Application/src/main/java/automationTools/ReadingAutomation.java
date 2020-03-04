@@ -4,6 +4,7 @@ import csv.CsvFile;
 import io.FileSelector;
 import io.FileWriterUtil;
 import java.io.IOException;
+import logging.Logger;
 
 /**
  * ReadingAutomation should be implemented by automations
@@ -30,28 +31,16 @@ public interface ReadingAutomation {
     public abstract CsvFile getResultFile();
     
     public default void saveResultToFile(){
-        AbstractAutomation auto = 
-            (this instanceof AbstractAutomation) 
-            ? (AbstractAutomation)this 
-            : null;
-        
-        if(auto != null){
-            auto.writeOutput("Saving file:\n" + getResultFile().toString());
-        }
+        Logger.log("ReadingAutomation.saveResultToFile", "Saving file:\n" + getResultFile().toString());
         FileSelector.createNewFile("Where do you want to save the automation result?", (f)->{
-            if(auto != null){
-                auto.writeOutput("Attempting to write to " + f.getAbsolutePath());
-            }
+            Logger.log("ReadingAutomation.saveResultToFile", "Attempting to write to " + f.getAbsolutePath());
+            
             try {
                 FileWriterUtil.writeToFile(f, getResultFile().toString());
-                if(auto != null){
-                    auto.writeOutput("file written successfully");
-                }
+                Logger.log("ReadingAutomation.saveResultToFile", "file written successfully");
             } catch (IOException ex) {
-                if(auto != null){
-                    auto.reportError(ex);
-                    auto.reportError("failed to write to file");
-                }
+                Logger.logError("ReadingAutomation.saveResultToFile", ex);
+                Logger.logError("ReadingAutomation.saveResultToFile", "failed to write to file");
             }
         });
     }

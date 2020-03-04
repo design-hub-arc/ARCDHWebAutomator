@@ -4,13 +4,11 @@ import guiComponents.ScrollableTextDisplay;
 import automationTools.AbstractAutomation;
 import automationTools.QueryingAutomation;
 import csv.CsvFile;
-import csv.CsvParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import logging.ApplicationLog;
 import logging.Logger;
 import org.openqa.selenium.WebDriver;
 
@@ -52,7 +50,6 @@ public class RunWindow extends Page{
     }
     
     public final void run(Class<? extends AbstractAutomation> aClass, CsvFile inputFile, Class<? extends WebDriver> driverClass){
-        ApplicationLog log = getLog();
         new Thread(){
             @Override
             public void run(){
@@ -60,8 +57,7 @@ public class RunWindow extends Page{
                     Logger.clearFlags();
                     AbstractAutomation aa = aClass.newInstance();
                     text.setText("***Program output will appear here***\n");
-                    aa.addLogger(text);
-                    aa.addLogger(log);
+                    Logger.addMessageListener(text);
                     
                     if(aa instanceof QueryingAutomation){
                         ((QueryingAutomation)aa).setQueryFile(inputFile);
