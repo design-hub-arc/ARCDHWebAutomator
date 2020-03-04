@@ -5,7 +5,6 @@ import gui.ApplicationWindow;
 import java.io.IOException;
 import logging.Logger;
 import main.EntryPoint;
-import logging.LoggerInterface;
 
 /**
  * Application serves as the entry point for
@@ -53,17 +52,7 @@ public class Application extends EntryPoint{
         Thread updater = new Thread(){
             @Override
             public void run(){
-                app.checkForUpdates(new LoggerInterface(){
-                    @Override
-                    public void log(String s) {
-                        System.out.println(s);
-                    }
-
-                    @Override
-                    public String getLog() {
-                        return "";
-                    }
-                });
+                app.checkForUpdates(System.out::println);
             }
         };
         updater.start();

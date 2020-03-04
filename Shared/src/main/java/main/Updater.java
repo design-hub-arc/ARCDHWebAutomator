@@ -25,7 +25,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 import logging.Logger;
-import logging.LoggerInterface;
+import logging.MessageListener;
 
 /**
  * The Updater class is used to automatically download
@@ -238,7 +238,7 @@ public class Updater {
      * such as the running JAR file.
      * @param out the Loggers to receive output from the Updaters
      */
-    public static void updateAll(String[] exclude, LoggerInterface[] out) throws IOException{
+    public static void updateAll(String[] exclude, MessageListener[] out) throws IOException{
         
         // first, read repository file
         InputStream in = Updater.class.getResourceAsStream("/repositoryInfo.properties");
@@ -287,12 +287,12 @@ public class Updater {
         });
     }
     
-    public static void updateAll(LoggerInterface[] out) throws IOException{
+    public static void updateAll(MessageListener[] out) throws IOException{
         updateAll(new String[]{}, out);
     }
     
     public static void main(String[] args) throws IOException{
-        Updater.updateAll(new LoggerInterface[]{});
+        Updater.updateAll(new MessageListener[]{});
         System.out.println(Logger.getLog());
     }
 }

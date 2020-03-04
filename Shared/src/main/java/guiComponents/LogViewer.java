@@ -10,18 +10,18 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import logging.LoggerInterface;
+import logging.Logger;
 
 /**
- *
+ * Allows the user to view the contents of the Logger
  * @author Matt Crow
  */
 public class LogViewer extends JDialog{
     private final String msg;
     
-    public LogViewer(LoggerInterface log){
+    public LogViewer(){
         super();
-        msg = log.getLog();
+        msg = Logger.getLog();
         
         JPanel content = new JPanel();
         content.setLayout(new BorderLayout());

@@ -7,15 +7,15 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import logging.LoggerInterface;
+import logging.MessageListener;
 
 /**
- * Not sure if I want this to implement LoggerInterface,
+ * Not sure if I want this to implement MessageListener,
  since while is does need to report messages, it needn't store them.
  * 
  * @author Matt Crow
  */
-public class ScrollableTextDisplay extends JPanel implements LoggerInterface{
+public class ScrollableTextDisplay extends JPanel implements MessageListener{
     private final JTextArea textArea;
     private final JScrollPane pane;
     private final StringBuilder text;
@@ -64,13 +64,8 @@ public class ScrollableTextDisplay extends JPanel implements LoggerInterface{
     }
 
     @Override
-    public void log(String s) {
+    public void messageLogged(String s) {
         log.append(s).append('\n');
         appendText(s + '\n');
-    }
-
-    @Override
-    public String getLog() {
-        return log.toString();
     }
 }

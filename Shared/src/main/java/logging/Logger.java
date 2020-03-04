@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class Logger {
     private static final StringBuilder LOG = new StringBuilder();
-    private static final ArrayList<LoggerInterface> MSG_LISTENERS = new ArrayList<>();
+    private static final ArrayList<MessageListener> MSG_LISTENERS = new ArrayList<>();
     private static final ArrayList<ErrorListener> ERR_LISTENERS = new ArrayList<>();
     private static boolean errorFlag = false;
     
@@ -20,13 +20,13 @@ public class Logger {
     }
     
     /**
-     * Registers the given object implementing LoggerInterface to
-     * receive messages from the Logger: any message the Logger logs
-     * will be sent to this LoggerInterface as well.
+     * Registers the given object implementing MessageListener to
+ receive messages from the Logger: any message the Logger logs
+ will be sent to this MessageListener as well.
      * 
      * @param i the object to receive messages in addition to the Logger.
      */
-    public static final void addMessageListener(LoggerInterface i){
+    public static final void addMessageListener(MessageListener i){
         if(i == null){
             throw new NullPointerException("Cannot add null as a message listener");
         }
@@ -54,7 +54,7 @@ public class Logger {
      * @param i the object to remove from the message listener list
      * @return whether or not the given object was in the list to begin with
      */
-    public static final boolean removeMessageListener(LoggerInterface i){
+    public static final boolean removeMessageListener(MessageListener i){
         if(i == null){
             throw new NullPointerException("Cannot remove null as a message listener");
         }
@@ -84,7 +84,7 @@ public class Logger {
     }
     
     /**
-     * Logs the given message so it can later be written to a log file.
+     * Logs the given message so it can later be written to a messageLogged file.
      * This message is also send to each message listener attached to
      * the Logger. If no message listeners are attached, writes the message
      * to standard output.
@@ -108,12 +108,12 @@ public class Logger {
         if(MSG_LISTENERS.isEmpty()){
             System.out.println(formattedMsg);
         } else {
-            MSG_LISTENERS.forEach((LoggerInterface log)->log.log(formattedMsg));
+            MSG_LISTENERS.forEach((MessageListener log)->log.messageLogged(formattedMsg));
         }
     }
     
     /**
-     * Logs the given error message so it can later be written to a log file.
+     * Logs the given error message so it can later be written to a messageLogged file.
      * This message is also send to each error listener attached to the Logger. 
      * If no error message listeners are attached, 
      * writes the message to standard error output.
@@ -145,7 +145,7 @@ public class Logger {
     }
     
     /**
-     * Logs the given exception's stack trace so it can later be written to a log file.
+     * Logs the given exception's stack trace so it can later be written to a messageLogged file.
      * This stack trace is also send to each error listener attached to the Logger. 
      * If no error message listeners are attached, 
      * prints the exception's stack trace to standard error output.
@@ -155,7 +155,7 @@ public class Logger {
      * the message originated. Generally speaking, you'll probably want this
      * identifier to show the class and method which wrote the message, just
      * to make it easy to locate.
-     * @param ex the exception to log
+     * @param ex the exception to messageLogged
      */
     public static final void logError(String source, Exception ex){
         if(source == null){

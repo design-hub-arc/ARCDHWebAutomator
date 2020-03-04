@@ -84,7 +84,7 @@ public class ApplicationPane extends JPanel{
             };
         });
         viewLogButton.addActionListener((e)->{
-            new LogViewer(null); //LogViewer will be changed to just display Logger
+            new LogViewer();
         });
         bottom.add(viewLogButton);
         add(bottom, BorderLayout.PAGE_END);
