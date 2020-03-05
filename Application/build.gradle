@@ -9,8 +9,6 @@ if (!hasProperty('mainClass')) {
 }
 
 jar {
-    archiveFileName = 'Application.jar';
-
     //need to manually set main class, otherwise, it just compiles the JAR as a library
     manifest {
         attributes(

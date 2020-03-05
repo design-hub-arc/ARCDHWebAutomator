@@ -10,8 +10,6 @@ if (!hasProperty('mainClass')) {
 }
 
 jar {
-    archiveFileName = 'Shared.jar';
-
     //include dependencies in JAR file
     from {
         configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }

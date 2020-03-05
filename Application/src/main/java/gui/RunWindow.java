@@ -67,6 +67,7 @@ public class RunWindow extends Page{
                 } catch (Exception ex){
                     Logger.logError("RunWindow.run", ex);
                 }
+                Logger.removeMessageListener(text);
             }
         }.start();
     }

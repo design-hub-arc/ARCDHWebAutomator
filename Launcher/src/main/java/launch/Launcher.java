@@ -1,6 +1,7 @@
 package launch;
 
 import gui.LauncherFrame;
+import guiComponents.ScrollableTextDisplay;
 import io.FileSystem;
 import java.io.File;
 import java.io.IOException;
@@ -32,13 +33,15 @@ public class Launcher extends EntryPoint{
     public void doRun(){
         LauncherFrame window = new LauncherFrame();
         listenToWindow(window);
-        Logger.addMessageListener(window.getContent().getTextDisplay());
+        ScrollableTextDisplay disp = window.getContent().getTextDisplay();
+        Logger.addMessageListener(disp);
         
         try {
             Installer.install();
         } catch (IOException ex) {
             Logger.logError("Launcher.doRun", ex);
         }
+        checkForUpdates();
         
         Thread appThread = new Thread(){
             @Override
@@ -53,6 +56,7 @@ public class Launcher extends EntryPoint{
             }
         };
         appThread.start();
+        Logger.removeMessageListener(disp);
         writeLog();
         window.dispose();
     }
