@@ -1,4 +1,2 @@
 *) Test .sh files on Mac and Linux
-*) implement Installer and pipe its output to Logger
 *) Update README.md
-*) Make logging static

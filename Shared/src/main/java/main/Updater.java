@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.TimeZone;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
@@ -42,8 +44,12 @@ public class Updater {
     //                                                   single quotes for literal
     private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     // this is the format the GitHub API outputs dates in
+    // the Z means "no time offest" (is UTC time zone)
     
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat(TIME_FORMAT, Locale.getDefault());
+    static {
+        FORMAT.setTimeZone(TimeZone.getTimeZone("UTC")); //ensure that all dates parsed are in UTC time
+    }
     
     /**
      * 
@@ -111,11 +117,14 @@ public class Updater {
         Logger.log("Updater.getLatestManifestDate", "Checking GitHub API for latest update....");
         try {
             URL apiUrl = new URL(String.format("https://api.github.com/repos/%s/%s/commits?sha=%s&path=%s&page=1&per_page=1", jarDownloadUrl.getOwner(), jarDownloadUrl.getRepo(), jarDownloadUrl.getBranch(), jarDownloadUrl.getFilePath()));
-            JsonReader read = Json.createReader(apiUrl.openStream());
+            HttpURLConnection conn = (HttpURLConnection)apiUrl.openConnection();
+            JsonReader read = Json.createReader(conn.getInputStream());
             JsonArray arr = read.readArray();
             read.close();
+            conn.disconnect();
             //System.out.println(arr);
             String sDate = arr.get(0).asJsonObject().getJsonObject("commit").getJsonObject("author").getString("date");
+            //System.out.println(apiUrl.toString());
             //System.out.println(sDate);
             date = FORMAT.parse(sDate);
             Logger.log("Updater.getLatestManifestDate", "GitHub: " + FORMAT.format(date));
