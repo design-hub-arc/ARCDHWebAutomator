@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import javax.swing.JFrame;
 import logging.Logger;
-import logging.MessageListener;
 
 /**
  * The EntryPoint class serves as the base
@@ -96,11 +95,11 @@ public abstract class EntryPoint {
         return ret;
     }
     
-    public final void checkForUpdates(MessageListener otherLogger){
+    public final void checkForUpdates(){
         String[] exclude = (isRunningFromJar()) ? new String[]{getRunningJar()} : new String[]{};
-        System.out.println(Arrays.toString(exclude));
+        Logger.log("EntryPoint.checkForUpdates", Arrays.toString(exclude));
         try {
-            Updater.updateAll(exclude, new MessageListener[]{otherLogger});
+            Updater.updateAll(exclude);
         } catch (IOException ex) {
             Logger.logError("EntryPoint.checkForUpdates", ex);
         }

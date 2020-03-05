@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import logging.Logger;
-import logging.MessageListener;
 
 /**
  * The FileSystem class is used

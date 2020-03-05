@@ -19,13 +19,11 @@ public class ScrollableTextDisplay extends JPanel implements MessageListener{
     private final JTextArea textArea;
     private final JScrollPane pane;
     private final StringBuilder text;
-    private final StringBuilder log;
     
     public ScrollableTextDisplay(String displayText){
         super();
         setLayout(new GridLayout(1, 1));
         text = new StringBuilder();
-        log = new StringBuilder();
         text.append(displayText);
         
         textArea = new JTextArea(displayText);
@@ -65,7 +63,6 @@ public class ScrollableTextDisplay extends JPanel implements MessageListener{
 
     @Override
     public void messageLogged(String s) {
-        log.append(s).append('\n');
         appendText(s + '\n');
     }
 }

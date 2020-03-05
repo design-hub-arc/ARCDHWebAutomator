@@ -52,7 +52,7 @@ public class Application extends EntryPoint{
         Thread updater = new Thread(){
             @Override
             public void run(){
-                app.checkForUpdates(System.out::println);
+                app.checkForUpdates();
             }
         };
         updater.start();

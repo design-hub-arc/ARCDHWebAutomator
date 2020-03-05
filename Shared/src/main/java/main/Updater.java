@@ -25,7 +25,6 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 import logging.Logger;
-import logging.MessageListener;
 
 /**
  * The Updater class is used to automatically download
@@ -236,15 +235,16 @@ public class Updater {
      * these files are located under Shared/Resources
      * @param exclude the entire paths of local JAR files to exclude,
      * such as the running JAR file.
-     * @param out the Loggers to receive output from the Updaters
+     * @throws java.io.IOException
      */
-    public static void updateAll(String[] exclude, MessageListener[] out) throws IOException{
+    public static void updateAll(String[] exclude) throws IOException{
         
+        Properties repoProps;
         // first, read repository file
-        InputStream in = Updater.class.getResourceAsStream("/repositoryInfo.properties");
-        Properties repoProps = new Properties();
-        repoProps.load(in);
-        in.close();
+        try (InputStream in = Updater.class.getResourceAsStream("/repositoryInfo.properties")) {
+            repoProps = new Properties();
+            repoProps.load(in);
+        }
         String repoOwner = repoProps.getProperty("owner");
         String repoName = repoProps.getProperty("repository-name");
         String repoBranch = repoProps.getProperty("branch");
@@ -287,12 +287,12 @@ public class Updater {
         });
     }
     
-    public static void updateAll(MessageListener[] out) throws IOException{
-        updateAll(new String[]{}, out);
+    public static void updateAll() throws IOException{
+        updateAll(new String[]{});
     }
     
     public static void main(String[] args) throws IOException{
-        Updater.updateAll(new MessageListener[]{});
+        Updater.updateAll();
         System.out.println(Logger.getLog());
     }
 }

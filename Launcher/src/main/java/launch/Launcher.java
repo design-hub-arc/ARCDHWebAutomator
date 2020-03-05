@@ -32,16 +32,14 @@ public class Launcher extends EntryPoint{
     public void doRun(){
         LauncherFrame window = new LauncherFrame();
         listenToWindow(window);
+        Logger.addMessageListener(window.getContent().getTextDisplay());
         
         try {
             Installer.install();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Logger.logError("Launcher.doRun", ex);
         }
         
-        checkForUpdates(window.getContent().getTextDisplay());
-        
-        Launcher l = this;
         Thread appThread = new Thread(){
             @Override
             public void run(){
