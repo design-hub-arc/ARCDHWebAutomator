@@ -1,2 +1,1 @@
 *) Test .sh files on Mac and Linux
-*) Update README.md

@@ -62,7 +62,7 @@ This folder contains the program's executable files (bin), output logs (logs), a
 There are a handful of different ways you can run the program, but the most convenient way is by double-clicking
 the batch file the program created when you ran the Launcher.jar file.
 
-If you accidently delete the batch file, you can run the Launcher.jar file under the WebAutomator's bin folder 
+If you accidently delete the batch file, you can run the Launcher.jar file under the WebAutomator's bin folder, and it will recreate the batch file for you. 
 (see 'where does the program install itself to?')
 
 ### Troubleshooting
