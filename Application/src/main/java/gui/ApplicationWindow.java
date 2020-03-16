@@ -18,7 +18,9 @@ public final class ApplicationWindow extends JFrame{
         forApp.listenToWindow(this);
         
         setTitle("American River College Design Hub Web Automator");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        //don't exit on close, otherwise, downloading updates may be interrupted
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
         // fullscreen
         setSize(

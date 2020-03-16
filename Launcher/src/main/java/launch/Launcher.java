@@ -55,10 +55,16 @@ public class Launcher extends EntryPoint{
                 }
             }
         };
-        appThread.start();
+        
+        
         Logger.removeMessageListener(disp);
         writeLog();
-        window.dispose();
+        
+        //only start the application if the window hasn't been closed yet
+        if(window.isDisplayable()){
+            appThread.start();
+            window.dispose();
+        }
     }
     
     /**

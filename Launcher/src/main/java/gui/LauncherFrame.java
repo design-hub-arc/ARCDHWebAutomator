@@ -12,6 +12,8 @@ public class LauncherFrame extends JFrame{
     public LauncherFrame(){
         super();
         setTitle("ARCDH Web Automator Launcher");
+        
+        //don't exit on close, otherwise, downloading updates may be interrupted
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         content = new LauncherPane();
         setContentPane(content);

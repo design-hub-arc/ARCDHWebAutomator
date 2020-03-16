@@ -21,7 +21,7 @@ public class ApplicationPane extends JPanel{
     private static final String AUTO = "AUTO";
     private static final String DATA = "DATA";
     private static final String DRIVER = "DRIVER";
-    private static final String RUN = "RUN"; //use this page to show program output
+    private static final String RUN = "RUN";
     
     private final Application forApp;
     private final JPanel middle;
