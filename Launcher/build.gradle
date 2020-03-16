@@ -1,0 +1,34 @@
+/*
+Note: "common.gradle" in the root project contains additional initialization
+for this project. This initialization is applied in the "build.gradle"
+of the root project, ARCDHWebAutomator.
+*/
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'launch.Launcher'
+}
+
+jar {
+    //need to manually set main class, otherwise, it just compiles the JAR as a library
+    manifest {
+        attributes(
+            'Main-Class': 'launch.Launcher'
+        )
+    }
+
+    //include dependencies in JAR file
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+    implementation project(':Shared')
+    /*
+    Note that this path is relative to ARCDHWebAutomator, so Gradle
+    can only resolve this path when commands are run from the ARCDHWebAutomator directory,
+    not this project's directory.
+    */
+
+    // You can read more about how to add dependency here: http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+}

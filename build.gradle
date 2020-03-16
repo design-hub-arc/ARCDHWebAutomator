@@ -1,56 +1,24 @@
-apply plugin: 'java'
+import org.gradle.api.artifacts.*
 
-sourceCompatibility = '1.8'
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+/*
+Note: Use 'gradle build' to compile all JAR files for each subproject.
+*/
 
-gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:unchecked"
+apply plugin: 'base' // To add "clean" task to the root project.
+
+subprojects {
+    apply from: rootProject.file('common.gradle')
+}
+
+task mergedJavadoc(type: Javadoc, description: 'Creates Javadoc from all the projects.') {
+    title = 'All modules'
+    destinationDir = new File(project.buildDir, 'merged-javadoc')
+
+    // Note: The closures below are executed lazily.
+    source {
+       subprojects*.sourceSets*.main*.allSource
     }
-}
-
-// NetBeans will automatically add "run" and "debug" tasks relying on the
-// "mainClass" property. You may however define the property prior executing
-// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
-//
-// Note however, that you may define your own "run" and "debug" task if you
-// prefer. In this case NetBeans will not add these tasks but you may rely on
-// your own implementation.
-if (!hasProperty('mainClass')) {
-    ext.mainClass = 'application.Application'
-}
-
-repositories {
-    mavenCentral()
-    // You may define additional repositories, or even remove "mavenCentral()".
-    // Read more about repositories here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:repositories
-}
-
-jar {
-    
-    //need to manually set main class, otherwise, it just compiles the JAR as a library
-    manifest {
-        attributes 'Main-Class': 'application.Application'
-    }
-    
-    //include dependencies in JAR file
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
-dependencies {
-    // TODO: Add dependencies here ...
-    // You can read more about how to add dependency here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
-    testCompile group: 'junit', name: 'junit', version: '4.10'
-    compile('org.seleniumhq.selenium:selenium-java:3.4.0') {
-        exclude group: 'org.seleniumhq.selenium', module: 'selenium-android-driver'
-        exclude group: 'org.seleniumhq.selenium', module: 'selenium-iphone-driver'
-        exclude group: 'org.seleniumhq.selenium', module: 'selenium-safari-driver'
-        exclude group: 'org.webbitserver', module: 'webbit'
-        exclude group: 'commons-codec', module: 'commons-codec'
-        exclude group: 'cglib', module: 'cglib-nodep'
+    classpath.from {
+        subprojects*.configurations*.compile*.copyRecursive({ !(it instanceof ProjectDependency); })*.resolve()
     }
 }

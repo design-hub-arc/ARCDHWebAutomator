@@ -1,0 +1,48 @@
+/*
+Note: "common.gradle" in the root project contains additional initialization
+for this project. This initialization is applied in the "build.gradle"
+of the root project, ARCDHWebAutomator.
+*/
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'application.Application'
+}
+
+jar {
+    //need to manually set main class, otherwise, it just compiles the JAR as a library
+    manifest {
+        attributes(
+            'Main-Class': 'application.Application'
+        )
+    }
+
+    //include dependencies in JAR file
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+    implementation project(':Shared')
+    /*
+    Note that this path is relative to ARCDHWebAutomator, so Gradle
+    can only resolve this path when commands are run from the ARCDHWebAutomator directory,
+    not this project's directory.
+    */
+
+    // You can read more about how to add dependency here: http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+
+    /*
+    You can read about selenium here:
+      - https://www.selenium.dev/selenium/docs/api/java/index.html
+      - https://www.selenium.dev/documentation/en/
+    */
+    implementation('org.seleniumhq.selenium:selenium-java:3.4.0') {
+        exclude group: 'org.seleniumhq.selenium', module: 'selenium-android-driver'
+        exclude group: 'org.seleniumhq.selenium', module: 'selenium-iphone-driver'
+        exclude group: 'org.seleniumhq.selenium', module: 'selenium-safari-driver'
+        exclude group: 'org.webbitserver', module: 'webbit'
+        exclude group: 'commons-codec', module: 'commons-codec'
+        exclude group: 'cglib', module: 'cglib-nodep'
+    }
+}

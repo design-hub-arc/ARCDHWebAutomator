@@ -1,0 +1,4 @@
+Application/build/libs/Application.jar
+Launcher/build/libs/Launcher.jar
+Shared/build/libs/Shared.jar
+
