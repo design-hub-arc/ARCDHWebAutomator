@@ -1,3 +1,2 @@
 *) Test .sh files on Mac and Linux
 *) Update README.md
-*) Ensure shutting down web drivers complete

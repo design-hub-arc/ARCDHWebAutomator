@@ -141,6 +141,8 @@ public abstract class AbstractAutomation {
         
         running = false;
         
+        Logger.log("AbstractAutomation.finish", "Browser has been closed successfully.");
+        
         return this;
     }
     
@@ -165,12 +167,12 @@ public abstract class AbstractAutomation {
             wait = new WebDriverWait(driver, 10);
             Logger.log("AbstractAutomation.run", "Driver created successfully.");
             doRun();
-            finish();
             Logger.log("AbstractAutomation.run", "Automation completed successfully");
         } catch(IllegalAccessException | InstantiationException e){
             Logger.log("AbstractAutomation.run", "Unable to create dirver. Please see error log for details. Terminating process.");
-            finish(); //make sure we finish
             throw e;
+        } finally {
+            finish();
         }
         return this;
     }

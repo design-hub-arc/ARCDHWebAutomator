@@ -48,7 +48,7 @@ public class GoogleSearch extends AbstractQueryGatherAutomation{
 
     @Override
     public void readQueryResult(CsvFile saveFile) {
-        WebElement numResultBox = awaitFindElement(By.id("resultStats"));
+        WebElement numResultBox = awaitFindElement(By.id("result-stats"));
         CsvRow r = new CsvRow(saveFile);
         r.set(RESULT_HEADER, numResultBox.getText());
         saveFile.addRow(r);
