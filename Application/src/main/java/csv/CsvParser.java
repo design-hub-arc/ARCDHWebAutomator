@@ -19,7 +19,7 @@ public class CsvParser {
             fileText = fileText.substring(0, nlIdx); //chop off everything on or after the newline
         }
         String[] headers = fileText.split(",");
-        return headers;
+        return Arrays.stream(headers).map((header)->header.trim()).toArray((size)->new String[size]);
     }
     
     public static CsvFile toCsvFile(String fileText){

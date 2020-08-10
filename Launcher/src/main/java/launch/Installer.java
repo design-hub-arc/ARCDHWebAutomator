@@ -36,6 +36,7 @@ public class Installer {
         if(!f.exists()){
             f.createNewFile();
         }
+        f.setExecutable(true);
         FileWriterUtil.writeToFile(f, getFormattedTemplate());
     }
     
