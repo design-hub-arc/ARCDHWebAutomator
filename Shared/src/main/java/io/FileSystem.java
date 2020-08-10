@@ -27,7 +27,7 @@ public final class FileSystem {
     public static final String LOG_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "logs";
     public static final String JAR_FOLDER_PATH = APP_FOLDER_PATH + File.separator + "bin";
     
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-DD-uuuu_hh_mm_a");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM-dd-uuuu_hh_mm_a");
         
     public FileSystem(){
         
